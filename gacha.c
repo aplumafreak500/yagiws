@@ -4,8 +4,11 @@
 
 /*
 Release History:
-	* v1.0 (2023-10-20): Initial release
-	* v1.0.1 (2023-11-??): Add 4.1 weapons and initial support for 4.2
+	* v1.0 (2023-10-20):
+		* Initial release
+	* v1.0.1 (2023-11-04):
+		* Add 4.1 weapons and initial support for 4.2
+		* Fix getWeight4SW using smooth weight even when smooth function is disabled
 */
 
 #define _GNU_SOURCE
@@ -651,6 +654,7 @@ static long double getWeight4S(unsigned int _pity) {
 
 // 4-star weapon banner variant
 static long double getWeight4SW(unsigned int _pity) {
+	if (!doSmooth[0]) return 0.5f;
 	if (_pity <= 14) return 0.03l;
 	return 0.03l + 0.3l * (long double) (_pity - 14);
 }
