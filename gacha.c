@@ -5,6 +5,7 @@
 /*
 Release History:
 	* v1.0 (2023-10-20): Initial release
+	* v1.0.1 (2023-11-??): Add 4.1 weapons and initial support for 4.2
 */
 
 #define _GNU_SOURCE
@@ -35,7 +36,7 @@ static const unsigned short _5StarWpnUp[2] = {14513, 15503};
 static const unsigned short _3Star[13] = {11301, 11302, 11306, 12301, 12302, 12305, 13303, 14301, 14302, 15304, 15301, 15302, 15304};
 
 // The list of 4-star characters in the pool, along with the rate-up drops.
-static const unsigned short _4StarChr[33] = {
+static const unsigned short _4StarChr[34] = {
 	// v1.0 standard pool: Barbara, Razor, Xiangling, Beidou, Xingqiu, Ningguang, Fischl, Bennett, Noelle, Chongyun, Sucrose
 	1014, 1020, 1023, 1024, 1025, 1027, 1031, 1032, 1036, 1043,
 	// Noelle (listed last from 1.0 chars due to novice banner)
@@ -77,7 +78,9 @@ static const unsigned short _4StarChr[33] = {
 	// v3.8: Kiara
 	1061,
 	// v4.1: Lynette, Freminet
-	1083, 1085
+	1083, 1085,
+	// v4.3: Charolette
+	1089, // TODO: verify once 4.2 releases
 };
 
 // The list of 4-star weapons in the pool, along with the rate-up drops.
@@ -90,28 +93,28 @@ static const unsigned short _5StarChr[7] = {
 	// v3.1: Tighnari
 	1069,
 	// v3.6: Deyha
-	1079
+	1079,
 };
 
 // The list of 5-star weapons in the pool, along with the rate-up drops (only on the weapon and standard banners)
 static const unsigned short _5StarWpn[10] = {11501, 11502, 12501, 12502, 13502, 13505, 14501, 14502, 15501, 15502};
 
 // Max indexes into _4StarChr per version (for old banners)
-static const unsigned char _4StarMaxIndex[28] = {
+static const unsigned char _4StarMaxIndex[30] = {
 	/* Novice */ 10,
 	/* v1.x */ 11, 11, 13, 13, 13, 14, 15,
 	/* v2.x */ 15, 16, 17, 18, 19, 20, 20, 20, 21,
 	/* v3.x */ 22, 24, 25, 26, 27, 28, 29, 30, 31,
-	/* v4.x */ 31, 33
+	/* v4.x */ 31, 33, 33, 34,
 };
 
 // Max indexes into _5StarChr per version (for old banners)
-static const unsigned char _5StarMaxIndex[28] = {
+static const unsigned char _5StarMaxIndex[30] = {
 	/* Novice */ 5,
 	/* v1.x */ 5, 5, 5, 5, 5, 5, 5,
 	/* v2.x */ 5, 5, 5, 5, 5, 5, 5, 5, 5,
 	/* v3.x */ 5, 6, 6, 6, 6, 6, 7, 7, 7,
-	/* v4.x */ 7, 7
+	/* v4.x */ 7, 7, 7, 7,
 };
 
 enum {
@@ -124,7 +127,7 @@ enum {
 	WISH_CNT
 };
 
-#define MAX_CHARS 88
+#define MAX_CHARS 90
 
 static const char* const chrList[MAX_CHARS] = {
 	[0] = "None",
@@ -202,7 +205,9 @@ static const char* const chrList[MAX_CHARS] = {
 	[84] = "Lyney",
 	[85] = "Freminet",
 	[86] = "Wriothesley",
-	[87] = "Neuvillette", // TODO verify
+	[87] = "Neuvillette",
+	[88] = "Furina", // TODO verify once 4.2 releases
+	[89] = "Charolette", // TODO verify once 4.2 releases
 };
 
 enum {
@@ -292,9 +297,7 @@ static const char* const* const _3StarWeapons[6] = {
 	_3StarBows,
 };
 
-// TODO 4.1 new weapons
-
-static const char* const _4StarSwords[26] = {
+static const char* const _4StarSwords[27] = {
 	"Favonius Sword",
 	"The Flute",
 	"Sacrificial Sword",
@@ -319,10 +322,11 @@ static const char* const _4StarSwords[26] = {
 	"Toukabou Shigure",
 	"Wolf-Fang",
 	"Finale of the Deep",
-	"Fleuve Cendre Ferryman"
+	"Fleuve Cendre Ferryman",
+	[26] = "The Dockhand's Assistant",
 };
 
-static const char* const _4StarClaymores[25] = {
+static const char* const _4StarClaymores[27] = {
 	"Favonius Greatsword",
 	"The Bell",
 	"Sacrificial Greatsword",
@@ -341,10 +345,11 @@ static const char* const _4StarClaymores[25] = {
 	"Forest Regalia",
 	"Mailed Flower",
 	[23] = "Talking Stick",
-	[24] = "Tidal Shadow"
+	[24] = "Tidal Shadow",
+	[26] = "Portable Power Saw",
 };
 
-static const char* const _4StarPolearms[25] = {
+static const char* const _4StarPolearms[27] = {
 	"Dragon's Bane",
 	"Prototype Starglitter",
 	"Crescent Pike",
@@ -360,10 +365,11 @@ static const char* const _4StarPolearms[25] = {
 	[16] = "Moonpiercer",
 	[18] = "Missive Windspear",
 	[23] = "Ballad of the Fjords",
-	[24] = "Rightful Rewards"
+	[24] = "Rightful Rewards",
+	[26] = "Prospector's Drill",
 };
 
-static const char* const _4StarCatalysts[25] = {
+static const char* const _4StarCatalysts[27] = {
 	"Favonius Codex",
 	"Widsith",
 	"Sacrificial Fragments",
@@ -381,10 +387,11 @@ static const char* const _4StarCatalysts[25] = {
 	"Wandering Evenstar",
 	"Fruit of Fulfillment",
 	[23] = "Sacrificial Jade",
-	[24] = "Flowing Purity"
+	[24] = "Flowing Purity",
+	[26] = "Ballad of the Boundless Blue", // TODO verify the ID
 };
 
-static const char* const _4StarBows[25] = {
+static const char* const _4StarBows[27] = {
 	"Favonius Warbow",
 	"The Stringless",
 	"Sacrificial Bow",
@@ -405,7 +412,8 @@ static const char* const _4StarBows[25] = {
 	"End of the Line",
 	"Ibis Piercer",
 	[23] = "Scion of the Blazing Sun",
-	[24] = "Song of Stillness"
+	[24] = "Song of Stillness",
+	[26] = "Range Gauge",
 };
 
 static const char* const* const _4StarWeapons[6] = {
@@ -417,7 +425,7 @@ static const char* const* const _4StarWeapons[6] = {
 	_4StarBows,
 };
 
-static const char* const _5StarSwords[12] = {
+static const char* const _5StarSwords[13] = {
 	"Aquila Favonia",
 	"Skyward Blade",
 	"Freedom-Sworn",
@@ -429,7 +437,8 @@ static const char* const _5StarSwords[12] = {
 	"Mistsplitter Reforged",
 	"Haran Geppaku Futsu",
 	"Key of Khaj-Nisut",
-	"Light of Foliar Incision"
+	"Light of Foliar Incision",
+	"Splendor of Tranquil Waters", // TODO verify once 4.2 releases
 };
 
 static const char* const _5StarClaymores[11] = {
@@ -443,7 +452,7 @@ static const char* const _5StarClaymores[11] = {
 	NULL,
 	NULL,
 	"Redhorn Stonethresher",
-	"Beacon of the Reed Sea"
+	"Beacon of the Reed Sea",
 };
 
 static const char* const _5StarPolearms[11] = {
@@ -457,10 +466,10 @@ static const char* const _5StarPolearms[11] = {
 	NULL,
 	"Engulfing Lightning",
 	NULL,
-	"Staff of the Scarlet Fields"
+	"Staff of the Scarlet Fields",
 };
 
-static const char* const _5StarCatalysts[12] = {
+static const char* const _5StarCatalysts[14] = {
 	"Skyward Atlas",
 	"Lost Prayer to the Sacred Winds",
 	"Lost Ballade",
@@ -472,7 +481,9 @@ static const char* const _5StarCatalysts[12] = {
 	"Kagura's Verity",
 	NULL,
 	"A Thousand Floating Dreams",
-	"Tulaytullah's Rememberance"
+	"Tulaytullah's Rememberance",
+	"Cashflow Supervision",
+	"Tome of the Eternal Flow",
 };
 
 static const char* const _5StarBows[12] = {
@@ -487,7 +498,7 @@ static const char* const _5StarBows[12] = {
 	"Thundering Pulse",
 	NULL,
 	"Hunter's Path",
-	"The First Great Magic"
+	"The First Great Magic",
 };
 
 static const char* const* const _5StarWeapons[6] = {
@@ -519,14 +530,14 @@ static const char* getWeapon(unsigned int _id) {
 	default:
 		return NULL;
 	case 11:
-	case 12:
 	case 21:
-	case 22:
 	case 31:
-	case 32:
 	case 41:
-	case 42:
 	case 51:
+	case 12:
+	case 22:
+	case 32:
+	case 42:
 	case 52:
 		maxId = 1;
 		break;
@@ -540,22 +551,24 @@ static const char* getWeapon(unsigned int _id) {
 		maxId = 4;
 		break;
 	case 14:
-		maxId = 26;
-		break;
 	case 24:
 	case 34:
-	case 44:
+	case 44: // TODO verify max catalyst id
 	case 54:
-		maxId = 25;
+		maxId = 27;
 		break;
-	case 15:
-	case 45:
-	case 55:
-		maxId = 12;
+	case 15: // TODO verify once 4.2 releases
+		maxId = 13;
 		break;
 	case 25:
 	case 35:
 		maxId = 11;
+		break;
+	case 45:
+		maxId = 14;
+		break;
+	case 55:
+		maxId = 12;
 		break;
 	}
 	if (id >= maxId) return NULL;
@@ -657,7 +670,7 @@ static unsigned int doAPull(unsigned int banner, unsigned int stdPoolVersion, un
 	long double (*_getWeight)(unsigned int, unsigned int) = getWeight;
 	if (banner == WPN || banner == STD_WPN) _getWeight = getWeightW;
 	if (banner != NOVICE) {
-		if (stdPoolVersion > 0x41) stdPoolVersion = 0x41;
+		if (stdPoolVersion > 0x42) stdPoolVersion = 0x42;
 		if (stdPoolVersion >= 0x40) {
 			stdPoolVersion -= 0x7;
 		}
@@ -1062,7 +1075,7 @@ int main(int argc, char** argv) {
 	unsigned int detailsRequested = 0;
 	int c = 0;
 	long long n = 0;
-	int v[4] = {-1, -1, 0, 0x41};
+	int v[4] = {-1, -1, 0, 0x42};
 	char* p = NULL;
 	while (1) {
 		c = getopt_long(argc, argv, "4:5:LNSV:b:c:de:f:ghlnsp:v", long_opts, NULL);
@@ -1267,7 +1280,7 @@ int main(int argc, char** argv) {
 		}
 		printf("\n\n");
 		if (banner != NOVICE) {
-			if (v[3] > 0x41) v[3] = 0x41;
+			if (v[3] > 0x42) v[3] = 0x42;
 			if (v[3] >= 0x40) {
 				v[3] -= 0x7;
 			}
