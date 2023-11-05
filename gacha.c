@@ -9,6 +9,12 @@ Release History:
 	* v1.0.1 (2023-11-04):
 		* Add 4.1 weapons and initial support for 4.2
 		* Fix getWeight4SW using smooth weight even when smooth function is disabled
+	* v1.1 (2023-??-??):
+		* Add support for multiple banners. Choose one with the -B switch.
+		* Debug mode that disables most sanity checks. (Beware of segfaults!)
+		* Extra sanity checks for displaying characters in Wish Details
+		* Check for a valid weapon ID, even on character banners (and vice versa) in Wish Details
+		* Fix getWeapon not returning a valid weapon if its ID is not 1xxxx
 */
 
 #define _GNU_SOURCE
@@ -22,24 +28,368 @@ Release History:
 #include <errno.h>
 #include <getopt.h>
 
-// Change the 4 variables below to configure the banners.
-// The three rate-up 4-star characters on both character banners.
-static const unsigned short _4StarChrUp[3] = {1068, 1036, 1050};
+// 0xffff: No second banner
+static const unsigned short FiveStarChrUp[58][2] = {
+	// v1.0 - Launch
+	{1022, 0xffff}, // Venti
+	{1029, 0xffff}, // Klee
+	// v1.1 - Unreconciled Stars & Foul Legacy
+	{1033, 0xffff}, // Tartaglia
+	{1030, 0xffff}, // Zhongli
+	// v1.2 - Dragonspine
+	{1038, 0xffff}, // Albedo
+	{1037, 0xffff}, // Ganyu
+	// v1.3 - Lantern Rite - Special case, ran three character banners with no second banners, but only ran two weapon banners. Treat as a 4-phased banner cycle
+	{1026, 0xffff}, // Xiao
+	{1042, 0xffff}, // Keqing (first half)
+	{1042, 0xffff}, // Keqing (second half)
+	{1046, 0xffff}, // Hu Tao
+	// v1.4 - Windblume
+	{1022, 0xffff},
+	{1033, 0xffff},
+	// v1.5 - Serenitea Pot
+	{1030, 0xffff},
+	{1051, 0xffff}, // Eula
+	// v1.6 - Golden Apple Archipelago
+	{1029, 0xffff},
+	{1047, 0xffff}, // Kazuha
+	// v2.0 - Inazuma
+	{1002, 0xffff}, // Ayaka
+	{1049, 0xffff}, // Yoimiya
+	// v2.1 - Plane of Euthymia & Watatsumi
+	{1052, 0xffff}, // Raiden
+	{1054, 0xffff}, // Kokomi
+	// v2.2 - Tsurumi
+	{1033, 0xffff},
+	{1046, 0xffff},
+	// v2.3 - Dragonspine 2 - Secondary banners start here
+	{1038, 1051},
+	{1057, 0xffff}, // Itto
+	// v2.4 - Enkanomiya & Lantern Rite 2
+	{1063, 1026}, // Shenhe
+	{1030, 1037},
+	// v2.5 - Three Realms Gateway Offering
+	{1058, 0xffff}, // Miko
+	{1052, 1054},
+	// v2.6 - Chasm
+	{1066, 1022}, // Ayato
+	{1002, 0xffff},
+	// v2.7 - Chasm 2
+	{1060, 1026}, // Yelan
+	{1057, 0xffff},
+	// v2.8	- Golden Apple Archipelago 2
+	{1029, 1047},
+	{1049, 0xffff},
+	// v3.0 - Sumeru
+	{1069, 1030}, // Tighnari
+	{1037, 1054},
+	// v3.1 - Sumeru Desert
+	{1071, 1022}, // Cyno
+	{1070, 1038}, // Nilou
+	// v3.2 - Akasha Pulses
+	{1073, 1049}, // Nahida
+	{1058, 1033},
+	// v3.3 - Genius Invokation TCG
+	{1075, 1057}, // Wanderer
+	{1052, 1066},
+	// v3.4 - Lantern Rite 3
+	{1078, 1026}, // Alhathiam
+	{1046, 1060},
+	// v3.5 - Windblume 2
+	{1079, 1071}, // Deyha
+	{1063, 1002},
+	// v3.6 - Parade of Providence & Girdle of the Sands
+	{1073, 1070},
+	{1082, 1037}, // Baizhu
+	// v3.7 - The Summoners' Summit
+	{1049, 1058},
+	{1078, 1047},
+	// v3.8 - Secret Summer Paradise
+	{1051, 1029},
+	{1054, 1075},
+	// v4.0 - Fontaine
+	{1084, 1060}, // Lyney
+	{1030, 1033},
+	// v4.1 - Fortreess of Meropide & Waterborne Poetry
+	{1087, 1046}, // Neuvillette
+	{1086, 1022}, // Wriothesley
+	// v4.2 - Masquerade of the Guilty (TODO verify Furina's ID)
+	{1088, 1082}, // Furina
+	{1071, 1066},
+};
 
-// The two rate-up 5-star characters, one per character banner.
-static const unsigned short _5StarChrUp[2] = {1086, 1022};
+static const unsigned short FourStarChrUp[58][3] = {
+	// v1.0 - Launch
+	{1023, 1031, 1014}, // Xiangling, Fischl, Barbara
+	{1025, 1034, 1043}, // Xingqiu, Noelle, Sucrose
+	// v1.1 - Unreconciled Stars & Foul Legacy
+	{1027, 1024, 1039}, // Ningguang, Beidou, *Diona*
+	{1044, 1036, 1020}, // *Xinyan*, Chongyun, Razor
+	// v1.2 - Dragonspine
+	{1031, 1043, 1032}, // Bennett
+	{1023, 1025, 1034},
+	// v1.3 - Lantern Rite - Special case, ran three character banners with no second banners, but only ran two weapon banners. Treat as a 4-phased banner cycle
+	{1039, 1024, 1044},
+	{1027, 1032, 1014}, // first half
+	{1027, 1032, 1014}, // second half
+	{1025, 1036, 1023},
+	// v1.4 - Windblume
+	{1043, 1020, 1034},
+	{1014, 1031, 1045}, // Rosaria
+	// v1.5 - Serenitea Pot
+	{1048, 1034, 1039}, // Yanfei
+	{1044, 1025, 1024},
+	// v1.6 - Golden Apple Archipelago
+	{1014, 1043, 1031},
+	{1045, 1032, 1020},
+	// v2.0 - Inazuma
+	{1027, 1036, 1048},
+	{1053, 1039, 1044}, // Sayu
+	// v2.1 - Plane of Euthymia & Watatsumi
+	{1056, 1023, 1043}, // Kujou Sara
+	{1045, 1024, 1025},
+	// v2.2 - Tsurumi
+	{1027, 1036, 1048},
+	{1050, 1039, 1053}, // Thoma
+	// v2.3 - Dragonspine 2
+	{1032, 1034, 1045},
+	{1055, 1014, 1023}, // Gorou
+	// v2.4 - Enkanomiya & Lantern Rite 2
+	{1064, 1027, 1036}, // Yun Jin
+	{1025, 1024, 1048},
+	// v2.5 - Three Realms Gateway Offering
+	{1031, 1039, 1050},
+	{1044, 1056, 1032},
+	// v2.6 - Chasm
+	{1023, 1043, 1064},
+	{1045, 1053, 1020},
+	// v2.7 - Chasm 2
+	{1048, 1014, 1034},
+	{1036, 1055, 1065}, // Kuki Shinobu
+	// v2.8	- Golden Apple Archipelago 2
+	{1027, 1059, 1050},
+	{1064, 1044, 1032},
+	// v3.0 - Sumeru
+	{1067, 1039, 1031}, // Collei
+	{1025, 1043, 1068}, // Dori
+	// v3.1 - Sumeru Desert
+	{1065, 1053, 1072}, // Candace
+	{1024, 1014, 1023},
+	// v3.2 - Akasha Pulses
+	{1032, 1020, 1034},
+	{1074, 1059, 1050}, // Layla
+	// v3.3 - Genius Invokation TCG
+	{1076, 1055, 1048}, // Faruzan
+	{1045, 1053, 1056},
+	// v3.4 - Lantern Rite 3 & Desert of Hadramaveth
+	{1044, 1064, 1077}, // Yaoyao
+	{1025, 1027, 1024},
+	// v3.5 - Windblume 2
+	{1067, 1014, 1032},
+	{1080, 1043, 1039}, // Mika
+	// v3.6 - Parade of Providence & Girdle of the Sands
+	{1065, 1068, 1074},
+	{1081, 1031, 1072}, // Kaveh
+	// v3.7 - The Summoners' Summit
+	{1036, 1064, 1061}, // Kiara
+	{1077, 1023, 1059},
+	// v3.8 - Secret Summer Paradise
+	{1080, 1020, 1050},
+	{1076, 1045, 1048},
+	// v4.0 - Fontaine
+	{1083, 1032, 1014}, // Lynette
+	{1053, 1034, 1085}, // Freminet
+	// v4.1 - Fortreess of Meropide & Waterborne Poetry
+	{1025, 1031, 1039},
+	{1068, 1036, 1050},
+	// v4.2 - Masquerade of the Guilty (TODO verify Charolette's ID and the full list of featured characters)
+	{1006, 1015, 1089}, // Charolette
+	{1006, 1015, 1021},
+};
 
-// The five rate-up 4-star weapons on the weapon banner.
-static const unsigned short _4StarWpnUp[5] = {15427, 13427, 11401, 12405, 14409};
+static const unsigned short FiveStarWpnUp[58][2] = {
+	// v1.0 - Launch
+	{15502, 15501}, // Amos' Bow/Aquila Favonia
+	{14502, 12502}, // Lost Prayer to the Sacred Winds/Wolf's Gravestone
+	// v1.1 - Unreconciled Stars & Foul Legacy
+	{15501, 14504}, // Skyward Harp/Memory of Dust
+	{13504, 12504}, // Vortex Vanquisher/The Unforged
+	// v1.2 - Dragonspine
+	{11504, 14501}, // Summit Shaper/Skyward Atlas
+	{15502, 12501}, // Skyward Pride
+	// v1.3 - Lantern Rite - Special case, ran three character banners with no second banners, but only ran two weapon banners. Treat as a 4-phased banner cycle
+	{11505, 13505}, // Primordial Jade Cutter/Primordial Jade-Winged Spear (1st half)
+	{11505, 13505}, // Primordial Jade Cutter/Primordial Jade-Winged Spear (2nd half)
+	{13501, 12502}, // Staff of Homa (1st half)
+	{13501, 12502}, // Staff of Homa (2nd half)
+	// v1.4 - Windblume
+	{15503, 11502}, // Elegy for the End/Skyward Blade
+	{15501, 14502},
+	// v1.5 - Serenitea Pot
+	{11504, 14504},
+	{12503, 11501}, // Song of Broken Pines
+	// v1.6 - Golden Apple Archipelago
+	{14502, 12501},
+	{11503, 14501}, // Freedom-Sworn
+	// v2.0 - Inazuma - Epitomized Path starts here
+	{11509, 13502}, // Mistsplitter Reforged
+	{15509, 11502}, // Thundering Pulse
+	// v2.1 - Plane of Euthymia & Watatsumi
+	{13509, 12504}, // Engulfing Lightning
+	{11505, 14506}, // Everlasting Moonglow
+	// v2.2 - Tsurumi
+	{14504, 15507}, // Polar Star
+	{13501, 15503},
+	// v2.3 - Dragonspine 2
+	{11503, 12503},
+	{12510, 15501}, // Redhorn Stonethresher
+	// v2.4 - Enkanomiya & Lantern Rite 2
+	{13507, 13505}, // Calamity Queller
+	{13504, 15502},
+	// v2.5 - Three Realms Gateway Offering
+	{14509, 11505}, // Kagura's Verity
+	{13509, 14506},
+	// v2.6 - Chasm
+	{11510, 15503}, // Haran Geppaku Futsu
+	{11509, 12504},
+	// v2.7 - Chasm 2
+	{15508, 13505}, // Aqua Simulacara
+	{12510, 14504},
+	// v2.8	- Golden Apple Archipelago 2
+	{11503, 14502},
+	{15509, 11504},
+	// v3.0 - Sumeru
+	{15511, 13504}, // Hunter's Path
+	{15502, 14506},
+	// v3.1 - Sumeru Desert
+	{13511, 15503}, // Staff of the Scarlet Sands
+	{11511, 11505}, // Key of Khaj-Nisut
+	// v3.2 - Akasha Pulses
+	{14511, 15509}, // A Thousand Floating Dreams
+	{14509, 15507},
+	// v3.3 - Genius Invokation TCG
+	{14512, 12510}, // Tulaytullah's Rememberance
+	{13509, 11510}, // Haran Geppaku Futsu
+	// v3.4 - Lantern Rite 3
+	{11512, 13505}, // Light of Foliar Incision
+	{13501, 15508},
+	// v3.5 - Windblume 2
+	{12511, 13511}, // Beacon of the Reed Sea
+	{13501, 15508},
+	// v3.6 - Parade of Providence & Girdle of the Sands
+	{11511, 14511},
+	{14505, 15502}, // Jadefall's Splendor
+	// v3.7 - The Summoners' Summit
+	{15509, 14509},
+	{11503, 11512},
+	// v3.8 - Secret Summer Paradise
+	{12503, 14502},
+	{14512, 14506},
+	// v4.0 - Fontaine
+	{15512, 15508}, // The First Great Magic
+	{13504, 15507},
+	// v4.1 - Fortreess of Meropide & Waterborne Poetry
+	{14514, 13501}, // Tome of the Eternal Flow
+	{14513, 15503}, // Cashflow Supervision
+	// v4.2 - Masquerade of the Guilty (TODO verify Splendor of Tranquil Waters' ID and the actual rate-up weapons)
+	{11513, 14505}, // Splendor of Tranquil Waters
+	{13511, 11510},
+};
 
-// The two rate-up 5-star weapons on the weapon banner.
-static const unsigned short _5StarWpnUp[2] = {14513, 15503};
+static const unsigned short FourStarWpnUp[58][5] = {
+	// v1.0 - Launch
+	{13407, 11402, 12402, 15402, 14402}, // Favonius Lance, The Flute, The Bell, The Stringless, The Widsith
+	{13401, 11403, 12403, 14403, 15403}, // Dragon's Bane, Sacrificial Sword, Sacrificial Greatsword, Sacrificial Fragments, Sacrificial Bow
+	// v1.1 - Unreconciled Stars & Foul Legacy
+	{15405, 11402, 14409, 13407, 12405}, // Rust, Wine and Song, Rainslasher
+	{12402, 11405, 13401, 14401, 15401}, // Lion's Roar, Favonius Codex, Favonius Warbow
+	// v1.2 - Dragonspine
+	{12401, 13407, 11405, 15402, 14402}, // Favonius Greatsword
+	{13401, 14409, 12402, 11403, 15401}, // Eye of Perception
+	// v1.3 - Lantern Rite - Special case, ran three character banners with no second banners, but only ran two weapon banners. Treat as a 4-phased banner cycle
+	{14409, 13407, 11402, 15405, 12403}, // first half
+	{14409, 13407, 11402, 15405, 12403}, // second half
+	{11405, 12410, 13406, 14402, 15403}, // Lithic Blade, Lithic Spear (first half)
+	{11405, 12410, 13406, 14402, 15403}, // Lithic Blade, Lithic Spear (second half)
+	// v1.4 - Windblume
+	{13401, 12401, 15401, 11410, 14410}, // Alley Flash
+	{15410, 11401, 13407, 14401, 12403}, // Alley Hunter
+	// v1.5 - Serenitea Pot
+	{12410, 13406, 15403, 11402, 14409},
+	{13401, 14403, 11403, 15405, 12405},
+	// v1.6 - Golden Apple Archipelago
+	{13407, 11405, 15412, 12402, 14402}, // Mitternachts Waltz
+	{15410, 13401, 12401, 11410, 14410},
+	// v2.0 - Inazuma
+	{14401, 11401, 13407, 15402, 12403},
+	{13401, 15401, 12405, 11403, 14403},
+	// v2.1 - Plane of Euthymia & Watatsumi
+	{12402, 11405, 14402, 15403, 13407},
+	{13401, 14401, 12401, 11402, 15402},
+	// v2.2 - Tsurumi
+	{13407, 14409, 15405, 11401, 12416}, // Akuoumaru
+	{11403, 12405, 13416, 14402, 15416}, // Wavebreaker's Fin
+	// v2.3 - Dragonspine 2
+	{11405, 12403, 13401, 14410, 15410},
+	{11410, 12402, 13407, 14403, 15412},
+	// v2.4 - Enkanomiya & Lantern Rite 2
+	{11402, 12401, 13406, 14402, 15401},
+	{11401, 12410, 13401, 14401, 15403},
+	// v2.5 - Three Realms Gateway Offering
+	{11403, 12405, 13416, 14409, 15402},
+	{12416, 15416, 11405, 13407, 14403},
+	// v2.6 - Chasm
+	{15405, 11402, 14402, 13401, 12403},
+	{11401, 12402, 13407, 14401, 15401},
+	// v2.7 - Chasm 2
+	{13406, 11403, 12401, 14409, 15403},
+	{12410, 11405, 13401, 14403, 15402},
+	// v2.8	- Golden Apple Archipelago 2
+	{11410, 12405, 13407, 14402, 15412},
+	{14410, 15410, 11402, 12403, 13401},
+	// v3.0 - Sumeru
+	{11401, 12402, 13407, 14401, 15402},
+	{11403, 12401, 13401, 14409, 15405},
+	// v3.1 - Sumeru Desert
+	{11405, 12415, 13407, 14403, 15401}, // Makhaira Aquamarine
+	{11418, 12405, 13401, 14416, 15403}, // Xiphos' Moonlight, Wandering Evenstar
+	// v3.2 - Akasha Pulses
+	{11402, 12403, 13407, 14402, 15405},
+	{11401, 12402, 13401, 14401, 15402},
+	// v3.3 - Genius Invokation TCG
+	{11403, 12401, 13416, 14409, 15401},
+	{12416, 15416, 11405, 13407, 14403}, // Mouun's Moon
+	// v3.4 - Lantern Rite 3
+	{13406, 11402, 12405, 14402, 15403},
+	{12410, 11401, 13401, 14401, 15405},
+	// v3.5 - Windblume 2
+	{11410, 15410, 12403, 13401, 14409},
+	{14410, 11403, 12402, 13407, 15401},
+	// v3.6 - Parade of Providence & Girdle of the Sands
+	{11418, 12401, 13401, 14403, 15402},
+	{12415, 14416, 11405, 13407, 15403},
+	// v3.7 - The Summoners' Summit
+	{12416, 11402, 13401, 14402, 15405},
+	{13416, 15416, 11401, 12403, 14401},
+	// v3.8 - Secret Summer Paradise
+	{11410, 15410, 12405, 13407, 14409},
+	{11405, 12402, 14410, 13401, 15401},
+	// v4.0 - Fontaine
+	{11403, 12410, 15403, 13407, 14403},
+	{11402, 12413, 13401, 14402, 15405},
+	// v4.1 - Fortreess of Meropide & Waterborne Poetry
+	{11427, 12427, 15412, 13407, 14401}, // The Dockhand's Assistant, Portable Power Saw
+	{15427, 13427, 11401, 12405, 14409}, // Range Gauge, Prospector's Drill
+	// v4.2 - Masquerade of the Guilty (TODO get the full list of rate-up weapons)
+	{11401, 12401, 13401, 14401, 15501},
+	{11401, 12401, 13401, 14401, 15501},
+};
 
 // The list of 3-star weapons in the pool.
-static const unsigned short _3Star[13] = {11301, 11302, 11306, 12301, 12302, 12305, 13303, 14301, 14302, 15304, 15301, 15302, 15304};
+static const unsigned short ThreeStar[13] = {11301, 11302, 11306, 12301, 12302, 12305, 13303, 14301, 14302, 15304, 15301, 15302, 15304};
 
 // The list of 4-star characters in the pool, along with the rate-up drops.
-static const unsigned short _4StarChr[34] = {
+static const unsigned short FourStarChr[34] = {
 	// v1.0 standard pool: Barbara, Razor, Xiangling, Beidou, Xingqiu, Ningguang, Fischl, Bennett, Noelle, Chongyun, Sucrose
 	1014, 1020, 1023, 1024, 1025, 1027, 1031, 1032, 1036, 1043,
 	// Noelle (listed last from 1.0 chars due to novice banner)
@@ -87,10 +437,10 @@ static const unsigned short _4StarChr[34] = {
 };
 
 // The list of 4-star weapons in the pool, along with the rate-up drops.
-static const unsigned short _4StarWpn[18] = {11401, 11402, 11403, 11405, 12401, 12402, 12403, 12405, 13401, 13407, 14401, 14402, 14403, 14409, 15401, 15402, 15403, 15405};
+static const unsigned short FourStarWpn[18] = {11401, 11402, 11403, 11405, 12401, 12402, 12403, 12405, 13401, 13407, 14401, 14402, 14403, 14409, 15401, 15402, 15403, 15405};
 
 // The list of 5-star characters in the pool, along with the rate-up drops.
-static const unsigned short _5StarChr[7] = {
+static const unsigned short FiveStarChr[7] = {
 	// v1.0 standard pool: Jean, Diluc, Qiqi, Mona, Keqing
 	1003, 1016, 1035, 1041, 1042,
 	// v3.1: Tighnari
@@ -100,10 +450,10 @@ static const unsigned short _5StarChr[7] = {
 };
 
 // The list of 5-star weapons in the pool, along with the rate-up drops (only on the weapon and standard banners)
-static const unsigned short _5StarWpn[10] = {11501, 11502, 12501, 12502, 13502, 13505, 14501, 14502, 15501, 15502};
+static const unsigned short FiveStarWpn[10] = {11501, 11502, 12501, 12502, 13502, 13505, 14501, 14502, 15501, 15502};
 
-// Max indexes into _4StarChr per version (for old banners)
-static const unsigned char _4StarMaxIndex[30] = {
+// Max indexes into FourStarChr per version (for old banners)
+static const unsigned char FourStarMaxIndex[30] = {
 	/* Novice */ 10,
 	/* v1.x */ 11, 11, 13, 13, 13, 14, 15,
 	/* v2.x */ 15, 16, 17, 18, 19, 20, 20, 20, 21,
@@ -111,8 +461,8 @@ static const unsigned char _4StarMaxIndex[30] = {
 	/* v4.x */ 31, 33, 33, 34,
 };
 
-// Max indexes into _5StarChr per version (for old banners)
-static const unsigned char _5StarMaxIndex[30] = {
+// Max indexes into FiveStarChr per version (for old banners)
+static const unsigned char FiveStarMaxIndex[30] = {
 	/* Novice */ 5,
 	/* v1.x */ 5, 5, 5, 5, 5, 5, 5,
 	/* v2.x */ 5, 5, 5, 5, 5, 5, 5, 5, 5,
@@ -223,36 +573,36 @@ enum {
 
 // Weapon data is present, even for 1-star and 2-star weapons, for the sake of completeness.
 
-static const char* const _1StarSwords[1] = {"Dull Blade"};
-static const char* const _1StarClaymores[1] = {"Waster Greatsword"};
-static const char* const _1StarPolearms[1] = {"Beginner's Protector"};
-static const char* const _1StarCatalysts[1] = {"Apprentice's Notes"};
-static const char* const _1StarBows[1] = {"Hunter's Bow"};
+static const char* const OneStarSwords[1] = {"Dull Blade"};
+static const char* const OneStarClaymores[1] = {"Waster Greatsword"};
+static const char* const OneStarPolearms[1] = {"Beginner's Protector"};
+static const char* const OneStarCatalysts[1] = {"Apprentice's Notes"};
+static const char* const OneStarBows[1] = {"Hunter's Bow"};
 
-static const char* const* const _1StarWeapons[6] = {
-	[SWORD] = _1StarSwords,
-	[CLAYMORE] = _1StarClaymores,
-	[POLEARM] = _1StarPolearms,
-	[CATALYST] = _1StarCatalysts,
-	[BOW] = _1StarBows,
+static const char* const* const OneStarWeapons[6] = {
+	[SWORD] = OneStarSwords,
+	[CLAYMORE] = OneStarClaymores,
+	[POLEARM] = OneStarPolearms,
+	[CATALYST] = OneStarCatalysts,
+	[BOW] = OneStarBows,
 };
 
-static const char* const _2StarSwords[1] = {"Silver Sword"};
-static const char* const _2StarClaymores[1] = {"Old Merc's Pal"};
-static const char* const _2StarPolearms[1] = {"Iron Point"};
-static const char* const _2StarCatalysts[1] = {"Pocket Grimoire"};
-static const char* const _2StarBows[1] = {"Seasoned Hunter's Bow"};
+static const char* const TwoStarSwords[1] = {"Silver Sword"};
+static const char* const TwoStarClaymores[1] = {"Old Merc's Pal"};
+static const char* const TwoStarPolearms[1] = {"Iron Point"};
+static const char* const TwoStarCatalysts[1] = {"Pocket Grimoire"};
+static const char* const TwoStarBows[1] = {"Seasoned Hunter's Bow"};
 
-static const char* const* const _2StarWeapons[6] = {
+static const char* const* const TwoStarWeapons[6] = {
 	NULL,
-	_2StarSwords,
-	_2StarClaymores,
-	_2StarPolearms,
-	_2StarCatalysts,
-	_2StarBows,
+	TwoStarSwords,
+	TwoStarClaymores,
+	TwoStarPolearms,
+	TwoStarCatalysts,
+	TwoStarBows,
 };
 
-static const char* const _3StarSwords[6] = {
+static const char* const ThreeStarSwords[6] = {
 	"Cool Steel",
 	"Harbinger of Dawn",
 	"Traveler's Handy Sword",
@@ -260,7 +610,7 @@ static const char* const _3StarSwords[6] = {
 	"Fillet Blade",
 	"Skyrider Sword"
 };
-static const char* const _3StarClaymores[6] = {
+static const char* const ThreeStarClaymores[6] = {
 	"Ferrous Shadow",
 	"Bloodtainted Greatsword",
 	"White Iron Greatsword",
@@ -268,13 +618,13 @@ static const char* const _3StarClaymores[6] = {
 	"Debate Club",
 	"Skyrider Greatsword"
 };
-static const char* const _3StarPolearms[4] = {
+static const char* const ThreeStarPolearms[4] = {
 	"White Tassel",
 	"Halberd",
 	"Black Tassel",
 	"Flagstaff"
 };
-static const char* const _3StarCatalysts[6] = {
+static const char* const ThreeStarCatalysts[6] = {
 	"Magic Guide",
 	"Thrilling Tales of Dragon Slayers",
 	"Otherworldly Story",
@@ -282,7 +632,7 @@ static const char* const _3StarCatalysts[6] = {
 	"Twin Nephrite",
 	"Amber Bead (beta?)"
 };
-static const char* const _3StarBows[6] = {
+static const char* const ThreeStarBows[6] = {
 	"Raven Bow",
 	"Sharpshooter's Oath",
 	"Recurve Bow",
@@ -291,16 +641,16 @@ static const char* const _3StarBows[6] = {
 	"Ebony Bow (beta?)"
 };
 
-static const char* const* const _3StarWeapons[6] = {
+static const char* const* const ThreeStarWeapons[6] = {
 	NULL,
-	_3StarSwords,
-	_3StarClaymores,
-	_3StarPolearms,
-	_3StarCatalysts,
-	_3StarBows,
+	ThreeStarSwords,
+	ThreeStarClaymores,
+	ThreeStarPolearms,
+	ThreeStarCatalysts,
+	ThreeStarBows,
 };
 
-static const char* const _4StarSwords[27] = {
+static const char* const FourStarSwords[27] = {
 	"Favonius Sword",
 	"The Flute",
 	"Sacrificial Sword",
@@ -329,7 +679,7 @@ static const char* const _4StarSwords[27] = {
 	[26] = "The Dockhand's Assistant",
 };
 
-static const char* const _4StarClaymores[27] = {
+static const char* const FourStarClaymores[27] = {
 	"Favonius Greatsword",
 	"The Bell",
 	"Sacrificial Greatsword",
@@ -352,7 +702,7 @@ static const char* const _4StarClaymores[27] = {
 	[26] = "Portable Power Saw",
 };
 
-static const char* const _4StarPolearms[27] = {
+static const char* const FourStarPolearms[27] = {
 	"Dragon's Bane",
 	"Prototype Starglitter",
 	"Crescent Pike",
@@ -372,7 +722,7 @@ static const char* const _4StarPolearms[27] = {
 	[26] = "Prospector's Drill",
 };
 
-static const char* const _4StarCatalysts[27] = {
+static const char* const FourStarCatalysts[27] = {
 	"Favonius Codex",
 	"Widsith",
 	"Sacrificial Fragments",
@@ -394,7 +744,7 @@ static const char* const _4StarCatalysts[27] = {
 	[26] = "Ballad of the Boundless Blue", // TODO verify the ID
 };
 
-static const char* const _4StarBows[27] = {
+static const char* const FourStarBows[27] = {
 	"Favonius Warbow",
 	"The Stringless",
 	"Sacrificial Bow",
@@ -419,21 +769,21 @@ static const char* const _4StarBows[27] = {
 	[26] = "Range Gauge",
 };
 
-static const char* const* const _4StarWeapons[6] = {
+static const char* const* const FourStarWeapons[6] = {
 	NULL,
-	_4StarSwords,
-	_4StarClaymores,
-	_4StarPolearms,
-	_4StarCatalysts,
-	_4StarBows,
+	FourStarSwords,
+	FourStarClaymores,
+	FourStarPolearms,
+	FourStarCatalysts,
+	FourStarBows,
 };
 
-static const char* const _5StarSwords[13] = {
+static const char* const FiveStarSwords[13] = {
 	"Aquila Favonia",
 	"Skyward Blade",
 	"Freedom-Sworn",
 	"Summit Shaper",
-	"Primordial Jade Cutter (1)",
+	"Primordial Jade Cutter",
 	"Primordial Jade Cutter (2)",
 	"One Side",
 	NULL,
@@ -444,11 +794,11 @@ static const char* const _5StarSwords[13] = {
 	"Splendor of Tranquil Waters", // TODO verify once 4.2 releases
 };
 
-static const char* const _5StarClaymores[11] = {
+static const char* const FiveStarClaymores[11] = {
 	"Skyward Pride",
 	"Wolf's Gravestone",
 	"Song of Broken Pines",
-	"Unforged",
+	"The Unforged",
 	"Primordial Jade Greatsword",
 	"Other Side",
 	NULL,
@@ -458,7 +808,7 @@ static const char* const _5StarClaymores[11] = {
 	"Beacon of the Reed Sea",
 };
 
-static const char* const _5StarPolearms[11] = {
+static const char* const FiveStarPolearms[11] = {
 	"Staff of Homa",
 	"Skyward Spine",
 	NULL,
@@ -472,7 +822,7 @@ static const char* const _5StarPolearms[11] = {
 	"Staff of the Scarlet Fields",
 };
 
-static const char* const _5StarCatalysts[14] = {
+static const char* const FiveStarCatalysts[14] = {
 	"Skyward Atlas",
 	"Lost Prayer to the Sacred Winds",
 	"Lost Ballade",
@@ -489,7 +839,7 @@ static const char* const _5StarCatalysts[14] = {
 	"Tome of the Eternal Flow",
 };
 
-static const char* const _5StarBows[12] = {
+static const char* const FiveStarBows[12] = {
 	"Skyward Harp",
 	"Amos' Bow",
 	"Elegy for the End",
@@ -504,25 +854,26 @@ static const char* const _5StarBows[12] = {
 	"The First Great Magic",
 };
 
-static const char* const* const _5StarWeapons[6] = {
+static const char* const* const FiveStarWeapons[6] = {
 	NULL,
-	_5StarSwords,
-	_5StarClaymores,
-	_5StarPolearms,
-	_5StarCatalysts,
-	_5StarBows,
+	FiveStarSwords,
+	FiveStarClaymores,
+	FiveStarPolearms,
+	FiveStarCatalysts,
+	FiveStarBows,
 };
 
 static const char* const* const* const Weapons[6] = {
 	NULL,
-	_1StarWeapons,
-	_2StarWeapons,
-	_3StarWeapons,
-	_4StarWeapons,
-	_5StarWeapons,
+	OneStarWeapons,
+	TwoStarWeapons,
+	ThreeStarWeapons,
+	FourStarWeapons,
+	FiveStarWeapons,
 };
 
 static const char* getWeapon(unsigned int _id) {
+	if (_id / 10000 != 1) return NULL;
 	unsigned int type = (_id / 1000) % 10;
 	unsigned int stars = (_id / 100) % 10;
 	unsigned int id = _id % 100;
@@ -665,7 +1016,11 @@ static long double rndFloat() {
 	return fabsl((long double) rndBuf / (long double) LLONG_MAX);
 }
 
-static unsigned int doAPull(unsigned int banner, unsigned int stdPoolVersion, unsigned int* rare, unsigned int* isRateUp) {
+#ifndef DEBUG
+static unsigned int doAPull(unsigned int banner, unsigned int stdPoolIndex, unsigned int bannerIndex, unsigned int* rare, unsigned int* isRateUp) {
+#else
+static unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, unsigned int* rare, unsigned int* isRateUp) {
+#endif
 	unsigned long long rnd;
 	long double rndF;
 	if (banner >= WISH_CNT) return -1;
@@ -673,21 +1028,6 @@ static unsigned int doAPull(unsigned int banner, unsigned int stdPoolVersion, un
 	if (isRateUp == NULL) return -1;
 	long double (*_getWeight)(unsigned int, unsigned int) = getWeight;
 	if (banner == WPN || banner == STD_WPN) _getWeight = getWeightW;
-	if (banner != NOVICE) {
-		if (stdPoolVersion > 0x42) stdPoolVersion = 0x42;
-		if (stdPoolVersion >= 0x40) {
-			stdPoolVersion -= 0x7;
-		}
-		if (stdPoolVersion >= 0x30) {
-			stdPoolVersion -= 0x7;
-		}
-		if (stdPoolVersion >= 0x20) {
-			stdPoolVersion -= 0x9;
-		}
-		stdPoolVersion -= 0xf;
-		if ((int) stdPoolVersion < 1) stdPoolVersion = 1;
-	}
-	else stdPoolVersion = 0;
 	if (doPity[0]) pity[0]++;
 	if (doPity[1]) pity[1]++;
 	if (doSmooth[0]) {
@@ -721,14 +1061,14 @@ static unsigned int doAPull(unsigned int banner, unsigned int stdPoolVersion, un
 				getRateUp[1] = 0;
 				// Character banners don't use Fate Points, but best to reset them anyway
 				fatePoints = 0;
-				return _5StarChrUp[banner - CHAR1];
+				return FiveStarChrUp[bannerIndex][banner - CHAR1];
 			}
 			*isRateUp = 0;
 			getRateUp[1] = 1;
 			// Character banners don't use Fate Points, but best to set it anyway
 			fatePoints++;
 			getrandom(&rnd, sizeof(long long), 0);
-			return _5StarChr[rnd % _5StarMaxIndex[stdPoolVersion]];
+			return FiveStarChr[rnd % FiveStarMaxIndex[stdPoolIndex]];
 		case WPN:
 			// Weapon banner does not use the stable function for 5-stars
 			pityS[2] = 0;
@@ -747,14 +1087,14 @@ static unsigned int doAPull(unsigned int banner, unsigned int stdPoolVersion, un
 				else {
 					getrandom(&rnd, sizeof(long long), 0);
 					if (epitomizedPath) {
-						if (_5StarWpnUp[rnd % 2] == epitomizedPath) {
+						if (FiveStarWpnUp[bannerIndex][rnd % 2] == epitomizedPath) {
 							fatePoints = 0;
 						}
 						else {
 							fatePoints++;
 						}
 					}
-					return _5StarWpnUp[rnd % 2];
+					return FiveStarWpnUp[bannerIndex][rnd % 2];
 				}
 			}
 			else {
@@ -762,7 +1102,7 @@ static unsigned int doAPull(unsigned int banner, unsigned int stdPoolVersion, un
 				getRateUp[1] = 1;
 				fatePoints++;
 				getrandom(&rnd, sizeof(long long), 0);
-				return _5StarWpn[rnd % 10];
+				return FiveStarWpn[rnd % 10];
 			}
 		case NOVICE:
 			// Novice banner does not use the rate-up function
@@ -774,7 +1114,7 @@ static unsigned int doAPull(unsigned int banner, unsigned int stdPoolVersion, un
 			pityS[2] = 0;
 			pityS[3] = 0;
 			getrandom(&rnd, sizeof(long long), 0);
-			return _5StarChr[rnd % _5StarMaxIndex[stdPoolVersion]];
+			return FiveStarChr[rnd % FiveStarMaxIndex[stdPoolIndex]];
 		case STD_WPN:
 			// Standard banner does not use the rate-up function
 			*isRateUp = 0;
@@ -785,7 +1125,7 @@ static unsigned int doAPull(unsigned int banner, unsigned int stdPoolVersion, un
 			pityS[2] = 0;
 			pityS[3] = 0;
 			getrandom(&rnd, sizeof(long long), 0);
-			return _5StarWpn[rnd % 10];
+			return FiveStarWpn[rnd % 10];
 		case STD_CHR:
 		default:
 			// Standard banner does not use the rate-up function
@@ -798,20 +1138,20 @@ static unsigned int doAPull(unsigned int banner, unsigned int stdPoolVersion, un
 				if (rndF <= getWeight5S(pityS[3])) {
 					pityS[3] = 0;
 					getrandom(&rnd, sizeof(long long), 0);
-					return _5StarWpn[rnd % 10];
+					return FiveStarWpn[rnd % 10];
 				}
 				pityS[2] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return _5StarChr[rnd % _5StarMaxIndex[stdPoolVersion]];
+				return FiveStarChr[rnd % FiveStarMaxIndex[stdPoolIndex]];
 			}
 			if (rndF <= getWeight5S(pityS[2])) {
 				pityS[2] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return _5StarChr[rnd % _5StarMaxIndex[stdPoolVersion]];
+				return FiveStarChr[rnd % FiveStarMaxIndex[stdPoolIndex]];
 			}
 			pityS[3] = 0;
 			getrandom(&rnd, sizeof(long long), 0);
-			return _5StarWpn[rnd % 10];
+			return FiveStarWpn[rnd % 10];
 		}
 	}
 	else if (rndF <= _getWeight(pity[0], 4)) {
@@ -829,7 +1169,7 @@ static unsigned int doAPull(unsigned int banner, unsigned int stdPoolVersion, un
 				getRateUp[0] = 0;
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return _4StarChrUp[rnd % 3];
+				return FourStarChrUp[bannerIndex][rnd % 3];
 			}
 			*isRateUp = 0;
 			getRateUp[0] = 1;
@@ -838,20 +1178,20 @@ static unsigned int doAPull(unsigned int banner, unsigned int stdPoolVersion, un
 				if (rndF <= getWeight4S(pityS[1])) {
 					pityS[1] = 0;
 					getrandom(&rnd, sizeof(long long), 0);
-					return _4StarWpn[rnd % 18];
+					return FourStarWpn[rnd % 18];
 				}
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return _4StarChr[rnd % _4StarMaxIndex[stdPoolVersion]];
+				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
 			}
 			if (rndF <= getWeight4S(pityS[0])) {
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return _4StarChr[rnd % _4StarMaxIndex[stdPoolVersion]];
+				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
 			}
 			pityS[1] = 0;
 			getrandom(&rnd, sizeof(long long), 0);
-			return _4StarWpn[rnd % 18];
+			return FourStarWpn[rnd % 18];
 		case WPN:
 			if (!getRateUp[0] || !do5050) {
 				getrandom(&rnd, sizeof(long long), 0);
@@ -862,7 +1202,7 @@ static unsigned int doAPull(unsigned int banner, unsigned int stdPoolVersion, un
 				getRateUp[0] = 0;
 				pityS[1] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return _4StarWpnUp[rnd % 5];
+				return FourStarWpnUp[bannerIndex][rnd % 5];
 			}
 			*isRateUp = 0;
 			getRateUp[0] = 1;
@@ -871,20 +1211,20 @@ static unsigned int doAPull(unsigned int banner, unsigned int stdPoolVersion, un
 				if (rndF <= getWeight4SW(pityS[1])) {
 					pityS[1] = 0;
 					getrandom(&rnd, sizeof(long long), 0);
-					return _4StarWpn[rnd % 18];
+					return FourStarWpn[rnd % 18];
 				}
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return _4StarChr[rnd % _4StarMaxIndex[stdPoolVersion]];
+				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
 			}
 			if (rndF <= getWeight4SW(pityS[0])) {
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return _4StarChr[rnd % _4StarMaxIndex[stdPoolVersion]];
+				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
 			}
 			pityS[1] = 0;
 			getrandom(&rnd, sizeof(long long), 0);
-			return _4StarWpn[rnd % 18];
+			return FourStarWpn[rnd % 18];
 		case NOVICE:
 			*isRateUp = 0;
 			// Novice banner does not use the rate-up function
@@ -894,7 +1234,7 @@ static unsigned int doAPull(unsigned int banner, unsigned int stdPoolVersion, un
 			pityS[1] = 0;
 			rndF = rndFloat();
 			getrandom(&rnd, sizeof(long long), 0);
-			return _4StarChr[rnd % _4StarMaxIndex[stdPoolVersion]];
+			return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
 		case STD_CHR:
 		default:
 			// Standard banner does not use the rate-up function
@@ -905,20 +1245,20 @@ static unsigned int doAPull(unsigned int banner, unsigned int stdPoolVersion, un
 				if (rndF <= getWeight4S(pityS[1])) {
 					pityS[1] = 0;
 					getrandom(&rnd, sizeof(long long), 0);
-					return _4StarWpn[rnd % 18];
+					return FourStarWpn[rnd % 18];
 				}
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return _4StarChr[rnd % _4StarMaxIndex[stdPoolVersion]];
+				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
 			}
 			if (rndF <= getWeight4S(pityS[0])) {
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return _4StarChr[rnd % _4StarMaxIndex[stdPoolVersion]];
+				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
 			}
 			pityS[1] = 0;
 			getrandom(&rnd, sizeof(long long), 0);
-			return _4StarWpn[rnd % 18];
+			return FourStarWpn[rnd % 18];
 		case STD_WPN:
 			// Standard banner does not use the rate-up function
 			*isRateUp = 0;
@@ -928,27 +1268,27 @@ static unsigned int doAPull(unsigned int banner, unsigned int stdPoolVersion, un
 				if (rndF <= getWeight4SW(pityS[1])) {
 					pityS[1] = 0;
 					getrandom(&rnd, sizeof(long long), 0);
-					return _4StarWpn[rnd % 18];
+					return FourStarWpn[rnd % 18];
 				}
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return _4StarChr[rnd % _4StarMaxIndex[stdPoolVersion]];
+				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
 			}
 			if (rndF <= getWeight4SW(pityS[0])) {
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return _4StarChr[rnd % _4StarMaxIndex[stdPoolVersion]];
+				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
 			}
 			pityS[1] = 0;
 			getrandom(&rnd, sizeof(long long), 0);
-			return _4StarWpn[rnd % 18];
+			return FourStarWpn[rnd % 18];
 		}
 	}
 	else {
 		*isRateUp = 0;
 		*rare = 3;
 		getrandom(&rnd, sizeof(long long), 0);
-		return _3Star[rnd % 13];
+		return ThreeStar[rnd % 13];
 	}
 }
 
@@ -979,7 +1319,7 @@ static void usage() {
 	ver();
 	printf(
 		"\nUsage:\n"
-		"\t-b,--banner            Choose a banner type. Valid banners:\n"
+		"\t-b, --banner           Choose a banner type. Valid banners:\n"
 		"\t                       \t"
 	);
 	for (i = 0; i < WISH_CNT; i++) {
@@ -987,6 +1327,9 @@ static void usage() {
 	}
 	printf("\n"
 		"\t                       \t(Required argument)\n"
+		"\t-B, --<todo>           Choose a specific banner according to the version\n"
+		"\t                       \tit appeared in. Format is as follows:\n"
+		"\t                       \t<major>.<minor>.<phase>\n"
 		"\t-d, --details          Shows the pool of avaliable items and then exits.\n"
 		"\t-p, --pulls            Specify the number of pulls to perform at once.\n"
 		"\t-4, --pity4            Specify initial 4★ pity.\n"
@@ -1062,6 +1405,7 @@ static const opt_t long_opts[] = {
 	{"version", no_argument, 0, 'v'},
 	{"help", no_argument, 0, 'h'},
 	{"usage", no_argument, 0, 5},
+	// {"", required_argument, 0, 'B'},
 	{NULL, 0, 0, 0},
 };
 
@@ -1077,16 +1421,19 @@ int main(int argc, char** argv) {
 	unsigned int pulls = 10;
 	unsigned int noviceCnt = 0;
 	unsigned int detailsRequested = 0;
+	int epitomizedPathIndex = -1;
 	int c = 0;
 	long long n = 0;
 	int v[4] = {-1, -1, 0, 0x42};
+	int b[5] = {-1, -1, -1, 0, 0x411};
 	char* p = NULL;
 	while (1) {
-		c = getopt_long(argc, argv, "4:5:LNSV:b:c:de:f:ghlnsp:v", long_opts, NULL);
+		c = getopt_long(argc, argv, "4:5:B:LNSV:b:c:de:f:ghlnsp:v", long_opts, NULL);
 		if (c == -1) break;
 		switch (c) {
 		case '4':
 			n = strtoull(optarg, &p, 0);
+#ifndef DEBUG
 			if (n < 0) {
 				fprintf(stderr, "4★ pity cannot be negative.\n");
 				return -1;
@@ -1095,6 +1442,7 @@ int main(int argc, char** argv) {
 				fprintf(stderr, "4★ pity cannot be more than 11.\n");
 				return -1;
 			}
+#endif
 			if ((unsigned long) optarg == (unsigned long) p) {
 				fprintf(stderr, "4★ pity must be numeric.\n");
 				return -1;
@@ -1103,6 +1451,7 @@ int main(int argc, char** argv) {
 			break;
 		case '5':
 			n = strtoull(optarg, &p, 0);
+#ifndef DEBUG
 			if (n < 0) {
 				fprintf(stderr, "5★ pity cannot be negative.\n");
 				return -1;
@@ -1111,11 +1460,40 @@ int main(int argc, char** argv) {
 				fprintf(stderr, "5★ pity cannot be more than 90.\n");
 				return -1;
 			}
+#endif
 			if ((unsigned long) optarg == (unsigned long) p) {
 				fprintf(stderr, "5★ pity must be numeric.\n");
 				return -1;
 			}
 			pity[1] = n;
+			break;
+		case 'B':
+			n = sscanf(optarg, "%i.%i.%i", &b[0], &b[1], &b[2]);
+			if (n == EOF || n == 0) {
+				fprintf(stderr, "Unable to parse banner version, using %d.%d.%d\n", b[4] >> 8, (b[4] >> 4) & 0xf, b[4] & 0xf);
+			}
+			b[3] = 1;
+			if (n == 2) {
+				if (b[0] == (b[4] >> 8) && b[1] == ((b[4] >> 4) & 0xf)) {
+					b[2] = b[4] & 0xf;
+				}
+				else b[2] = 1;
+				fprintf(stderr, "Did not get banner phase, using %d.%d.%d\n", b[0], b[1], b[2]);
+			}
+			else if (n == 1) {
+				b[1] = (b[4] >> 4) & 0xf;
+				if (b[0] == (b[4] >> 8)) {
+					b[2] = b[4] & 0xf;
+				}
+				else b[2] = 1;
+				fprintf(stderr, "Only got banner major version, using %d.0.%d\n", b[0], b[2]);
+			}
+#ifndef DEBUG
+			if (b[2] > ((b[0] == 1 && b[1] == 3) ? 4 : 2) || b[2] < 1) {
+				fprintf(stderr, "Invalid banner phase %d (only 1%s accepted)\n", b[2], (b[0] == 1 && b[1] == 3) ? "-4" : " or 2");
+				return -1;
+			}
+#endif
 			break;
 		case 'L':
 			getRateUp[1] = 1;
@@ -1129,7 +1507,7 @@ int main(int argc, char** argv) {
 		case 'V':
 			n = sscanf(optarg, "%i.%i", &v[0], &v[1]);
 			if (n == EOF || n == 0) {
-				fprintf(stderr, "Unable to parse pool version, using %d.%d\n", v[3] >> 4, v[3] & 15);
+				fprintf(stderr, "Unable to parse pool version, using %d.%d\n", v[3] >> 4, v[3] & 0xf);
 			}
 			v[2] = 1;
 			if (n == 1) {
@@ -1154,6 +1532,7 @@ int main(int argc, char** argv) {
 			break;
 		case 'c':
 			n = strtoull(optarg, &p, 0);
+#ifndef DEBUG
 			if (n < 0) {
 				fprintf(stderr, "Wish count cannot be negative.\n");
 				return -1;
@@ -1161,6 +1540,7 @@ int main(int argc, char** argv) {
 			if (n > 8) {
 				n = 8;
 			}
+#endif
 			if ((unsigned long) optarg == (unsigned long) p) {
 				fprintf(stderr, "Wish count must be numeric.\n");
 				return -1;
@@ -1172,18 +1552,21 @@ int main(int argc, char** argv) {
 			break;
 		case 'e':
 			n = strtoull(optarg, &p, 0);
+#ifndef DEBUG
 			if (n < 1 && n > 2) {
 				fprintf(stderr, "Epitomized Path index is invalid.\n)");
 				return -1;
 			}
+#endif
 			if ((unsigned long) optarg == (unsigned long) p) {
 				fprintf(stderr, "Epitomized Path index must be numeric.\n");
 				return -1;
 			}
-			epitomizedPath = _5StarWpnUp[n];
+			epitomizedPathIndex = n;
 			break;
 		case 'f':
 			n = strtoull(optarg, &p, 0);
+#ifndef DEBUG
 			if (n < 0) {
 				fprintf(stderr, "Fate Points cannot be negative.\n");
 				return -1;
@@ -1192,6 +1575,7 @@ int main(int argc, char** argv) {
 				fprintf(stderr, "Fate Points cannot be more than 2.\n");
 				return -1;
 			}
+#endif
 			if ((unsigned long) optarg == (unsigned long) p) {
 				fprintf(stderr, "Fate Points must be numeric.\n");
 				return -1;
@@ -1224,10 +1608,12 @@ int main(int argc, char** argv) {
 			break;
 		case 1 ... 4:
 			n = strtoull(optarg, &p, 0);
+#ifndef DEBUG
 			if (n < 0) {
 				fprintf(stderr, "Stable pity cannot be negative.\n");
 				return -1;
 			}
+#endif
 			if ((unsigned long) optarg == (unsigned long) p) {
 				fprintf(stderr, "Stable pity must be numeric.\n");
 				return -1;
@@ -1266,6 +1652,7 @@ int main(int argc, char** argv) {
 		fprintf(stderr, "Pick one with the -b option.\n");
 		return -1;
 	}
+#ifndef DEBUG
 	if (banner == WPN || banner == STD_WPN) {
 		if (pity[0] >= 10) {
 			fprintf(stderr, "4★ pity cannot be more than 10 for weapon banners.\n");
@@ -1276,32 +1663,104 @@ int main(int argc, char** argv) {
 			return -1;
 		}
 	}
+#endif
+	if (b[3]) {
+#ifndef DEBUG
+		b[4] = (((b[0] & 0xf) << 8) | ((b[1] & 0xf) << 4) | (b[2] & 0xf));
+#else
+		b[4] = ((b[0] << 8) | (b[1] << 4) | b[2]);
+#endif
+	}
+	b[0] = b[4] & 0xf;
+	b[0]--;
+	b[1] = b[4] >> 4;
+#ifndef DEBUG
+	if (b[1] > 0x42) b[1] = 0x42;
+#endif
+	if (b[1] >= 0x40) {
+		b[1] -= 0x7;
+	}
+	if (b[1] >= 0x30) {
+		b[1] -= 0x7;
+	}
+	if (b[1] >= 0x20) {
+		b[1] -= 0x9;
+	}
+	if (b[1] >= 0x14) {
+		b[1] += 0x1;
+	}
+	b[1] -= 0x10;
+#ifndef DEBUG
+	if (b[1] > 28) {
+		b[1] = 28;
+	}
+#endif
+	b[0] += (b[1] << 1);
+	if (banner == WPN && epitomizedPathIndex > 0) {
+		epitomizedPathIndex--;
+#ifndef DEBUG
+		epitomizedPathIndex &= 1;
+#endif
+		epitomizedPath = FiveStarWpnUp[b[0]][epitomizedPathIndex];
+	}
+	if (v[2]) {
+#ifndef DEBUG
+		v[3] = ((v[0] & 0xf) << 4 | (v[1] & 0xf));
+#else
+		v[3] = (v[0] << 4 | v[1]);
+#endif
+	}
+	else {
+		v[3] = b[4] >> 4;
+	}
+	v[0] = v[3];
+#ifndef DEBUG
+	if (banner != NOVICE) {
+#else
+	if (1) {
+#endif
+#ifndef DEBUG
+		if (v[0] > 0x42) v[0] = 0x42;
+#endif
+		if (v[0] >= 0x40) {
+			v[0] -= 0x7;
+		}
+		if (v[0] >= 0x30) {
+			v[0] -= 0x7;
+		}
+		if (v[0] >= 0x20) {
+			v[0] -= 0x9;
+		}
+		v[0] -= 0xf;
+#ifndef DEBUG
+		if ((int) v[0] < 1) v[0] = 1;
+		if (v[0] > 29) v[0] = 29;
+#endif
+	}
+	else v[0] = 0;
+#ifndef DEBUG
+	if (FiveStarChrUp[b[0]][1] == 0xffff && banner == CHAR2) {
+		fprintf(stderr, "Warning: Character Event Banner-2 didn't run during version %d.%d phase %d, switching to main Character Event Banner\n", (b[4] >> 8 & 0xf), (b[4] >> 4) & 0xf, b[4] & 0xf);
+		banner = CHAR1;
+	}
+#endif
 	if (detailsRequested) {
-		printf("Details for the %s banner:", banners[banner][1]);
+		printf("Details for the %s banner", banners[banner][1]);
+		if ((banner == CHAR1 || banner == CHAR2 || banner == WPN) && b[3]) {
+			printf(" from v%d.%d phase %d", b[4] >> 8, (b[4] >> 4) & 0xf, b[4] & 0xf);
+		}
+		printf(":");
 		if (banner != NOVICE && v[2]) {
-			v[3] = ((v[0] & 15) << 4 | (v[1] & 15));
-			printf(" (v%d.%d standard pool)", v[0] & 15, v[1] & 15);
+			printf(" (v%d.%d standard pool)", v[3] >> 4, v[3] & 0xf);
 		}
 		printf("\n\n");
-		if (banner != NOVICE) {
-			if (v[3] > 0x42) v[3] = 0x42;
-			if (v[3] >= 0x40) {
-				v[3] -= 0x7;
-			}
-			if (v[3] >= 0x30) {
-				v[3] -= 0x7;
-			}
-			if (v[3] >= 0x20) {
-				v[3] -= 0x9;
-			}
-			v[3] -= 0xf;
-			if ((int) v[3] < 1) v[3] = 1;
-		}
-		else v[3] = 0;
 		if (banner == CHAR1 || banner == CHAR2) {
-			item = _5StarChrUp[banner - CHAR1];
-			if (chrList[item - 1000] != NULL) {
+			item = FiveStarChrUp[b[0]][banner - CHAR1];
+			if (item <= 1000 + MAX_CHARS && item >= 1000 && chrList[item - 1000] != NULL) {
 				snprintf(buf, 1024, "\e[33;1m%s\e[39;0m (id %u)", chrList[item - 1000], item);
+			}
+			else if (getWeapon(item) != NULL) {
+				snprintf(buf, 1024, "\e[33;1m%s\e[39;0m (id %u)", getWeapon(item), item);
 			}
 			else {
 				snprintf(buf, 1024, "id \e[33;1m%u\e[39;0m", item);
@@ -1309,9 +1768,12 @@ int main(int argc, char** argv) {
 			printf("Rate-Up 5★ Character:\n\t%s\n\n", buf);
 			printf("Rate-Up 4★ Characters:\n");
 			for (n = 0; n < 3; n++) {
-				item = _4StarChrUp[n];
-				if (chrList[item - 1000] != NULL) {
+				item = FourStarChrUp[b[0]][n];
+				if (item <= 1000 + MAX_CHARS && item >= 1000 && chrList[item - 1000] != NULL) {
 					snprintf(buf, 1024, "\e[35;1m%s\e[39;0m (id %u)", chrList[item - 1000], item);
+				}
+				else if (getWeapon(item) != NULL) {
+					snprintf(buf, 1024, "\e[35;1m%s\e[39;0m (id %u)", getWeapon(item), item);
 				}
 				else {
 					snprintf(buf, 1024, "id \e[35;1m%u\e[39;0m", item);
@@ -1323,8 +1785,11 @@ int main(int argc, char** argv) {
 		else if (banner == WPN) {
 			printf("Rate-Up 5★ Weapons:\n");
 			for (n = 0; n < 2; n++) {
-				item = _5StarWpnUp[n];
-				if (getWeapon(item) != NULL) {
+				item = FiveStarWpnUp[b[0]][n];
+				if (item <= 1000 + MAX_CHARS && item >= 1000 && chrList[item - 1000] != NULL) {
+					snprintf(buf, 1024, "\e[33;1m%s\e[39;0m (id %u)", chrList[item - 1000], item);
+				}
+				else if (getWeapon(item) != NULL) {
 					snprintf(buf, 1024, "\e[33;1m%s\e[39;0m (id %u)", getWeapon(item), item);
 				}
 				else {
@@ -1335,8 +1800,11 @@ int main(int argc, char** argv) {
 			printf("(Chart a course by passing -e x, where x is the desired index listed above.)\n\n");
 			printf("Rate-Up 4★ Weapons:\n");
 			for (n = 0; n < 5; n++) {
-				item = _4StarWpnUp[n];
-				if (getWeapon(item) != NULL) {
+				item = FourStarWpnUp[b[0]][n];
+				if (item <= 1000 + MAX_CHARS && item >= 1000 && chrList[item - 1000] != NULL) {
+					snprintf(buf, 1024, "\e[35;1m%s\e[39;0m (id %u)", chrList[item - 1000], item);
+				}
+				else if (getWeapon(item) != NULL) {
 					snprintf(buf, 1024, "\e[35;1m%s\e[39;0m (id %u)", getWeapon(item), item);
 				}
 				else {
@@ -1348,13 +1816,16 @@ int main(int argc, char** argv) {
 		}
 		if (banner != WPN && banner != STD_WPN) {
 			printf("5★ Character Pool:\n");
-			for (n = 0; n < _5StarMaxIndex[v[3]]; n++) {
-				item = _5StarChr[n];
-				if (chrList[item - 1000] != NULL) {
+			for (n = 0; n < FiveStarMaxIndex[v[0]]; n++) {
+				item = FiveStarChr[n];
+				if (item <= 1000 + MAX_CHARS && item >= 1000 && chrList[item - 1000] != NULL) {
 					snprintf(buf, 1024, "\e[33%sm%s\e[39;0m (id %u)", shouldBold(5, banner, 0) ? ";1" : ";22", chrList[item - 1000], item);
 				}
+				else if (getWeapon(item) != NULL) {
+					snprintf(buf, 1024, "\e[33%sm%s\e[39;0m (id %u)", shouldBold(5, banner, 0) ? ";1" : ";22", getWeapon(item), item);
+				}
 				else {
-					snprintf(buf, 1024, "with id \e[33%sm%u\e[39;0m", shouldBold(5, banner, 0) ? ";1" : ";22", item);
+					snprintf(buf, 1024, "id \e[33%sm%u\e[39;0m", shouldBold(5, banner, 0) ? ";1" : ";22", item);
 				}
 				printf("\t%s\n", buf);
 			}
@@ -1363,25 +1834,31 @@ int main(int argc, char** argv) {
 		if (banner != CHAR1 && banner != CHAR2 && banner != NOVICE) {
 			printf("5★ Weapon Pool:\n");
 			for (n = 0; n < 10; n++) {
-				item = _5StarWpn[n];
-				if (getWeapon(item) != NULL) {
+				item = FiveStarWpn[n];
+				if (item <= 1000 + MAX_CHARS && item >= 1000 && chrList[item - 1000] != NULL) {
+					snprintf(buf, 1024, "\e[33%sm%s\e[39;0m (id %u)", shouldBold(5, banner, 0) ? ";1" : ";22", chrList[item - 1000], item);
+				}
+				else if (getWeapon(item) != NULL) {
 					snprintf(buf, 1024, "\e[33%sm%s\e[39;0m (id %u)", shouldBold(5, banner, 0) ? ";1" : ";22", getWeapon(item), item);
 				}
 				else {
-					snprintf(buf, 1024, "with id \e[33%sm%u\e[39;0m", shouldBold(5, banner, 0) ? ";1" : ";22", item);
+					snprintf(buf, 1024, "id \e[33%sm%u\e[39;0m", shouldBold(5, banner, 0) ? ";1" : ";22", item);
 				}
 				printf("\t%s\n", buf);
 			}
 			printf("\n");
 		}
 		printf("4★ Character Pool:\n");
-		for (n = 0; n < _4StarMaxIndex[v[3]]; n++) {
-			item = _4StarChr[n];
-			if (chrList[item - 1000] != NULL) {
+		for (n = 0; n < FourStarMaxIndex[v[0]]; n++) {
+			item = FourStarChr[n];
+			if (item <= 1000 + MAX_CHARS && item >= 1000 && chrList[item - 1000] != NULL) {
 				snprintf(buf, 1024, "\e[35%sm%s\e[39;0m (id %u)", shouldBold(4, banner, 0) ? ";1" : ";22", chrList[item - 1000], item);
 			}
+			else if (getWeapon(item) != NULL) {
+				snprintf(buf, 1024, "\e[35%sm%s\e[39;0m (id %u)", shouldBold(4, banner, 0) ? ";1" : ";22", getWeapon(item), item);
+			}
 			else {
-				snprintf(buf, 1024, "with id \e[35%sm%u\e[39;0m", shouldBold(4, banner, 0) ? ";1" : ";22", item);
+				snprintf(buf, 1024, "id \e[35%sm%u\e[39;0m", shouldBold(4, banner, 0) ? ";1" : ";22", item);
 			}
 			printf("\t%s\n", buf);
 		}
@@ -1389,12 +1866,15 @@ int main(int argc, char** argv) {
 		if (banner != NOVICE) {
 			printf("4★ Weapon Pool:\n");
 			for (n = 0; n < 18; n++) {
-				item = _4StarWpn[n];
-				if (getWeapon(item) != NULL) {
+				item = FourStarWpn[n];
+				if (item <= 1000 + MAX_CHARS && item >= 1000 && chrList[item - 1000] != NULL) {
+					snprintf(buf, 1024, "\e[35%sm%s\e[39;0m (id %u)", shouldBold(4, banner, 0) ? ";1" : ";22", chrList[item - 1000], item);
+				}
+				else if (getWeapon(item) != NULL) {
 					snprintf(buf, 1024, "\e[35%sm%s\e[39;0m (id %u)", shouldBold(4, banner, 0) ? ";1" : ";22", getWeapon(item), item);
 				}
 				else {
-					snprintf(buf, 1024, "with id \e[35%sm%u\e[39;0m", shouldBold(4, banner, 0) ? ";1" : ";22", item);
+					snprintf(buf, 1024, "id \e[35%sm%u\e[39;0m", shouldBold(4, banner, 0) ? ";1" : ";22", item);
 				}
 				printf("\t%s\n", buf);
 			}
@@ -1402,21 +1882,23 @@ int main(int argc, char** argv) {
 		}
 		printf("3★ Weapon Pool:\n");
 		for (n = 0; n < 13; n++) {
-			item = _3Star[n];
+			item = ThreeStar[n];
 			if (getWeapon(item) != NULL) {
 				snprintf(buf, 1024, "\e[34;22m%s\e[39;0m (id %u)", getWeapon(item), item);
 			}
 			else {
-				snprintf(buf, 1024, "with id \e[34;22m%u\e[39;0m", item);
+				snprintf(buf, 1024, "id \e[34;22m%u\e[39;0m", item);
 			}
 			printf("\t%s\n", buf);
 		}
 		return 0;
 	}
 	fprintf(stderr, "Making %u wishes on the %s banner", pulls, banners[banner][1]);
+	if ((banner == CHAR1 || banner == CHAR2 || banner == WPN) && b[3]) {
+		fprintf(stderr, " from v%d.%d phase %d", b[4] >> 8, (b[4] >> 4) & 0xf, b[4] & 0xf);
+	}
 	if (banner != NOVICE && v[2]) {
-		v[3] = ((v[0] & 15) << 4 | (v[1] & 15));
-		fprintf(stderr, " (v%d.%d standard pool)", v[0] & 15, v[1] & 15);
+		fprintf(stderr, " (v%d.%d standard pool)", v[3] >> 4, v[3] & 0xf);
 	}
 	fprintf(stderr, "\n\n");
 	for (i = 0; i < pulls; i++) {
@@ -1430,7 +1912,7 @@ int main(int argc, char** argv) {
 			pityS[0] = 0;
 			pityS[1] = 0;
 		}
-		else item = doAPull(banner, v[3], &rare, &won5050);
+		else item = doAPull(banner, v[0], b[0], &rare, &won5050);
 		if (item < 0) {
 			fprintf(stderr, "Pull #%u failed (retcode = %d)\n", i + 1, item);
 			break;
