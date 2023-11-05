@@ -1355,7 +1355,7 @@ static void usage() {
 		"\t-g, --noGuarantee      Disable the rate-up mechanism. Only relevant on\n"
 		"\t                       \tthe Character and Weapon Event banners.\n"
 		"\t                       \t(note that Epitomized Path will still work.)\n"
-		"\t-V, --poolVersion      Specify the version from which the standard pool\n"
+		"\t-V, --pool_version     Specify the version from which the standard pool\n"
 		"\t                       \tof items will be drawn from. Not relevant on the\n"
 		"\t                       \tBeginners' banner, which uses a fixed pool.\n"
 		"\nTuning the \"Stable Pity\" Mechanism:\n"
