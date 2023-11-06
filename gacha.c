@@ -15,6 +15,11 @@ Release History:
 		* Extra sanity checks for displaying characters in Wish Details
 		* Check for a valid weapon ID, even on character banners (and vice versa) in Wish Details
 		* Fix getWeapon not returning a valid weapon if its ID is not 1xxxx
+	* v1.1.1 (2023-11-06):
+		* 4.2 Phase 1 Banners and two new swords
+		* Add missing Solar Pearl 4-star catalyst, thus fixing an off-by-one error
+		* Add most test/placeholder weapons (data from https://genshin.honeyhunterworld.com/?lang=EN)
+		* Fix typo on Charlotte's name
 */
 
 #define _GNU_SOURCE
@@ -113,8 +118,8 @@ static const unsigned short FiveStarChrUp[58][2] = {
 	// v4.1 - Fortreess of Meropide & Waterborne Poetry
 	{1087, 1046}, // Neuvillette
 	{1086, 1022}, // Wriothesley
-	// v4.2 - Masquerade of the Guilty (TODO verify Furina's ID)
-	{1088, 1082}, // Furina
+	// v4.2 - Masquerade of the Guilty
+	{1089, 1082}, // Furina
 	{1071, 1066},
 };
 
@@ -202,9 +207,9 @@ static const unsigned short FourStarChrUp[58][3] = {
 	// v4.1 - Fortreess of Meropide & Waterborne Poetry
 	{1025, 1031, 1039},
 	{1068, 1036, 1050},
-	// v4.2 - Masquerade of the Guilty (TODO verify Charolette's ID and the full list of featured characters)
-	{1006, 1015, 1089}, // Charolette
-	{1006, 1015, 1021},
+	// v4.2 - Masquerade of the Guilty
+	{1067, 1024, 1088}, // Charlotte
+	{1006, 1015, 1021}, // TODO Phase 2
 };
 
 static const unsigned short FiveStarWpnUp[58][2] = {
@@ -291,9 +296,9 @@ static const unsigned short FiveStarWpnUp[58][2] = {
 	// v4.1 - Fortreess of Meropide & Waterborne Poetry
 	{14514, 13501}, // Tome of the Eternal Flow
 	{14513, 15503}, // Cashflow Supervision
-	// v4.2 - Masquerade of the Guilty (TODO verify Splendor of Tranquil Waters' ID and the actual rate-up weapons)
+	// v4.2 - Masquerade of the Guilty
 	{11513, 14505}, // Splendor of Tranquil Waters
-	{13511, 11510},
+	{13511, 11510}, // TODO Phase 2 (these weapons were rate-up on Cyno's and Ayato's previous banners)
 };
 
 static const unsigned short FourStarWpnUp[58][5] = {
@@ -380,9 +385,9 @@ static const unsigned short FourStarWpnUp[58][5] = {
 	// v4.1 - Fortreess of Meropide & Waterborne Poetry
 	{11427, 12427, 15412, 13407, 14401}, // The Dockhand's Assistant, Portable Power Saw
 	{15427, 13427, 11401, 12405, 14409}, // Range Gauge, Prospector's Drill
-	// v4.2 - Masquerade of the Guilty (TODO get the full list of rate-up weapons)
-	{11401, 12401, 13401, 14401, 15501},
-	{11401, 12401, 13401, 14401, 15501},
+	// v4.2 - Masquerade of the Guilty
+	{11403, 12402, 13401, 14403, 15402},
+	{11400, 12400, 13400, 14400, 15400}, // TODO Phase 2
 };
 
 // The list of 3-star weapons in the pool.
@@ -432,8 +437,8 @@ static const unsigned short FourStarChr[34] = {
 	1061,
 	// v4.1: Lynette, Freminet
 	1083, 1085,
-	// v4.3: Charolette
-	1089, // TODO: verify once 4.2 releases
+	// v4.3: Charlotte
+	1088,
 };
 
 // The list of 4-star weapons in the pool, along with the rate-up drops.
@@ -559,8 +564,8 @@ static const char* const chrList[MAX_CHARS] = {
 	[85] = "Freminet",
 	[86] = "Wriothesley",
 	[87] = "Neuvillette",
-	[88] = "Furina", // TODO verify once 4.2 releases
-	[89] = "Charolette", // TODO verify once 4.2 releases
+	[88] = "Charlotte",
+	[89] = "Furina",
 };
 
 enum {
@@ -608,21 +613,21 @@ static const char* const ThreeStarSwords[6] = {
 	"Traveler's Handy Sword",
 	"Dark Iron Sword",
 	"Fillet Blade",
-	"Skyrider Sword"
+	"Skyrider Sword",
 };
 static const char* const ThreeStarClaymores[6] = {
 	"Ferrous Shadow",
 	"Bloodtainted Greatsword",
 	"White Iron Greatsword",
-	"Quartz (beta?)",
+	"(Beta) Quartz",
 	"Debate Club",
-	"Skyrider Greatsword"
+	"Skyrider Greatsword",
 };
 static const char* const ThreeStarPolearms[4] = {
 	"White Tassel",
 	"Halberd",
 	"Black Tassel",
-	"Flagstaff"
+	"(Test) The Flagstaff",
 };
 static const char* const ThreeStarCatalysts[6] = {
 	"Magic Guide",
@@ -630,7 +635,7 @@ static const char* const ThreeStarCatalysts[6] = {
 	"Otherworldly Story",
 	"Emerald Orb",
 	"Twin Nephrite",
-	"Amber Bead (beta?)"
+	"(Beta) Amber Bead",
 };
 static const char* const ThreeStarBows[6] = {
 	"Raven Bow",
@@ -638,7 +643,7 @@ static const char* const ThreeStarBows[6] = {
 	"Recurve Bow",
 	"Slingshot",
 	"Messenger",
-	"Ebony Bow (beta?)"
+	"(Beta) Ebony Bow",
 };
 
 static const char* const* const ThreeStarWeapons[6] = {
@@ -650,7 +655,7 @@ static const char* const* const ThreeStarWeapons[6] = {
 	ThreeStarBows,
 };
 
-static const char* const FourStarSwords[27] = {
+static const char* const FourStarSwords[30] = {
 	"Favonius Sword",
 	"The Flute",
 	"Sacrificial Sword",
@@ -659,9 +664,9 @@ static const char* const FourStarSwords[27] = {
 	"Prototype Rancour",
 	"Iron Sting",
 	"Blackcliff Longsword",
-	"Black Sword",
-	"Alley Flash",
-	NULL,
+	"The Black Sword",
+	"The Alley Flash",
+	"(Test) (Dull Blade icon)",
 	"Sword of Descension",
 	"Festering Desire",
 	"Amenoma Kageuchi",
@@ -669,14 +674,16 @@ static const char* const FourStarSwords[27] = {
 	"Kagotsurube Isshin",
 	"Sapwood Blade",
 	"Xiphos' Moonlight",
-	"Prized Isshin Blade (1)",
-	"Prized Isshin Blade (2)",
-	"Prized Isshin Blade (3)",
+	"Prized Isshin Blade", // Final Stage
+	"Prized Isshin Blade (2)", // First Stage
+	"Prized Isshin Blade (3)", // Second Stage
 	"Toukabou Shigure",
 	"Wolf-Fang",
 	"Finale of the Deep",
 	"Fleuve Cendre Ferryman",
 	[26] = "The Dockhand's Assistant",
+	[28] = "Sword of Narzissenkreuz", // Final Stage
+	[29] = "Sword of Narzissenkreuz (2)", // First Stage
 };
 
 static const char* const FourStarClaymores[27] = {
@@ -724,15 +731,16 @@ static const char* const FourStarPolearms[27] = {
 
 static const char* const FourStarCatalysts[27] = {
 	"Favonius Codex",
-	"Widsith",
+	"The Widsith",
 	"Sacrificial Fragments",
 	"Royal Grimoire",
+	"Solar Pearl",
 	"Prototype Amber",
 	"Mappa Mare",
 	"Blackcliff Agate",
 	"Eye of Perception",
 	"Wine and Song",
-	NULL,
+	"(Test) (Apprentice's Notes icon)",
 	"Frostbearer",
 	"Dodoco Tales",
 	"Hakushin Ring",
@@ -741,7 +749,7 @@ static const char* const FourStarCatalysts[27] = {
 	"Fruit of Fulfillment",
 	[23] = "Sacrificial Jade",
 	[24] = "Flowing Purity",
-	[26] = "Ballad of the Boundless Blue", // TODO verify the ID
+	[26] = "Ballad of the Boundless Blue",
 };
 
 static const char* const FourStarBows[27] = {
@@ -753,7 +761,7 @@ static const char* const FourStarBows[27] = {
 	"Prototype Crescent",
 	"Compound Bow",
 	"Blackcliff Warbow",
-	"Viridescent Hunt",
+	"The Viridescent Hunt",
 	"Alley Hunter",
 	"Fading Twilight",
 	"Mitternachts Waltz",
@@ -784,14 +792,14 @@ static const char* const FiveStarSwords[13] = {
 	"Freedom-Sworn",
 	"Summit Shaper",
 	"Primordial Jade Cutter",
-	"Primordial Jade Cutter (2)",
-	"One Side",
-	NULL,
+	"(Test) Primordial Jade Cutter",
+	"(Test) One Side",
+	"(Test) (Dull Blade icon)",
 	"Mistsplitter Reforged",
 	"Haran Geppaku Futsu",
 	"Key of Khaj-Nisut",
 	"Light of Foliar Incision",
-	"Splendor of Tranquil Waters", // TODO verify once 4.2 releases
+	"Splendor of Tranquil Waters",
 };
 
 static const char* const FiveStarClaymores[11] = {
@@ -799,11 +807,11 @@ static const char* const FiveStarClaymores[11] = {
 	"Wolf's Gravestone",
 	"Song of Broken Pines",
 	"The Unforged",
-	"Primordial Jade Greatsword",
-	"Other Side",
+	"(Test) Primordial Jade Greatsword",
+	"(Test) The Other Side",
 	NULL,
-	NULL,
-	NULL,
+	"(Test) (Waster Greatsword icon)",
+	"(Test) (null name and icon)",
 	"Redhorn Stonethresher",
 	"Beacon of the Reed Sea",
 };
@@ -811,10 +819,10 @@ static const char* const FiveStarClaymores[11] = {
 static const char* const FiveStarPolearms[11] = {
 	"Staff of Homa",
 	"Skyward Spine",
-	NULL,
+	"(Test) (Beginner’s Protector icon)",
 	"Vortex Vanquisher",
 	"Primordial Jade Winged-Spear",
-	"Deicide",
+	"(Test) Deicide",
 	"Calamity Queller",
 	NULL,
 	"Engulfing Lightning",
@@ -825,12 +833,12 @@ static const char* const FiveStarPolearms[11] = {
 static const char* const FiveStarCatalysts[14] = {
 	"Skyward Atlas",
 	"Lost Prayer to the Sacred Winds",
-	"Lost Ballade",
+	"(Test) Lost Ballade",
 	"Memory of Dust",
 	"Jadefall's Splendor",
 	"Everlasting Moonglow",
 	NULL,
-	NULL,
+	"(Test) (Apprentice's Notes icon)",
 	"Kagura's Verity",
 	NULL,
 	"A Thousand Floating Dreams",
@@ -843,9 +851,9 @@ static const char* const FiveStarBows[12] = {
 	"Skyward Harp",
 	"Amos' Bow",
 	"Elegy for the End",
-	"Kunwu's Wyrmbane",
-	"Primordial Jade Vista",
-	"Mirror Breaker",
+	"(Test) Kunwu's Wyrmbane",
+	"(Test) Primordial Jade Vista",
+	"(Test) Mirror Breaker",
 	"Polar Star",
 	"Aqua Simulacara",
 	"Thundering Pulse",
@@ -905,13 +913,15 @@ static const char* getWeapon(unsigned int _id) {
 		maxId = 4;
 		break;
 	case 14:
+		maxId = 29;
+		break;
 	case 24:
 	case 34:
-	case 44: // TODO verify max catalyst id
+	case 44:
 	case 54:
 		maxId = 27;
 		break;
-	case 15: // TODO verify once 4.2 releases
+	case 15:
 		maxId = 13;
 		break;
 	case 25:
@@ -1425,7 +1435,7 @@ int main(int argc, char** argv) {
 	int c = 0;
 	long long n = 0;
 	int v[4] = {-1, -1, 0, 0x42};
-	int b[5] = {-1, -1, -1, 0, 0x411};
+	int b[5] = {-1, -1, -1, 0, 0x421};
 	char* p = NULL;
 	while (1) {
 		c = getopt_long(argc, argv, "4:5:B:LNSV:b:c:de:f:ghlnsp:v", long_opts, NULL);
