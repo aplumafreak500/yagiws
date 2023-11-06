@@ -23,6 +23,8 @@ Release History:
 	* v1.2 (202?-??-??):
 		* Split into different files
 		* Consolidate item/weapon funcs into one call
+		* Add -r flag to display or drop the rate-up items only. (The opposite effect is not implemented because that's effectively just the standard banner)
+		* Clarified the meaning of the -g flag.
 */
 
 #define _GNU_SOURCE
@@ -47,7 +49,7 @@ static unsigned char fatePoints;
 static unsigned short epitomizedPath;
 static int doSmooth[2] = {1, 1};
 static int doPity[2] = {1, 1};
-static char do5050 = 1;
+static int do5050 = 1;
 
 static const char* const banners[WISH_CNT][2] = {
 	[CHAR1] = {"char1", "Character Event Wish"},
@@ -152,9 +154,13 @@ static unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerInd
 		pityS[2]++;
 		pityS[3]++;
 	}
-	if (!do5050) {
+	if (do5050 == 0) {
 		getRateUp[0] = 0;
 		getRateUp[1] = 0;
+	}
+	else if (do5050 < 0) {
+		getRateUp[0] = 1;
+		getRateUp[1] = 1;
 	}
 	rndF = rndFloat();
 	if (rndF <= _getWeight(pity[1], 5)) {
@@ -166,7 +172,7 @@ static unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerInd
 			// Character banners don't use the stable function for 5-stars
 			pityS[2] = 0;
 			pityS[3] = 0;
-			if (!getRateUp[1] || !do5050) {
+			if (!getRateUp[1] || do5050 > 0) {
 				getrandom(&rnd, sizeof(long long), 0);
 			}
 			else rnd = 0;
@@ -187,7 +193,7 @@ static unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerInd
 			// Weapon banner does not use the stable function for 5-stars
 			pityS[2] = 0;
 			pityS[3] = 0;
-			if (fatePoints < 2 && (!getRateUp[1] || !do5050)) {
+			if (fatePoints < 2 && (!getRateUp[1] || do5050 > 0)) {
 				getrandom(&rnd, sizeof(long long), 0);
 			}
 			else rnd = 0;
@@ -274,7 +280,7 @@ static unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerInd
 		switch (banner) {
 		case CHAR1:
 		case CHAR2:
-			if (!getRateUp[0] || !do5050) {
+			if (!getRateUp[0] || do5050 > 0) {
 				getrandom(&rnd, sizeof(long long), 0);
 			}
 			else rnd = 0;
@@ -307,7 +313,7 @@ static unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerInd
 			getrandom(&rnd, sizeof(long long), 0);
 			return FourStarWpn[rnd % 18];
 		case WPN:
-			if (!getRateUp[0] || !do5050) {
+			if (!getRateUp[0] || do5050 > 0) {
 				getrandom(&rnd, sizeof(long long), 0);
 			}
 			else rnd = 0;
@@ -459,12 +465,12 @@ static void usage() {
 		"\nAdvanced Usage:\n"
 		"\t-n, --noPity4          Disable 4★ pity.\n"
 		"\t-N, --noPity5          Disable 5★ pity.\n"
-		"\t-g, --noGuarantee      Disable the rate-up mechanism. Only relevant on\n"
-		"\t                       \tthe Character and Weapon Event banners.\n"
-		"\t                       \t(note that Epitomized Path will still work.)\n"
+		"\t-g, --noGuarantee      Disable the rate-up guarantee mechanism. Only relevant on the Character and Weapon Event banners.\n"
+		"\t                       \t(note that Epitomized Path will still work if it is set.)\n"
+		"\t-r, --rateUpOnly       Display (with -d) or drop only rate-up characters. Only relevant on the Character and Weapon Event banners. Implies -g."
 		"\t-V, --pool_version     Specify the version from which the standard pool\n"
-		"\t                       \tof items will be drawn from. Not relevant on the\n"
-		"\t                       \tBeginners' banner, which uses a fixed pool.\n"
+		"\t                       \tof items will be drawn from."
+		"\t                       \tNot relevant on the Beginners' banner, which uses a fixed pool.\n"
 		"\nTuning the \"Stable Pity\" Mechanism:\n"
 		"(the mechanic that prevents too many character or weapon drops in a row)\n"
 		"\t--smooth4c             Specify the number of pulls since receiving a\n"
@@ -513,6 +519,7 @@ static const opt_t long_opts[] = {
 	{"help", no_argument, 0, 'h'},
 	{"usage", no_argument, 0, 5},
 	{"banner_version", required_argument, 0, 'B'},
+	{"rateUpOnly", no_argument, 0, 'r'},
 	{NULL, 0, 0, 0},
 };
 
@@ -535,7 +542,7 @@ int main(int argc, char** argv) {
 	int b[5] = {-1, -1, -1, 0, 0x421};
 	char* p = NULL;
 	while (1) {
-		c = getopt_long(argc, argv, "4:5:B:LNSV:b:c:de:f:ghlnsp:v", long_opts, NULL);
+		c = getopt_long(argc, argv, "4:5:B:LNSV:b:c:de:f:ghlnrsp:v", long_opts, NULL);
 		if (c == -1) break;
 		switch (c) {
 		case '4':
@@ -698,6 +705,9 @@ int main(int argc, char** argv) {
 		case 'n':
 			doPity[0] = 0;
 			break;
+		case 'r':
+			do5050 = -1;
+			break;
 		case 's':
 			doSmooth[0] = 0;
 			break;
@@ -810,6 +820,10 @@ int main(int argc, char** argv) {
 #endif
 		epitomizedPath = FiveStarWpnUp[b[0]][epitomizedPathIndex];
 	}
+	if (!(banner == STD_CHR || banner == STD_WPN) && do5050 < 0) {
+		v[2] = 0;
+		v[3] = 0;
+	}
 	if (v[2]) {
 #ifndef DEBUG
 		v[3] = ((v[0] & 0xf) << 4 | (v[1] & 0xf));
@@ -822,10 +836,13 @@ int main(int argc, char** argv) {
 	}
 	v[0] = v[3];
 #ifndef DEBUG
-	if (banner != NOVICE) {
+	if (banner == NOVICE) {
 #else
-	if (1) {
+	if (0) {
 #endif
+		v[0] = 0;
+	}
+	else {
 #ifndef DEBUG
 		if (v[0] > 0x42) v[0] = 0x42;
 #endif
@@ -844,7 +861,6 @@ int main(int argc, char** argv) {
 		if (v[0] > 29) v[0] = 29;
 #endif
 	}
-	else v[0] = 0;
 #ifndef DEBUG
 	if (FiveStarChrUp[b[0]][1] == 0xffff && banner == CHAR2) {
 		fprintf(stderr, "Warning: Character Event Banner-2 didn't run during version %d.%d phase %d, switching to main Character Event Banner\n", (b[4] >> 8 & 0xf), (b[4] >> 4) & 0xf, b[4] & 0xf);
@@ -909,7 +925,7 @@ int main(int argc, char** argv) {
 			}
 			printf("\n");
 		}
-		if (banner != WPN && banner != STD_WPN) {
+		if (banner != WPN && banner != STD_WPN && do5050 >= 0) {
 			printf("5★ Character Pool:\n");
 			for (n = 0; n < FiveStarMaxIndex[v[0]]; n++) {
 				item = FiveStarChr[n];
@@ -923,7 +939,7 @@ int main(int argc, char** argv) {
 			}
 			printf("\n");
 		}
-		if (banner != CHAR1 && banner != CHAR2 && banner != NOVICE) {
+		if (banner != CHAR1 && banner != CHAR2 && banner != NOVICE  && do5050 >= 0) {
 			printf("5★ Weapon Pool:\n");
 			for (n = 0; n < 10; n++) {
 				item = FiveStarWpn[n];
@@ -937,19 +953,21 @@ int main(int argc, char** argv) {
 			}
 			printf("\n");
 		}
-		printf("4★ Character Pool:\n");
-		for (n = 0; n < FourStarMaxIndex[v[0]]; n++) {
-			item = FourStarChr[n];
-			if (getItem(item) != NULL) {
-				snprintf(buf, 1024, "\e[35%sm%s\e[39;0m (id %u)", shouldBold(4, banner, 0) ? ";1" : ";22", getItem(item), item);
+		if (do5050 >= 0) {
+			printf("4★ Character Pool:\n");
+			for (n = 0; n < FourStarMaxIndex[v[0]]; n++) {
+				item = FourStarChr[n];
+				if (getItem(item) != NULL) {
+					snprintf(buf, 1024, "\e[35%sm%s\e[39;0m (id %u)", shouldBold(4, banner, 0) ? ";1" : ";22", getItem(item), item);
+				}
+				else {
+					snprintf(buf, 1024, "id \e[35%sm%u\e[39;0m", shouldBold(4, banner, 0) ? ";1" : ";22", item);
+				}
+				printf("\t%s\n", buf);
 			}
-			else {
-				snprintf(buf, 1024, "id \e[35%sm%u\e[39;0m", shouldBold(4, banner, 0) ? ";1" : ";22", item);
-			}
-			printf("\t%s\n", buf);
+			printf("\n");
 		}
-		printf("\n");
-		if (banner != NOVICE) {
+		if (banner != NOVICE && do5050 >= 0) {
 			printf("4★ Weapon Pool:\n");
 			for (n = 0; n < 18; n++) {
 				item = FourStarWpn[n];
@@ -963,16 +981,18 @@ int main(int argc, char** argv) {
 			}
 			printf("\n");
 		}
-		printf("3★ Weapon Pool:\n");
-		for (n = 0; n < 13; n++) {
-			item = ThreeStar[n];
-			if (getItem(item) != NULL) {
-				snprintf(buf, 1024, "\e[34;22m%s\e[39;0m (id %u)", getItem(item), item);
+		if (do5050 >= 0) {
+			printf("3★ Weapon Pool:\n");
+			for (n = 0; n < 13; n++) {
+				item = ThreeStar[n];
+				if (getItem(item) != NULL) {
+					snprintf(buf, 1024, "\e[34;22m%s\e[39;0m (id %u)", getItem(item), item);
+				}
+				else {
+					snprintf(buf, 1024, "id \e[34;22m%u\e[39;0m", item);
+				}
+				printf("\t%s\n", buf);
 			}
-			else {
-				snprintf(buf, 1024, "id \e[34;22m%u\e[39;0m", item);
-			}
-			printf("\t%s\n", buf);
 		}
 		return 0;
 	}
@@ -1048,18 +1068,18 @@ int main(int argc, char** argv) {
 		printf("\n5★ pity: %u\n", pity[1]);
 	}
 	else printf("\n");
-	if (do5050 && (banner == CHAR1 || banner == CHAR2 || banner == WPN)) {
+	if (do5050 > 0 && (banner == CHAR1 || banner == CHAR2 || banner == WPN)) {
 		printf("\n4★ guaranteed: %u\n", getRateUp[0] ? 1 : 0);
 		printf("5★ guaranteed: %u\n", getRateUp[1] ? 1 : 0);
 	}
 	if (banner == WPN && epitomizedPath) {
 		printf("Fate Points: %u\n", fatePoints);
 	}
-	if (doSmooth[0] && banner != NOVICE) {
+	if (do5050 >= 0 && doSmooth[0] && banner != NOVICE) {
 		printf("\n4★ stable val (characters): %u\n", pityS[0]);
 		printf("4★ stable val (weapons): %u", pityS[1]);
 	}
-	if (doSmooth[1] && (banner == STD_CHR || banner == STD_WPN)) {
+	if (do5050 >= 0 && doSmooth[1] && (banner == STD_CHR || banner == STD_WPN)) {
 		printf("\n5★ stable val (characters): %u\n", pityS[2]);
 		printf("5★ stable val (weapons): %u\n", pityS[3]);
 	}
