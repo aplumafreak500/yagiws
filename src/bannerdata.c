@@ -1,3 +1,11 @@
+/* SPDX-License-Identifier: MPL-2.0 */
+/* This file is part of Yet Another Genshin Impact Wish Simulator */
+/* ©2023 Alex Pensinger (ArcticLuma113) */
+/* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
+
+#include "config.h"
+#include "gacha.h"
+
 const unsigned short FourStarChrUp[58][3] = {
 	// v1.0 - Launch
 	{1023, 1031, 1014}, // Xiangling, Fischl, Barbara

@@ -1,0 +1,25 @@
+* v1.0 (2023-10-20):
+	* Initial release
+
+* v1.0.1 (2023-11-04):
+	* Add 4.1 weapons and initial support for 4.2
+	* Fix getWeight4SW using smooth weight even when smooth function is disabled
+
+* v1.1 (2023-11-05):
+	* Add support for multiple banners. Choose one with the -B switch.
+	* Debug mode that disables most sanity checks. (Beware of segfaults!)
+	* Extra sanity checks for displaying characters in Wish Details
+	* Check for a valid weapon ID, even on character banners (and vice versa) in Wish Details
+	* Fix getWeapon not returning a valid weapon if its ID is not 1xxxx
+
+* v1.1.1 (2023-11-06):
+	* 4.2 Phase 1 Banners and two new swords
+	* Add missing Solar Pearl 4-star catalyst, thus fixing an off-by-one error
+	* Add most test/placeholder weapons (data from https://genshin.honeyhunterworld.com/?lang=EN)
+	* Fix typo on Charlotte's name
+
+* v1.2 (202?-??-??):
+	* Split into different files and add Autotools support
+	* Consolidate item/weapon funcs into one call
+	* Add -r flag to display or drop the rate-up items only. (The opposite effect is not implemented because that's effectively just the standard banner)
+	* Clarified the meaning of the -g flag.
