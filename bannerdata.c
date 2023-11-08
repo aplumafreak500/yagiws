@@ -356,7 +356,9 @@ const unsigned short FiveStarWpnUp[58][2] = {
 };
 
 // The list of 4-star characters in the pool, used together with the rate-up drops.
-const unsigned short FourStarChr[34] = {
+const unsigned short FourStarChr[37] = {
+	// v1.0 standard pool: Lisa, Kayea, Amber (standard banner only)
+	1006, 1015, 1021,
 	// v1.0 standard pool: Barbara, Razor, Xiangling, Beidou, Xingqiu, Ningguang, Fischl, Bennett, Noelle, Chongyun, Sucrose
 	1014, 1020, 1023, 1024, 1025, 1027, 1031, 1032, 1036, 1043,
 	// Noelle (listed as last of 1.0 chars due to novice banner)

@@ -25,6 +25,7 @@ Release History:
 		* Consolidate item/weapon funcs into one call
 		* Add -r flag to display or drop the rate-up items only. (The opposite effect is not implemented because that's effectively just the standard banner)
 		* Clarified the meaning of the -g flag.
+		* Add Amber, Kayea, and Lisa into the standard banner pool
 */
 
 #define _GNU_SOURCE
@@ -302,12 +303,12 @@ static unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerInd
 				}
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
+				return FourStarChr[(rnd % FourStarMaxIndex[stdPoolIndex]) + 3];
 			}
 			if (rndF <= getWeight4S(pityS[0])) {
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
+				return FourStarChr[(rnd % FourStarMaxIndex[stdPoolIndex]) + 3];
 			}
 			pityS[1] = 0;
 			getrandom(&rnd, sizeof(long long), 0);
@@ -335,12 +336,12 @@ static unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerInd
 				}
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
+				return FourStarChr[(rnd % FourStarMaxIndex[stdPoolIndex]) + 3];
 			}
 			if (rndF <= getWeight4SW(pityS[0])) {
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
+				return FourStarChr[(rnd % FourStarMaxIndex[stdPoolIndex]) + 3];
 			}
 			pityS[1] = 0;
 			getrandom(&rnd, sizeof(long long), 0);
@@ -354,7 +355,7 @@ static unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerInd
 			pityS[1] = 0;
 			rndF = rndFloat();
 			getrandom(&rnd, sizeof(long long), 0);
-			return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
+			return FourStarChr[(rnd % FourStarMaxIndex[stdPoolIndex]) + 3];
 		case STD_CHR:
 		default:
 			// Standard banner does not use the rate-up function
@@ -369,12 +370,12 @@ static unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerInd
 				}
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
+				return FourStarChr[rnd % (FourStarMaxIndex[stdPoolIndex] + 3)];
 			}
 			if (rndF <= getWeight4S(pityS[0])) {
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
+				return FourStarChr[rnd % (FourStarMaxIndex[stdPoolIndex] + 3)];
 			}
 			pityS[1] = 0;
 			getrandom(&rnd, sizeof(long long), 0);
@@ -392,12 +393,12 @@ static unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerInd
 				}
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
+				return FourStarChr[rnd % (FourStarMaxIndex[stdPoolIndex] + 3)];
 			}
 			if (rndF <= getWeight4SW(pityS[0])) {
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
+				return FourStarChr[rnd % (FourStarMaxIndex[stdPoolIndex] + 3)];
 			}
 			pityS[1] = 0;
 			getrandom(&rnd, sizeof(long long), 0);
@@ -955,7 +956,7 @@ int main(int argc, char** argv) {
 		}
 		if (do5050 >= 0) {
 			printf("4★ Character Pool:\n");
-			for (n = 0; n < FourStarMaxIndex[v[0]]; n++) {
+			for (n = (banner == STD_CHR || banner == STD_WPN) ? 0 : 3; n < FourStarMaxIndex[v[0]] + 3; n++) {
 				item = FourStarChr[n];
 				if (getItem(item) != NULL) {
 					snprintf(buf, 1024, "\e[35%sm%s\e[39;0m (id %u)", shouldBold(4, banner, 0) ? ";1" : ";22", getItem(item), item);
