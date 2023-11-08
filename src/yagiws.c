@@ -561,7 +561,7 @@ int main(int argc, char** argv) {
 		}
 		if (do5050 >= 0) {
 			printf("4★ Character Pool:\n");
-			for (n = 0; n < FourStarMaxIndex[v[0]]; n++) {
+			for (n = (banner == STD_CHR || banner == STD_WPN) ? 0 : 3; n < FourStarMaxIndex[v[0]] + 3; n++) {
 				item = FourStarChr[n];
 				if (getItem(item) != NULL) {
 					snprintf(buf, 1024, "\e[35%sm%s\e[39;0m (id %u)", shouldBold(4, banner, 0) ? ";1" : ";22", getItem(item), item);

@@ -23,3 +23,4 @@
 	* Consolidate item/weapon funcs into one call
 	* Add -r flag to display or drop the rate-up items only. (The opposite effect is not implemented because that's effectively just the standard banner)
 	* Clarified the meaning of the -g flag.
+	* Add Amber, Kayea, and Lisa into the standard banner pool

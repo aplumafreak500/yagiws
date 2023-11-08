@@ -272,12 +272,12 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 				}
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
+				return FourStarChr[(rnd % FourStarMaxIndex[stdPoolIndex]) + 3];
 			}
 			if (rndF <= getWeight4S(pityS[0])) {
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
+				return FourStarChr[(rnd % FourStarMaxIndex[stdPoolIndex]) + 3];
 			}
 			pityS[1] = 0;
 			getrandom(&rnd, sizeof(long long), 0);
@@ -305,12 +305,12 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 				}
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
+				return FourStarChr[(rnd % FourStarMaxIndex[stdPoolIndex]) + 3];
 			}
 			if (rndF <= getWeight4SW(pityS[0])) {
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
+				return FourStarChr[(rnd % FourStarMaxIndex[stdPoolIndex]) + 3];
 			}
 			pityS[1] = 0;
 			getrandom(&rnd, sizeof(long long), 0);
@@ -324,7 +324,7 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 			pityS[1] = 0;
 			rndF = rndFloat();
 			getrandom(&rnd, sizeof(long long), 0);
-			return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
+			return FourStarChr[(rnd % FourStarMaxIndex[stdPoolIndex]) + 3];
 		case STD_CHR:
 		default:
 			// Standard banner does not use the rate-up function
@@ -339,12 +339,12 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 				}
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
+				return FourStarChr[rnd % (FourStarMaxIndex[stdPoolIndex] + 3)];
 			}
 			if (rndF <= getWeight4S(pityS[0])) {
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
+				return FourStarChr[rnd % (FourStarMaxIndex[stdPoolIndex] + 3)];
 			}
 			pityS[1] = 0;
 			getrandom(&rnd, sizeof(long long), 0);
@@ -362,12 +362,12 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 				}
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
+				return FourStarChr[rnd % (FourStarMaxIndex[stdPoolIndex] + 3)];
 			}
 			if (rndF <= getWeight4SW(pityS[0])) {
 				pityS[0] = 0;
 				getrandom(&rnd, sizeof(long long), 0);
-				return FourStarChr[rnd % FourStarMaxIndex[stdPoolIndex]];
+				return FourStarChr[rnd % (FourStarMaxIndex[stdPoolIndex] + 3)];
 			}
 			pityS[1] = 0;
 			getrandom(&rnd, sizeof(long long), 0);
