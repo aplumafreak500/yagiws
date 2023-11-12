@@ -25,7 +25,11 @@ AC_CHECK_HEADERS(math.h)
 # TODO: Replacement functions/macros, rather than erroring out
 AC_CHECK_FUNC(getrandom, [], [AC_MSG_ERROR([required function getrandom() is not defined])])
 AC_CHECK_FUNC(getopt_long, [], [AC_MSG_ERROR([required function getopt_long() is not defined])])
-AC_CHECK_FUNC(fabsl, [], [AC_MSG_ERROR([required function fabsl() is not defined])])
+AC_CHECK_FUNC(fabsl, [], [
+	AC_CHECK_LIB(m, fabsl, [],
+		[AC_MSG_ERROR([required function fabsl() is not defined])]
+	, [])
+])
 AC_CHECK_FUNC(strtoull, [], [AC_MSG_ERROR([required function strtoull() is not defined])])
 AC_CHECK_FUNC(strcasecmp, [], [AC_MSG_ERROR([required function strcasecmp() is not defined])])
 AC_CHECK_FUNC(sscanf, [], [AC_MSG_ERROR([required function sscanf() is not defined])])
