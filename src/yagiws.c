@@ -273,7 +273,7 @@ int main(int argc, char** argv) {
 		case 'e':
 			n = strtoull(optarg, &p, 0);
 #ifndef DEBUG
-			if (n < 1 && n > 2) {
+			if (n < 1 || n > 2) {
 				fprintf(stderr, "Epitomized Path index is invalid.\n)");
 				return -1;
 			}
