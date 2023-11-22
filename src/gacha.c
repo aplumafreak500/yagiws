@@ -142,7 +142,7 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 			// Character banners don't use the stable function for 5-stars
 			pityS[2] = 0;
 			pityS[3] = 0;
-			if (!getRateUp[1] || do5050 > 0) {
+			if (!getRateUp[1]) {
 				getrandom(&rnd, sizeof(long long), 0);
 			}
 			else rnd = 0;
@@ -163,7 +163,7 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 			// Weapon banner does not use the stable function for 5-stars
 			pityS[2] = 0;
 			pityS[3] = 0;
-			if (fatePoints < 2 && (!getRateUp[1] || do5050 > 0)) {
+			if (fatePoints < 2 && !getRateUp[1]) {
 				getrandom(&rnd, sizeof(long long), 0);
 			}
 			else rnd = 0;
@@ -250,7 +250,7 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 		switch (banner) {
 		case CHAR1:
 		case CHAR2:
-			if (!getRateUp[0] || do5050 > 0) {
+			if (!getRateUp[0]) {
 				getrandom(&rnd, sizeof(long long), 0);
 			}
 			else rnd = 0;
@@ -283,7 +283,7 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 			getrandom(&rnd, sizeof(long long), 0);
 			return FourStarWpn[rnd % 18];
 		case WPN:
-			if (!getRateUp[0] || do5050 > 0) {
+			if (!getRateUp[0]) {
 				getrandom(&rnd, sizeof(long long), 0);
 			}
 			else rnd = 0;
