@@ -13,14 +13,16 @@
 	* Fix getWeapon not returning a valid weapon if its ID is not 1xxxx
 
 * v1.1.1 (2023-11-06):
-	* 4.2 Phase 1 Banners and two new swords
+	* 4.2 Phase 1 banners and two new swords
 	* Add missing Solar Pearl 4-star catalyst, thus fixing an off-by-one error
 	* Add most test/placeholder weapons (data from https://genshin.honeyhunterworld.com/?lang=EN)
 	* Fix typo on Charlotte's name
 
-* v1.2 (202?-??-??):
+* v1.2 (2023-11-25):
 	* Split into different files and add Autotools support
 	* Consolidate item/weapon funcs into one call
+	* Initial support for artifacts
 	* Add -r flag to display or drop the rate-up items only. (The opposite effect is not implemented because that's effectively just the standard banner)
-	* Clarified the meaning of the -g flag.
+	* Clarified the meaning of the -g flag
 	* Add Amber, Kayea, and Lisa into the standard banner pool
+	* 4.2 Phase 2 banners & initial support for 4.3
