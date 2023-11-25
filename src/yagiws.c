@@ -398,7 +398,7 @@ int main(int argc, char** argv) {
 	b[0]--;
 	b[1] = b[4] >> 4;
 #ifndef DEBUG
-	if (b[1] > 0x42) b[1] = 0x42;
+	if (b[1] > 0x43) b[1] = 0x43;
 #endif
 	if (b[1] >= 0x40) {
 		b[1] -= 0x7;
@@ -450,7 +450,7 @@ int main(int argc, char** argv) {
 	}
 	else {
 #ifndef DEBUG
-		if (v[0] > 0x42) v[0] = 0x42;
+		if (v[0] > 0x43) v[0] = 0x43;
 #endif
 		if (v[0] >= 0x40) {
 			v[0] -= 0x7;

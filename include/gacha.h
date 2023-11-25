@@ -16,17 +16,17 @@ enum {
 };
 
 // Banner data
-extern const unsigned short FourStarChrUp[58][3];
-extern const unsigned short FiveStarChrUp[58][2];
-extern const unsigned short FourStarWpnUp[58][5];
-extern const unsigned short FiveStarWpnUp[58][2];
-extern const unsigned short FourStarChr[37];
+extern const unsigned short FourStarChrUp[60][3];
+extern const unsigned short FiveStarChrUp[60][2];
+extern const unsigned short FourStarWpnUp[60][5];
+extern const unsigned short FiveStarWpnUp[60][2];
+extern const unsigned short FourStarChr[38];
 extern const unsigned short FiveStarChr[7];
 extern const unsigned short ThreeStar[13];
 extern const unsigned short FourStarWpn[18];
 extern const unsigned short FiveStarWpn[10];
-extern const unsigned char FourStarMaxIndex[30];
-extern const unsigned char FiveStarMaxIndex[30];
+extern const unsigned char FourStarMaxIndex[31];
+extern const unsigned char FiveStarMaxIndex[31];
 
 // Configuration variables
 extern unsigned char pity[2];

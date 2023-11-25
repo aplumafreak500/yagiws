@@ -135,6 +135,7 @@ static const char* const FourStarClaymores[27] = {
 	"Mailed Flower",
 	[23] = "Talking Stick",
 	[24] = "Tidal Shadow",
+	[25] = "\"Ultimate Overlord's Mega Magic Sword\"",
 	[26] = "Portable Power Saw",
 };
 
@@ -231,7 +232,7 @@ static const char* const FiveStarSwords[13] = {
 	"Splendor of Tranquil Waters",
 };
 
-static const char* const FiveStarClaymores[11] = {
+static const char* const FiveStarClaymores[12] = {
 	"Skyward Pride",
 	"Wolf's Gravestone",
 	"Song of Broken Pines",
@@ -243,6 +244,7 @@ static const char* const FiveStarClaymores[11] = {
 	"(Test) (null name and icon)",
 	"Redhorn Stonethresher",
 	"Beacon of the Reed Sea",
+	"Verdict",
 };
 
 static const char* const FiveStarPolearms[11] = {
@@ -354,14 +356,14 @@ const char* getWeapon(unsigned int _id) {
 		maxId = 13;
 		break;
 	case 25:
+	case 55:
+		maxId = 12;
+		break;
 	case 35:
 		maxId = 11;
 		break;
 	case 45:
 		maxId = 14;
-		break;
-	case 55:
-		maxId = 12;
 		break;
 	}
 	if (id >= maxId) return NULL;

@@ -88,6 +88,8 @@ static const char* const chrList[MAX_CHARS] = {
 	[87] = "Neuvillette",
 	[88] = "Charlotte",
 	[89] = "Furina",
+	[90] = "Chevreuse",
+	[91] = "Navia",
 };
 
 const char* getCharacter(unsigned int id) {

@@ -6,7 +6,7 @@
 #include "config.h"
 #include "gacha.h"
 
-const unsigned short FourStarChrUp[58][3] = {
+const unsigned short FourStarChrUp[60][3] = {
 	// v1.0 - Launch
 	{1023, 1031, 1014}, // Xiangling, Fischl, Barbara
 	{1025, 1034, 1043}, // Xingqiu, Noelle, Sucrose
@@ -90,13 +90,16 @@ const unsigned short FourStarChrUp[58][3] = {
 	// v4.1 - Fortreess of Meropide & Waterborne Poetry
 	{1025, 1031, 1039},
 	{1068, 1036, 1050},
-	// v4.2 - Masquerade of the Guilty
+	// v4.2 - Masquerade of the Guilty & Erinnyes Forest
 	{1067, 1024, 1088}, // Charlotte
-	{1006, 1015, 1021}, // TODO Phase 2
+	{1061, 1065, 1023},
+	// v4.3 - TODO
+	{1006, 1015, 1021},
+	{1090, 1015, 1021}, // Chevreuse
 };
 
 // 0xffff: No second banner
-const unsigned short FiveStarChrUp[58][2] = {
+const unsigned short FiveStarChrUp[60][2] = {
 	// v1.0 - Launch
 	{1022, 0xffff}, // Venti
 	{1029, 0xffff}, // Klee
@@ -180,12 +183,15 @@ const unsigned short FiveStarChrUp[58][2] = {
 	// v4.1 - Fortreess of Meropide & Waterborne Poetry
 	{1087, 1046}, // Neuvillette
 	{1086, 1022}, // Wriothesley
-	// v4.2 - Masquerade of the Guilty
+	// v4.2 - Masquerade of the Guilty & Erinnyes Forest
 	{1089, 1082}, // Furina
 	{1071, 1066},
+	// v4.3 - TODO
+	{1091, 0xffff}, // Navia
+	{1005, 1007},
 };
 
-const unsigned short FourStarWpnUp[58][5] = {
+const unsigned short FourStarWpnUp[60][5] = {
 	// v1.0 - Launch
 	{13407, 11402, 12402, 15402, 14402}, // Favonius Lance, The Flute, The Bell, The Stringless, The Widsith
 	{13401, 11403, 12403, 14403, 15403}, // Dragon's Bane, Sacrificial Sword, Sacrificial Greatsword, Sacrificial Fragments, Sacrificial Bow
@@ -269,12 +275,15 @@ const unsigned short FourStarWpnUp[58][5] = {
 	// v4.1 - Fortreess of Meropide & Waterborne Poetry
 	{11427, 12427, 15412, 13407, 14401}, // The Dockhand's Assistant, Portable Power Saw
 	{15427, 13427, 11401, 12405, 14409}, // Range Gauge, Prospector's Drill
-	// v4.2 - Masquerade of the Guilty
+	// v4.2 - Masquerade of the Guilty & Erinnyes Forest
 	{11403, 12402, 13401, 14403, 15402},
-	{11400, 12400, 13400, 14400, 15400}, // TODO Phase 2
+	{11405, 12401, 13407, 14402, 15401},
+	// v4.3 - TODO
+	{11400, 12400, 13400, 14400, 15400},
+	{11400, 12400, 13400, 14400, 15400},
 };
 
-const unsigned short FiveStarWpnUp[58][2] = {
+const unsigned short FiveStarWpnUp[60][2] = {
 	// v1.0 - Launch
 	{15502, 15501}, // Amos' Bow/Aquila Favonia
 	{14502, 12502}, // Lost Prayer to the Sacred Winds/Wolf's Gravestone
@@ -358,13 +367,16 @@ const unsigned short FiveStarWpnUp[58][2] = {
 	// v4.1 - Fortreess of Meropide & Waterborne Poetry
 	{14514, 13501}, // Tome of the Eternal Flow
 	{14513, 15503}, // Cashflow Supervision
-	// v4.2 - Masquerade of the Guilty
+	// v4.2 - Masquerade of the Guilty & Erinnyes Forest
 	{11513, 14505}, // Splendor of Tranquil Waters
-	{13511, 11510}, // TODO Phase 2 (these weapons were rate-up on Cyno's and Ayato's previous banners)
+	{13511, 11510},
+	// v4.3 - TODO
+	{12512, 10500}, // Verdict
+	{10500, 10500},
 };
 
 // The list of 4-star characters in the pool, used together with the rate-up drops.
-const unsigned short FourStarChr[37] = {
+const unsigned short FourStarChr[38] = {
 	// v1.0 standard pool: Lisa, Kayea, Amber (standard banner only)
 	1006, 1015, 1021,
 	// v1.0 standard pool: Barbara, Razor, Xiangling, Beidou, Xingqiu, Ningguang, Fischl, Bennett, Noelle, Chongyun, Sucrose
@@ -411,6 +423,8 @@ const unsigned short FourStarChr[37] = {
 	1083, 1085,
 	// v4.3: Charlotte
 	1088,
+	// v4.4: Chevreuse
+	1090,
 };
 
 // The list of 5-star characters in the pool, used together with the rate-up drops.
@@ -424,21 +438,21 @@ const unsigned short FiveStarChr[7] = {
 };
 
 // Max indexes into FourStarChr per version (for old banners)
-const unsigned char FourStarMaxIndex[30] = {
+const unsigned char FourStarMaxIndex[31] = {
 	/* Novice */ 10,
 	/* v1.x */ 11, 11, 13, 13, 13, 14, 15,
 	/* v2.x */ 15, 16, 17, 18, 19, 20, 20, 20, 21,
 	/* v3.x */ 22, 24, 25, 26, 27, 28, 29, 30, 31,
-	/* v4.x */ 31, 33, 33, 34,
+	/* v4.x */ 31, 33, 33, 34, 35,
 };
 
 // Max indexes into FiveStarChr per version (for old banners)
-const unsigned char FiveStarMaxIndex[30] = {
+const unsigned char FiveStarMaxIndex[31] = {
 	/* Novice */ 5,
 	/* v1.x */ 5, 5, 5, 5, 5, 5, 5,
 	/* v2.x */ 5, 5, 5, 5, 5, 5, 5, 5, 5,
 	/* v3.x */ 5, 6, 6, 6, 6, 6, 7, 7, 7,
-	/* v4.x */ 7, 7, 7, 7,
+	/* v4.x */ 7, 7, 7, 7, 7,
 };
 
 // The list of 3-star weapons in the pool.
