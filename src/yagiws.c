@@ -152,7 +152,7 @@ int main(int argc, char** argv) {
 	int c = 0;
 	long long n = 0;
 	int v[4] = {-1, -1, 0, 0x42};
-	int b[5] = {-1, -1, -1, 0, 0x421};
+	int b[5] = {-1, -1, -1, 0, 0x422};
 	char* p = NULL;
 	while (1) {
 		c = getopt_long(argc, argv, "4:5:B:LNSV:b:c:de:f:ghlnrsp:v", long_opts, NULL);
