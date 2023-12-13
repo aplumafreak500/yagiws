@@ -421,8 +421,8 @@ int main(int argc, char** argv) {
 	}
 	b[1] -= 0x10;
 #ifndef DEBUG
-	if (b[1] > 28) {
-		b[1] = 28;
+	if (b[1] > 29) {
+		b[1] = 29;
 	}
 #endif
 	b[0] += (b[1] << 1);
@@ -471,7 +471,7 @@ int main(int argc, char** argv) {
 		v[0] -= 0xf;
 #ifndef DEBUG
 		if ((int) v[0] < 1) v[0] = 1;
-		if (v[0] > 29) v[0] = 29;
+		if (v[0] > 30) v[0] = 30;
 #endif
 	}
 #ifndef DEBUG
