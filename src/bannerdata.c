@@ -187,8 +187,8 @@ const unsigned short FiveStarChrUp[60][2] = {
 	{1089, 1082}, // Furina
 	{1071, 1066},
 	// v4.3 - TODO
-	{1091, 0xffff}, // Navia
-	{1005, 1007},
+	{1091, 1002}, // Navia
+	{1052, 1049},
 };
 
 const unsigned short FourStarWpnUp[60][5] = {
