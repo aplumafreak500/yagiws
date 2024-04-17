@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MPL-2.0 */
 /* This file is part of Yet Another Genshin Impact Wish Simulator */
-/* ©2023 Alex Pensinger (ArcticLuma113) */
+/* ©2024 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
 #include <stddef.h>
@@ -27,7 +27,8 @@ const char* const banners[WISH_CNT][2] = {
 	[WPN] = {"weapon", "Weapon Event Wish"},
 	[STD_CHR] = {"std", "Wanderlust Invocation"},
 	[STD_WPN] = {"std_weapon", "Wanderlust Incocation (Weapons)"},
-	[NOVICE] = {"novice", "Beginners' Wish"}
+	[NOVICE] = {"novice", "Beginners' Wish"},
+	[CHRONICLED] = {"chronicle", "Chronicled Wish"}
 };
 
 // TODO: There is a different linear rise for standard prior to reaching soft pity. Figure out what it is or if it even exists.
@@ -102,6 +103,15 @@ static long double getWeight4SW(unsigned int _pity) {
 	return 0.03l + 0.3l * (long double) (_pity - 14);
 }
 
+/*
+TODO: It is currently possible to lose the event-rate chance, but get the rate-up item anyways. This is most prominently apparent in:
+	* 5-stars in the Chronicled Wish;
+	* 4-stars in the Character and Weapon Event Wishes; and
+	* 5-stars in the Character and Weapon Event Wishes, if the rate-up item is also	in the standard pool.
+In the future, this should be handled by either:
+	1) treating this as actually a event-rate win, or
+	2) rerolling.
+*/
 #ifndef DEBUG
 unsigned int doAPull(unsigned int banner, unsigned int stdPoolIndex, unsigned int bannerIndex, unsigned int* rare, unsigned int* isRateUp) {
 #else
@@ -109,6 +119,9 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 #endif
 	unsigned long long rnd;
 	long double rndF;
+	unsigned int maxIdx;
+	unsigned int minIdx;
+	const unsigned short* pool;
 	if (banner >= WISH_CNT) return -1;
 	if (rare == NULL) return -1;
 	if (isRateUp == NULL) return -1;
@@ -194,6 +207,73 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 				getrandom(&rnd, sizeof(long long), 0);
 				return FiveStarWpn[rnd % 10];
 			}
+		case CHRONICLED:
+			// 60 = v4.4 phase 1
+			if (ChroniclePool[bannerIndex - 60] == NULL) {
+				return -1;
+			}
+			pool = ChroniclePool[bannerIndex - 60]->FiveStarPool;
+			minIdx = 0;
+			maxIdx = ChroniclePool[bannerIndex - 60]->FiveStarWeaponCount + ChroniclePool[bannerIndex - 60]->FiveStarCharCount;
+
+			if (epitomizedPath) {
+				// If Chronicled Path is set, behave like a character event banner.
+				// No point to use the stable function in this case.
+				pityS[2] = 0;
+				pityS[3] = 0;
+				if (epitomizedPath >= 10000) {
+					minIdx = ChroniclePool[bannerIndex - 60]->FiveStarCharCount;
+				}
+				else {
+					maxIdx = ChroniclePool[bannerIndex - 60]->FiveStarCharCount;
+				}
+				if (!getRateUp[1]) {
+					getrandom(&rnd, sizeof(long long), 0);
+				}
+				else rnd = 0;
+				if (rnd % 2 == 0) {
+					*isRateUp = 1;
+					getRateUp[1] = 0;
+					fatePoints = 0;
+					return epitomizedPath;
+				}
+				*isRateUp = 0;
+				getRateUp[1] = 1;
+				fatePoints++;
+				getrandom(&rnd, sizeof(long long), 0);
+				return pool[(rnd % (maxIdx - minIdx)) + minIdx];
+			}
+			else {
+				// Else, behave like the standard banner.
+				// Signal that all pulls are rate-up in this case.
+				*isRateUp = 1;
+				getRateUp[1] = 0;
+				fatePoints = 0;
+				rndF = rndFloat();
+				if (pityS[2] <= pityS[3]) {
+					if (rndF <= getWeight5S(pityS[3])) {
+						pityS[3] = 0;
+						minIdx = ChroniclePool[bannerIndex - 60]->FiveStarCharCount;
+
+					}
+					else {
+						pityS[2] = 0;
+						maxIdx = ChroniclePool[bannerIndex - 60]->FiveStarCharCount;
+					}
+				}
+				else {
+					if (rndF <= getWeight5S(pityS[2])) {
+						pityS[2] = 0;
+						maxIdx = ChroniclePool[bannerIndex - 60]->FiveStarCharCount;
+					}
+					else {
+						pityS[3] = 0;
+						minIdx = ChroniclePool[bannerIndex - 60]->FiveStarCharCount;
+					}
+				}
+			}
+			getrandom(&rnd, sizeof(long long), 0);
+			return pool[(rnd % (maxIdx - minIdx)) + minIdx];
 		case NOVICE:
 			// Novice banner does not use the rate-up function
 			*isRateUp = 0;
@@ -315,6 +395,41 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 			pityS[1] = 0;
 			getrandom(&rnd, sizeof(long long), 0);
 			return FourStarWpn[rnd % 18];
+		case CHRONICLED:
+			// 60 = v4.4 phase 1
+			if (ChroniclePool[bannerIndex - 60] == NULL) {
+				return -1;
+			}
+			*isRateUp = 1;
+			getRateUp[0] = 0;
+			pool = ChroniclePool[bannerIndex - 60]->FourStarPool;
+			minIdx = 0;
+			maxIdx = ChroniclePool[bannerIndex - 60]->FourStarWeaponCount + ChroniclePool[bannerIndex - 60]->FourStarCharCount;
+
+			rndF = rndFloat();
+			if (pityS[0] <= pityS[1]) {
+				if (rndF <= getWeight4S(pityS[1])) {
+					pityS[1] = 0;
+					minIdx = ChroniclePool[bannerIndex - 60]->FourStarCharCount;
+
+				}
+				else {
+					pityS[0] = 0;
+					maxIdx = ChroniclePool[bannerIndex - 60]->FourStarCharCount;
+				}
+			}
+			else {
+				if (rndF <= getWeight4S(pityS[0])) {
+					pityS[0] = 0;
+					maxIdx = ChroniclePool[bannerIndex - 60]->FourStarCharCount;
+				}
+				else {
+					pityS[1] = 0;
+					minIdx = ChroniclePool[bannerIndex - 60]->FourStarCharCount;
+				}
+			}
+			getrandom(&rnd, sizeof(long long), 0);
+			return pool[(rnd % (maxIdx - minIdx)) + minIdx];
 		case NOVICE:
 			*isRateUp = 0;
 			// Novice banner does not use the rate-up function

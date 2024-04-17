@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MPL-2.0 */
 /* This file is part of Yet Another Genshin Impact Wish Simulator */
-/* ©2023 Alex Pensinger (ArcticLuma113) */
+/* ©2024 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
 #ifndef GACHA_H
@@ -12,21 +12,34 @@ enum {
 	CHAR2,
 	WPN,
 	NOVICE,
+	CHRONICLED,
 	WISH_CNT
 };
 
+#define IDX_MAX 33
+
+typedef struct {
+	const unsigned short* FiveStarPool;
+	unsigned int FiveStarCharCount;
+	unsigned int FiveStarWeaponCount;
+	const unsigned short* FourStarPool;
+	unsigned int FourStarCharCount;
+	unsigned int FourStarWeaponCount;
+} ChroniclePool_t;
+
 // Banner data
-extern const unsigned short FourStarChrUp[60][3];
-extern const unsigned short FiveStarChrUp[60][2];
-extern const unsigned short FourStarWpnUp[60][5];
-extern const unsigned short FiveStarWpnUp[60][2];
-extern const unsigned short FourStarChr[38];
+extern const unsigned short FourStarChrUp[66][3];
+extern const unsigned short FiveStarChrUp[66][2];
+extern const unsigned short FourStarWpnUp[66][5];
+extern const unsigned short FiveStarWpnUp[66][2];
+extern const ChroniclePool_t* ChroniclePool[6];
+extern const unsigned short FourStarChr[39];
 extern const unsigned short FiveStarChr[7];
 extern const unsigned short ThreeStar[13];
 extern const unsigned short FourStarWpn[18];
 extern const unsigned short FiveStarWpn[10];
-extern const unsigned char FourStarMaxIndex[31];
-extern const unsigned char FiveStarMaxIndex[31];
+extern const unsigned char FourStarMaxIndex[33];
+extern const unsigned char FiveStarMaxIndex[33];
 
 // Configuration variables
 extern unsigned char pity[2];

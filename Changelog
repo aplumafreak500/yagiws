@@ -26,3 +26,9 @@
 	* Clarified the meaning of the -g flag
 	* Add Amber, Kayea, and Lisa into the standard banner pool
 	* 4.2 Phase 2 banners & initial support for 4.3
+
+* v1.3 (2024-04-16):
+	* Full 4.3, 4.4, and 4.5 support, initial support for 4.6
+	* Add initial support for Chronicled Wish
+	* Fix a typo in 1.1 phase 1's weapon banner data making Eye of Perception the rate-up catalyst instead of Wine and Song
+	* Fix a typo in the name string for Rightful Reward

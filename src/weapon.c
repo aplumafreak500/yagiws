@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MPL-2.0 */
 /* This file is part of Yet Another Genshin Impact Wish Simulator */
-/* ©2023 Alex Pensinger (ArcticLuma113) */
+/* ©2024 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
 #include <stddef.h>
@@ -128,6 +128,7 @@ static const char* const FourStarClaymores[27] = {
 	"Lithic Blade",
 	"Snow-Tombed Starsilver",
 	"Luxurious Sea-Lord",
+	NULL,
 	"Katsuragikiri Nagamasa",
 	"Makhaira Aquamarine",
 	"Akuoumaru",
@@ -139,7 +140,7 @@ static const char* const FourStarClaymores[27] = {
 	[26] = "Portable Power Saw",
 };
 
-static const char* const FourStarPolearms[27] = {
+static const char* const FourStarPolearms[28] = {
 	"Dragon's Bane",
 	"Prototype Starglitter",
 	"Crescent Pike",
@@ -155,8 +156,9 @@ static const char* const FourStarPolearms[27] = {
 	[16] = "Moonpiercer",
 	[18] = "Missive Windspear",
 	[23] = "Ballad of the Fjords",
-	[24] = "Rightful Rewards",
+	[24] = "Rightful Reward",
 	[26] = "Prospector's Drill",
+	[27] = "Dialogues of the Desert Sages",
 };
 
 static const char* const FourStarCatalysts[27] = {
@@ -216,7 +218,7 @@ static const char* const* const FourStarWeapons[6] = {
 	FourStarBows,
 };
 
-static const char* const FiveStarSwords[13] = {
+static const char* const FiveStarSwords[14] = {
 	"Aquila Favonia",
 	"Skyward Blade",
 	"Freedom-Sworn",
@@ -230,6 +232,7 @@ static const char* const FiveStarSwords[13] = {
 	"Key of Khaj-Nisut",
 	"Light of Foliar Incision",
 	"Splendor of Tranquil Waters",
+	"Uraku Misugiri",
 };
 
 static const char* const FiveStarClaymores[12] = {
@@ -247,7 +250,7 @@ static const char* const FiveStarClaymores[12] = {
 	"Verdict",
 };
 
-static const char* const FiveStarPolearms[11] = {
+static const char* const FiveStarPolearms[12] = {
 	"Staff of Homa",
 	"Skyward Spine",
 	"(Test) (Beginner's Protector icon)",
@@ -259,9 +262,10 @@ static const char* const FiveStarPolearms[11] = {
 	"Engulfing Lightning",
 	NULL,
 	"Staff of the Scarlet Fields",
+	"Crimson Moon's Semblance",
 };
 
-static const char* const FiveStarCatalysts[14] = {
+static const char* const FiveStarCatalysts[15] = {
 	"Skyward Atlas",
 	"Lost Prayer to the Sacred Winds",
 	"(Test) Lost Ballade",
@@ -276,6 +280,7 @@ static const char* const FiveStarCatalysts[14] = {
 	"Tulaytullah's Rememberance",
 	"Cashflow Supervision",
 	"Tome of the Eternal Flow",
+	"Crane's Echoing Call",
 };
 
 static const char* const FiveStarBows[12] = {
@@ -344,26 +349,26 @@ const char* getWeapon(unsigned int _id) {
 		maxId = 4;
 		break;
 	case 14:
-		maxId = 29;
+		maxId = 30;
 		break;
 	case 24:
-	case 34:
 	case 44:
 	case 54:
 		maxId = 27;
 		break;
+	case 34:
+		maxId = 28;
+		break;
 	case 15:
-		maxId = 13;
+		maxId = 14;
 		break;
 	case 25:
+	case 35:
 	case 55:
 		maxId = 12;
 		break;
-	case 35:
-		maxId = 11;
-		break;
 	case 45:
-		maxId = 14;
+		maxId = 15;
 		break;
 	}
 	if (id >= maxId) return NULL;

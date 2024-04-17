@@ -1,12 +1,13 @@
 /* SPDX-License-Identifier: MPL-2.0 */
 /* This file is part of Yet Another Genshin Impact Wish Simulator */
-/* ©2023 Alex Pensinger (ArcticLuma113) */
+/* ©2024 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
+#include <stddef.h>
 #include "config.h"
 #include "gacha.h"
 
-const unsigned short FourStarChrUp[60][3] = {
+const unsigned short FourStarChrUp[66][3] = {
 	// v1.0 - Launch
 	{1023, 1031, 1014}, // Xiangling, Fischl, Barbara
 	{1025, 1034, 1043}, // Xingqiu, Noelle, Sucrose
@@ -93,13 +94,22 @@ const unsigned short FourStarChrUp[60][3] = {
 	// v4.2 - Masquerade of the Guilty & Erinnyes Forest
 	{1067, 1024, 1088}, // Charlotte
 	{1061, 1065, 1023},
-	// v4.3 - TODO
+	// v4.3 - Roses & Muskets
+	{1043, 1045, 1072},
+	{1090, 1056, 1032}, // Chevreuse
+	// v4.4 - Lantern Rite 4 & Chenyu Vale
+	{1092, 1034, 1076}, // Gaming
+	{1077, 1044, 1027},
+	// v4.5 - Alchemical Ascension
+	{1055, 1068, 1064},
+	{1014, 1025, 1048},
+	// v4.6 - TODO
 	{1006, 1015, 1021},
-	{1090, 1015, 1021}, // Chevreuse
+	{1006, 1015, 1021},
 };
 
 // 0xffff: No second banner
-const unsigned short FiveStarChrUp[60][2] = {
+const unsigned short FiveStarChrUp[66][2] = {
 	// v1.0 - Launch
 	{1022, 0xffff}, // Venti
 	{1029, 0xffff}, // Klee
@@ -186,17 +196,26 @@ const unsigned short FiveStarChrUp[60][2] = {
 	// v4.2 - Masquerade of the Guilty & Erinnyes Forest
 	{1089, 1082}, // Furina
 	{1071, 1066},
-	// v4.3 - TODO
+	// v4.3 - Roses & Muskets
 	{1091, 1002}, // Navia
 	{1052, 1049},
+	// v4.4 - Lantern Rite 4 & Chenyu Vale
+	{1093, 1073}, // Xianyun
+	{1026, 1058},
+	// v4.5 - Alchemical Ascension
+	{1094, 1057}, // Chiori
+	{1087, 1047},
+	// v4.6 - TODO
+	{1096, 1084}, // Arlecchino
+	{1075, 1082},
 };
 
-const unsigned short FourStarWpnUp[60][5] = {
+const unsigned short FourStarWpnUp[66][5] = {
 	// v1.0 - Launch
 	{13407, 11402, 12402, 15402, 14402}, // Favonius Lance, The Flute, The Bell, The Stringless, The Widsith
 	{13401, 11403, 12403, 14403, 15403}, // Dragon's Bane, Sacrificial Sword, Sacrificial Greatsword, Sacrificial Fragments, Sacrificial Bow
 	// v1.1 - Unreconciled Stars & Foul Legacy
-	{15405, 11402, 14409, 13407, 12405}, // Rust, Wine and Song, Rainslasher
+	{15405, 11402, 14410, 13407, 12405}, // Rust, Wine and Song, Rainslasher
 	{12402, 11405, 13401, 14401, 15401}, // Lion's Roar, Favonius Codex, Favonius Warbow
 	// v1.2 - Dragonspine
 	{12401, 13407, 11405, 15402, 14402}, // Favonius Greatsword
@@ -278,12 +297,21 @@ const unsigned short FourStarWpnUp[60][5] = {
 	// v4.2 - Masquerade of the Guilty & Erinnyes Forest
 	{11403, 12402, 13401, 14403, 15402},
 	{11405, 12401, 13407, 14402, 15401},
-	// v4.3 - TODO
+	// v4.3 - Roses & Muskets
+	{11402, 12416, 13401, 14401, 15416},
+	{11401, 12405, 13416, 14409, 15405},
+	// v4.4 - Lantern Rite 4 & Chenyu Vale
+	{11403, 12403, 13406, 14403, 15403},
+	{11405, 12410, 13407, 14402, 15402},
+	// v4.5 - Alchemical Ascension
+	{11410, 12402, 13401, 14401, 15410},
+	{11402, 12401, 13407, 14410, 15412},
+	// v4.6 - TODO
 	{11400, 12400, 13400, 14400, 15400},
 	{11400, 12400, 13400, 14400, 15400},
 };
 
-const unsigned short FiveStarWpnUp[60][2] = {
+const unsigned short FiveStarWpnUp[66][2] = {
 	// v1.0 - Launch
 	{15502, 15501}, // Amos' Bow/Aquila Favonia
 	{14502, 12502}, // Lost Prayer to the Sacred Winds/Wolf's Gravestone
@@ -370,13 +398,50 @@ const unsigned short FiveStarWpnUp[60][2] = {
 	// v4.2 - Masquerade of the Guilty & Erinnyes Forest
 	{11513, 14505}, // Splendor of Tranquil Waters
 	{13511, 11510},
-	// v4.3 - TODO
-	{12512, 10500}, // Verdict
-	{10500, 10500},
+	// v4.3 - Roses & Muskets
+	{12512, 11509}, // Verdict
+	{15509, 13509},
+	// v4.4 - Lantern Rite 4 & Chenyu Vale
+	{14515, 14511}, // Crane's Echoing Call
+	{13505, 14509},
+	// v4.5 - Alchemical Ascension
+	{11514, 12510}, // Uraku Misugiri
+	{14514, 11503},
+	// v4.6 - TODO
+	{13512, 15512}, // Crimson Moon's Semblance
+	{14512, 14505},
+};
+
+static const unsigned short ChroniclePool5_441[17] = {
+	// Characters
+	1051, 1041, 1038, 1029, 1016, 1003,
+	// Weapons
+	11502, 11501, 12501, 12502, 12503, 12511, 13502, 14502, 14501, 15501, 15511
+};
+
+static const unsigned short ChroniclePool4_441[33] = {
+	// Characters
+	1006, 1014, 1015, 1020, 1021, 1031, 1032, 1034, 1039, 1043, 1045, 1080,
+	// Weapons
+	11401, 11402, 11403, 11405, 12401, 12402, 12403, 12405, 13401, 13407, 14401, 14402, 14403, 14409, 14410, 15401, 15402, 15403, 15405, 15410, 15412
+};
+
+static const ChroniclePool_t ChroniclePool_441 = {
+	ChroniclePool5_441, 6, 11,
+	ChroniclePool4_441, 12, 21,
+};
+
+const ChroniclePool_t* ChroniclePool[6] = {
+	&ChroniclePool_441,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 };
 
 // The list of 4-star characters in the pool, used together with the rate-up drops.
-const unsigned short FourStarChr[38] = {
+const unsigned short FourStarChr[39] = {
 	// v1.0 standard pool: Lisa, Kayea, Amber (standard banner only)
 	1006, 1015, 1021,
 	// v1.0 standard pool: Barbara, Razor, Xiangling, Beidou, Xingqiu, Ningguang, Fischl, Bennett, Noelle, Chongyun, Sucrose
@@ -425,6 +490,8 @@ const unsigned short FourStarChr[38] = {
 	1088,
 	// v4.4: Chevreuse
 	1090,
+	// v4.5: Gaming
+	1092,
 };
 
 // The list of 5-star characters in the pool, used together with the rate-up drops.
@@ -438,21 +505,21 @@ const unsigned short FiveStarChr[7] = {
 };
 
 // Max indexes into FourStarChr per version (for old banners)
-const unsigned char FourStarMaxIndex[31] = {
+const unsigned char FourStarMaxIndex[33] = {
 	/* Novice */ 10,
 	/* v1.x */ 11, 11, 13, 13, 13, 14, 15,
 	/* v2.x */ 15, 16, 17, 18, 19, 20, 20, 20, 21,
 	/* v3.x */ 22, 24, 25, 26, 27, 28, 29, 30, 31,
-	/* v4.x */ 31, 33, 33, 34, 35,
+	/* v4.x */ 31, 33, 33, 34, 35, 36, 36,
 };
 
 // Max indexes into FiveStarChr per version (for old banners)
-const unsigned char FiveStarMaxIndex[31] = {
+const unsigned char FiveStarMaxIndex[33] = {
 	/* Novice */ 5,
 	/* v1.x */ 5, 5, 5, 5, 5, 5, 5,
 	/* v2.x */ 5, 5, 5, 5, 5, 5, 5, 5, 5,
 	/* v3.x */ 5, 6, 6, 6, 6, 6, 7, 7, 7,
-	/* v4.x */ 7, 7, 7, 7, 7,
+	/* v4.x */ 7, 7, 7, 7, 7, 7, 7,
 };
 
 // The list of 3-star weapons in the pool.

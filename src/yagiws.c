@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MPL-2.0 */
 /* This file is part of Yet Another Genshin Impact Wish Simulator */
-/* ©2023 Alex Pensinger (ArcticLuma113) */
+/* ©2024 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
 #define _GNU_SOURCE
@@ -25,12 +25,15 @@ static int shouldBold(unsigned int rare, unsigned int banner, unsigned int rateU
 	if (banner == STD_CHR) return 1;
 	if (banner == STD_WPN) return 1;
 	if (banner == NOVICE) return 1;
+	if (banner == CHRONICLED) {
+		if (rare == 4) return 1;
+	}
 	return rateUp ? 1 : 0;
 }
 
 static void ver() {
 		printf("Yet Another Genshin Impact Gacha Simulator v%s\n"
-		"\n©2023 Alex Pensinger (ArcticLuma113).\nThis program is released under the terms of the MPLv2, which can be viewed at:\nhttps://mozilla.org/MPL/2.0/.\n", PACKAGE_VERSION);
+		"\n©2024 Alex Pensinger (ArcticLuma113).\nThis program is released under the terms of the MPLv2, which can be viewed at:\nhttps://mozilla.org/MPL/2.0/.\n", PACKAGE_VERSION);
 }
 
 static void usage() {
@@ -149,10 +152,13 @@ int main(int argc, char** argv) {
 	unsigned int noviceCnt = 0;
 	unsigned int detailsRequested = 0;
 	int epitomizedPathIndex = -1;
+	unsigned int fiveMaxIdx, fourMaxIdx, fiveMinIdx, fourMinIdx;
+	const unsigned short* fivePool;
+	const unsigned short* fourPool;
 	int c = 0;
 	long long n = 0;
-	int v[4] = {-1, -1, 0, 0x42};
-	int b[5] = {-1, -1, -1, 0, 0x422};
+	int v[4] = {-1, -1, 0, 0x45};
+	int b[5] = {-1, -1, -1, 0, 0x452};
 	char* p = NULL;
 	while (1) {
 		c = getopt_long(argc, argv, "4:5:B:LNSV:b:c:de:f:ghlnrsp:v", long_opts, NULL);
@@ -280,8 +286,8 @@ int main(int argc, char** argv) {
 		case 'e':
 			n = strtoull(optarg, &p, 0);
 #ifndef DEBUG
-			if (n < 1 || n > 2) {
-				fprintf(stderr, "Epitomized Path index is invalid.\n)");
+			if (n < 1) {
+				fprintf(stderr, "Epitomized Path index is invalid.\n");
 				return -1;
 			}
 #endif
@@ -405,7 +411,7 @@ int main(int argc, char** argv) {
 	b[0]--;
 	b[1] = b[4] >> 4;
 #ifndef DEBUG
-	if (b[1] > 0x43) b[1] = 0x43;
+	if (b[1] > 0x46) b[1] = 0x46;
 #endif
 	if (b[1] >= 0x40) {
 		b[1] -= 0x7;
@@ -420,18 +426,43 @@ int main(int argc, char** argv) {
 		b[1] += 0x1;
 	}
 	b[1] -= 0x10;
+#ifdef DEBUG
+	if (banner == CHRONICLED) {
+#else
+	if (1) {
+#endif
+		if (b[1] > IDX_MAX - 1) {
+			b[1] = IDX_MAX - 1;
+		}
+	}
+	b[0] += (b[1] << 1);
+	// 60 = v4.4 phase 1
+	if (b[0] < 60 || ChroniclePool[b[0] - 60] == NULL) {
+		fprintf(stderr, "Error: Chronicled Wish didn't run during version %d.%d phase %d\n", (b[4] >> 8 & 0xf), (b[4] >> 4) & 0xf, b[4] & 0xf);
+		return -1;
+	}
+	fivePool = ChroniclePool[b[0] - 60]->FiveStarPool;
 #ifndef DEBUG
-	if (b[1] > 29) {
-		b[1] = 29;
+	fiveMaxIdx = ChroniclePool[b[0] - 60]->FiveStarWeaponCount + ChroniclePool[b[0] - 60]->FiveStarCharCount;
+	if (
+		(
+			banner == WPN && (epitomizedPathIndex > 2)
+		) || (
+			banner == CHRONICLED && (epitomizedPathIndex - 1 > fiveMaxIdx)
+		)
+	) {
+		fprintf(stderr, "Epitomized Path index is invalid.\n");
+		return -1;
 	}
 #endif
-	b[0] += (b[1] << 1);
-	if (banner == WPN && epitomizedPathIndex > 0) {
+	if (epitomizedPathIndex > 0) {
 		epitomizedPathIndex--;
-#ifndef DEBUG
-		epitomizedPathIndex &= 1;
-#endif
-		epitomizedPath = FiveStarWpnUp[b[0]][epitomizedPathIndex];
+		if (banner == WPN) {
+			epitomizedPath = FiveStarWpnUp[b[0]][epitomizedPathIndex];
+		}
+		else if (banner == CHRONICLED) {
+			epitomizedPath = fivePool[epitomizedPathIndex];
+		}
 	}
 	if (!(banner == STD_CHR || banner == STD_WPN) && do5050 < 0) {
 		v[2] = 0;
@@ -457,7 +488,7 @@ int main(int argc, char** argv) {
 	}
 	else {
 #ifndef DEBUG
-		if (v[0] > 0x43) v[0] = 0x43;
+		if (v[0] > 0x46) v[0] = 0x46;
 #endif
 		if (v[0] >= 0x40) {
 			v[0] -= 0x7;
@@ -471,7 +502,7 @@ int main(int argc, char** argv) {
 		v[0] -= 0xf;
 #ifndef DEBUG
 		if ((int) v[0] < 1) v[0] = 1;
-		if (v[0] > 30) v[0] = 30;
+		if (v[0] > IDX_MAX) v[0] = IDX_MAX;
 #endif
 	}
 #ifndef DEBUG
@@ -482,11 +513,11 @@ int main(int argc, char** argv) {
 #endif
 	if (detailsRequested) {
 		printf("Details for the %s banner", banners[banner][1]);
-		if ((banner == CHAR1 || banner == CHAR2 || banner == WPN) && b[3]) {
+		if ((banner == CHAR1 || banner == CHAR2 || banner == WPN || banner == CHRONICLED) && b[3]) {
 			printf(" from v%d.%d phase %d", b[4] >> 8, (b[4] >> 4) & 0xf, b[4] & 0xf);
 		}
 		printf(":");
-		if (banner != NOVICE && v[2]) {
+		if (!(banner == NOVICE || banner == CHRONICLED) && v[2]) {
 			printf(" (v%d.%d standard pool)", v[3] >> 4, v[3] & 0xf);
 		}
 		printf("\n\n");
@@ -540,36 +571,81 @@ int main(int argc, char** argv) {
 		}
 		if (banner != WPN && banner != STD_WPN && do5050 >= 0) {
 			printf("5★ Character Pool:\n");
-			for (n = 0; n < FiveStarMaxIndex[v[0]]; n++) {
-				item = FiveStarChr[n];
+			if (banner == CHRONICLED) {
+				fivePool = ChroniclePool[b[0] - 60]->FiveStarPool;
+				fiveMaxIdx = ChroniclePool[b[0] - 60]->FiveStarCharCount;
+			}
+			else {
+				fivePool = FiveStarChr;
+				fiveMaxIdx = FiveStarMaxIndex[v[0]];
+			}
+			for (n = 0; n < fiveMaxIdx; n++) {
+				item = fivePool[n];
 				if (getItem(item) != NULL) {
-					snprintf(buf, 1024, "\e[33%sm%s\e[39;0m (id %u)", shouldBold(5, banner, 0) ? ";1" : ";22", getItem(item), item);
+					snprintf(buf, 1024, "\e[33%sm%s\e[39;0m (id %u)", shouldBold(5, banner, banner == CHRONICLED) ? ";1" : ";22", getItem(item), item);
 				}
 				else {
-					snprintf(buf, 1024, "id \e[33%sm%u\e[39;0m", shouldBold(5, banner, 0) ? ";1" : ";22", item);
+					snprintf(buf, 1024, "id \e[33%sm%u\e[39;0m", shouldBold(5, banner, banner == CHRONICLED) ? ";1" : ";22", item);
 				}
-				printf("\t%s\n", buf);
+				if (banner == CHRONICLED) {
+					printf("\t%d: %s\n", (int) n + 1, buf);
+				}
+				else {
+					printf("\t%s\n", buf);
+				}
 			}
 			printf("\n");
 		}
-		if (banner != CHAR1 && banner != CHAR2 && banner != NOVICE  && do5050 >= 0) {
+		if (banner != CHAR1 && banner != CHAR2 && banner != NOVICE && do5050 >= 0) {
 			printf("5★ Weapon Pool:\n");
-			for (n = 0; n < 10; n++) {
-				item = FiveStarWpn[n];
+			if (banner == CHRONICLED) {
+				fivePool = ChroniclePool[b[0] - 60]->FiveStarPool;
+				fiveMinIdx = ChroniclePool[b[0] - 60]->FiveStarCharCount;
+				fiveMaxIdx = ChroniclePool[b[0] - 60]->FiveStarWeaponCount + fiveMinIdx;
+			}
+			else {
+				fivePool = FiveStarWpn;
+				fiveMinIdx = 0;
+				fiveMaxIdx = 10;
+			}
+			for (n = fiveMinIdx; n < fiveMaxIdx; n++) {
+				item = fivePool[n];
 				if (getItem(item) != NULL) {
-					snprintf(buf, 1024, "\e[33%sm%s\e[39;0m (id %u)", shouldBold(5, banner, 0) ? ";1" : ";22", getItem(item), item);
+					snprintf(buf, 1024, "\e[33%sm%s\e[39;0m (id %u)", shouldBold(5, banner, banner == CHRONICLED) ? ";1" : ";22", getItem(item), item);
 				}
 				else {
-					snprintf(buf, 1024, "id \e[33%sm%u\e[39;0m", shouldBold(5, banner, 0) ? ";1" : ";22", item);
+					snprintf(buf, 1024, "id \e[33%sm%u\e[39;0m", shouldBold(5, banner, banner == CHRONICLED) ? ";1" : ";22", item);
 				}
-				printf("\t%s\n", buf);
+				if (banner == CHRONICLED) {
+					printf("\t%d: %s\n", (int) n + 1, buf);
+				}
+				else {
+					printf("\t%s\n", buf);
+				}
 			}
 			printf("\n");
+			if (banner == CHRONICLED) {
+				printf("(Chart a course by passing -e x, where x is the desired index listed above.)\n\n");
+			}
 		}
 		if (do5050 >= 0) {
 			printf("4★ Character Pool:\n");
-			for (n = (banner == STD_CHR || banner == STD_WPN) ? 0 : 3; n < FourStarMaxIndex[v[0]] + 3; n++) {
-				item = FourStarChr[n];
+			if (banner == CHRONICLED) {
+				fourPool = ChroniclePool[b[0] - 60]->FourStarPool;
+				fourMaxIdx = ChroniclePool[b[0] - 60]->FourStarCharCount;
+				fourMinIdx = 0;
+			}
+			else {
+				fourPool = FourStarChr;
+				fourMaxIdx = FourStarMaxIndex[v[0]];
+				fourMinIdx = 0;
+				if (!(banner == STD_CHR || banner == STD_WPN)) {
+					fourMinIdx = 3;
+					fourMaxIdx += 3;
+				}
+			}
+			for (n = fourMinIdx; n < fourMaxIdx; n++) {
+				item = fourPool[n];
 				if (getItem(item) != NULL) {
 					snprintf(buf, 1024, "\e[35%sm%s\e[39;0m (id %u)", shouldBold(4, banner, 0) ? ";1" : ";22", getItem(item), item);
 				}
@@ -582,8 +658,18 @@ int main(int argc, char** argv) {
 		}
 		if (banner != NOVICE && do5050 >= 0) {
 			printf("4★ Weapon Pool:\n");
-			for (n = 0; n < 18; n++) {
-				item = FourStarWpn[n];
+			if (banner == CHRONICLED) {
+				fourPool = ChroniclePool[b[0] - 60]->FourStarPool;
+				fourMinIdx = ChroniclePool[b[0] - 60]->FourStarCharCount;
+				fourMaxIdx = ChroniclePool[b[0] - 60]->FourStarWeaponCount + fourMinIdx;
+			}
+			else {
+				fourPool = FourStarWpn;
+				fourMinIdx = 0;
+				fourMaxIdx = 18;
+			}
+			for (n = fourMinIdx; n < fourMaxIdx; n++) {
+				item = fourPool[n];
 				if (getItem(item) != NULL) {
 					snprintf(buf, 1024, "\e[35%sm%s\e[39;0m (id %u)", shouldBold(4, banner, 0) ? ";1" : ";22", getItem(item), item);
 				}
@@ -610,10 +696,10 @@ int main(int argc, char** argv) {
 		return 0;
 	}
 	fprintf(stderr, "Making %u wishes on the %s banner", pulls, banners[banner][1]);
-	if ((banner == CHAR1 || banner == CHAR2 || banner == WPN) && b[3]) {
+	if ((banner == CHAR1 || banner == CHAR2 || banner == WPN || banner == CHRONICLED) && b[3]) {
 		fprintf(stderr, " from v%d.%d phase %d", b[4] >> 8, (b[4] >> 4) & 0xf, b[4] & 0xf);
 	}
-	if (banner != NOVICE && v[2]) {
+	if (!(banner == NOVICE || banner == CHRONICLED) && v[2]) {
 		fprintf(stderr, " (v%d.%d standard pool)", v[3] >> 4, v[3] & 0xf);
 	}
 	fprintf(stderr, "\n\n");
@@ -681,7 +767,7 @@ int main(int argc, char** argv) {
 		printf("\n5★ pity: %u\n", pity[1]);
 	}
 	else printf("\n");
-	if (do5050 > 0 && (banner == CHAR1 || banner == CHAR2 || banner == WPN)) {
+	if (do5050 > 0 && (banner == CHAR1 || banner == CHAR2 || banner == WPN || (banner == CHRONICLED && epitomizedPath))) {
 		printf("\n4★ guaranteed: %u\n", getRateUp[0] ? 1 : 0);
 		printf("5★ guaranteed: %u\n", getRateUp[1] ? 1 : 0);
 	}
@@ -692,7 +778,7 @@ int main(int argc, char** argv) {
 		printf("\n4★ stable val (characters): %u\n", pityS[0]);
 		printf("4★ stable val (weapons): %u", pityS[1]);
 	}
-	if (do5050 >= 0 && doSmooth[1] && (banner == STD_CHR || banner == STD_WPN)) {
+	if (do5050 >= 0 && doSmooth[1] && (banner == STD_CHR || banner == STD_WPN || (banner == CHRONICLED && !epitomizedPath))) {
 		printf("\n5★ stable val (characters): %u\n", pityS[2]);
 		printf("5★ stable val (weapons): %u\n", pityS[3]);
 	}
