@@ -203,8 +203,8 @@ int main(int argc, char** argv) {
 				fprintf(stderr, "Only got banner major version, using %d.0.%d\n", b[0], b[2]);
 			}
 #ifndef DEBUG
-			if (b[2] > ((b[0] == 1 && b[1] == 3) ? 4 : 2) || b[2] < 1) {
-				fprintf(stderr, "Invalid banner phase %d (only 1%s accepted)\n", b[2], (b[0] == 1 && b[1] == 3) ? "-4" : " or 2");
+			if ((b[2] > 2) || (b[2] < 1)) {
+				fprintf(stderr, "Invalid banner phase %d (only 1 or 2 accepted)\n", b[2]);
 				return -1;
 			}
 #endif
