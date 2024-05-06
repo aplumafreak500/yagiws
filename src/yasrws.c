@@ -136,10 +136,6 @@ int main(int argc, char** argv) {
 	unsigned int pulls = 10;
 	unsigned int noviceCnt = 0;
 	unsigned int detailsRequested = 0;
-	int epitomizedPathIndex = -1;
-	unsigned int fiveMaxIdx, fourMaxIdx, fiveMinIdx, fourMinIdx;
-	const unsigned short* fivePool;
-	const unsigned short* fourPool;
 	int c = 0;
 	long long n = 0;
 	int v[4] = {-1, -1, 0, 0x22};

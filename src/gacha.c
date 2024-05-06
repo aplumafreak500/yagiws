@@ -118,8 +118,6 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 #endif
 	unsigned long long rnd;
 	long double rndF;
-	unsigned int maxIdx;
-	unsigned int minIdx;
 	if (banner >= WARP_CNT) return -1;
 	if (rare == NULL) return -1;
 	if (isRateUp == NULL) return -1;
