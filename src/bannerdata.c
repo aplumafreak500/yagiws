@@ -7,7 +7,7 @@
 #include "config.h"
 #include "gacha.h"
 
-const unsigned short FourStarChrUp[66][3] = {
+const unsigned short FourStarChrUp[IDX_MAX*2][3] = {
 	// v1.0 - Launch
 	{1023, 1031, 1014}, // Xiangling, Fischl, Barbara
 	{1025, 1034, 1043}, // Xingqiu, Noelle, Sucrose
@@ -103,13 +103,16 @@ const unsigned short FourStarChrUp[66][3] = {
 	// v4.5 - Alchemical Ascension
 	{1055, 1068, 1064},
 	{1014, 1025, 1048},
-	// v4.6 - TODO
+	// v4.6 - Sea of Bygone Eras (phase 2 TODO)
+	{1083, 1085, 1023},
+	{1006, 1015, 1021},
+	// v4.7 - TODO
 	{1006, 1015, 1021},
 	{1006, 1015, 1021},
 };
 
 // 0xffff: No second banner
-const unsigned short FiveStarChrUp[66][2] = {
+const unsigned short FiveStarChrUp[IDX_MAX*2][2] = {
 	// v1.0 - Launch
 	{1022, 0xffff}, // Venti
 	{1029, 0xffff}, // Klee
@@ -205,12 +208,15 @@ const unsigned short FiveStarChrUp[66][2] = {
 	// v4.5 - Alchemical Ascension
 	{1094, 1057}, // Chiori
 	{1087, 1047},
-	// v4.6 - TODO
+	// v4.6 - Sea of Bygone Eras
 	{1096, 1084}, // Arlecchino
 	{1075, 1082},
+	// v4.7 - TODO
+	{1005, 1007},
+	{1005, 1007},
 };
 
-const unsigned short FourStarWpnUp[66][5] = {
+const unsigned short FourStarWpnUp[IDX_MAX*2][5] = {
 	// v1.0 - Launch
 	{13407, 11402, 12402, 15402, 14402}, // Favonius Lance, The Flute, The Bell, The Stringless, The Widsith
 	{13401, 11403, 12403, 14403, 15403}, // Dragon's Bane, Sacrificial Sword, Sacrificial Greatsword, Sacrificial Fragments, Sacrificial Bow
@@ -306,12 +312,15 @@ const unsigned short FourStarWpnUp[66][5] = {
 	// v4.5 - Alchemical Ascension
 	{11410, 12402, 13401, 14401, 15410},
 	{11402, 12401, 13407, 14410, 15412},
-	// v4.6 - TODO
+	// v4.6 - Sea of Bygone Eras (phase 2 TODO)
+	{11427, 12427, 13401, 14409, 15401},
+	{11400, 12400, 13400, 14400, 15400},
+	// v4.7 - TODO
 	{11400, 12400, 13400, 14400, 15400},
 	{11400, 12400, 13400, 14400, 15400},
 };
 
-const unsigned short FiveStarWpnUp[66][2] = {
+const unsigned short FiveStarWpnUp[IDX_MAX*2][2] = {
 	// v1.0 - Launch
 	{15502, 15501}, // Amos' Bow/Aquila Favonia
 	{14502, 12502}, // Lost Prayer to the Sacred Winds/Wolf's Gravestone
@@ -407,9 +416,12 @@ const unsigned short FiveStarWpnUp[66][2] = {
 	// v4.5 - Alchemical Ascension
 	{11514, 12510}, // Uraku Misugiri
 	{14514, 11503},
-	// v4.6 - TODO
+	// v4.6 - Sea of Bygone Eras (phase 2 TODO)
 	{13512, 15512}, // Crimson Moon's Semblance
 	{14512, 14505},
+	// v4.7 - TODO
+	{10500, 10501},
+	{10500, 10501},
 };
 
 static const unsigned short ChroniclePool5_441[17] = {
@@ -431,17 +443,23 @@ static const ChroniclePool_t ChroniclePool_441 = {
 	ChroniclePool4_441, 12, 21,
 };
 
-const ChroniclePool_t* ChroniclePool[6] = {
+const ChroniclePool_t* ChroniclePool[(IDX_MAX-30)*2] = {
+	// v4.4 - Lantern Rite 4 & Chenyu Vale
 	&ChroniclePool_441,
 	NULL,
+	// v4.5 - Alchemical Ascension
 	NULL,
 	NULL,
+	// v4.6 - Sea of Bygone Eras (phase 2 TODO)
+	NULL,
+	NULL,
+	// v4.7 - TODO
 	NULL,
 	NULL,
 };
 
 // The list of 4-star characters in the pool, used together with the rate-up drops.
-const unsigned short FourStarChr[39] = {
+const unsigned short FourStarChr[40] = {
 	// v1.0 standard pool: Lisa, Kayea, Amber (standard banner only)
 	1006, 1015, 1021,
 	// v1.0 standard pool: Barbara, Razor, Xiangling, Beidou, Xingqiu, Ningguang, Fischl, Bennett, Noelle, Chongyun, Sucrose
@@ -492,6 +510,8 @@ const unsigned short FourStarChr[39] = {
 	1090,
 	// v4.5: Gaming
 	1092,
+	// v4.8: Sethos
+	1097,
 };
 
 // The list of 5-star characters in the pool, used together with the rate-up drops.
@@ -505,21 +525,23 @@ const unsigned short FiveStarChr[7] = {
 };
 
 // Max indexes into FourStarChr per version (for old banners)
-const unsigned char FourStarMaxIndex[33] = {
+const unsigned char FourStarMaxIndex[IDX_MAX] = {
 	/* Novice */ 10,
 	/* v1.x */ 11, 11, 13, 13, 13, 14, 15,
 	/* v2.x */ 15, 16, 17, 18, 19, 20, 20, 20, 21,
 	/* v3.x */ 22, 24, 25, 26, 27, 28, 29, 30, 31,
-	/* v4.x */ 31, 33, 33, 34, 35, 36, 36,
+	/* v4.x */ 31, 33, 33, 34, 35, 36, 36, 36, 37,
+	/* v5.x */ 
 };
 
 // Max indexes into FiveStarChr per version (for old banners)
-const unsigned char FiveStarMaxIndex[33] = {
+const unsigned char FiveStarMaxIndex[IDX_MAX] = {
 	/* Novice */ 5,
 	/* v1.x */ 5, 5, 5, 5, 5, 5, 5,
 	/* v2.x */ 5, 5, 5, 5, 5, 5, 5, 5, 5,
 	/* v3.x */ 5, 6, 6, 6, 6, 6, 7, 7, 7,
-	/* v4.x */ 7, 7, 7, 7, 7, 7, 7,
+	/* v4.x */ 7, 7, 7, 7, 7, 7, 7, 7, 7,
+	/* v5.x */ 
 };
 
 // The list of 3-star weapons in the pool.

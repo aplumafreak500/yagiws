@@ -157,8 +157,8 @@ int main(int argc, char** argv) {
 	const unsigned short* fourPool;
 	int c = 0;
 	long long n = 0;
-	int v[4] = {-1, -1, 0, 0x45};
-	int b[5] = {-1, -1, -1, 0, 0x452};
+	int v[4] = {-1, -1, 0, 0x46};
+	int b[5] = {-1, -1, -1, 0, 0x461};
 	char* p = NULL;
 	while (1) {
 		c = getopt_long(argc, argv, "4:5:B:LNSV:b:c:de:f:ghlnrsp:v", long_opts, NULL);
@@ -411,7 +411,7 @@ int main(int argc, char** argv) {
 	b[0]--;
 	b[1] = b[4] >> 4;
 #ifndef DEBUG
-	if (b[1] > 0x46) b[1] = 0x46;
+	if (b[1] > 0x47) b[1] = 0x47;
 #endif
 	if (b[1] >= 0x40) {
 		b[1] -= 0x7;
@@ -437,7 +437,7 @@ int main(int argc, char** argv) {
 	}
 	b[0] += (b[1] << 1);
 	// 60 = v4.4 phase 1
-	if (b[0] < 60 || ChroniclePool[b[0] - 60] == NULL) {
+	if (banner == CHRONICLED && (b[0] < 60 || ChroniclePool[b[0] - 60] == NULL)) {
 		fprintf(stderr, "Error: Chronicled Wish didn't run during version %d.%d phase %d\n", (b[4] >> 8 & 0xf), (b[4] >> 4) & 0xf, b[4] & 0xf);
 		return -1;
 	}
@@ -488,7 +488,7 @@ int main(int argc, char** argv) {
 	}
 	else {
 #ifndef DEBUG
-		if (v[0] > 0x46) v[0] = 0x46;
+		if (v[0] > 0x47) v[0] = 0x47;
 #endif
 		if (v[0] >= 0x40) {
 			v[0] -= 0x7;

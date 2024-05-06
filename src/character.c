@@ -93,7 +93,10 @@ static const char* const chrList[MAX_CHARS] = {
 	[92] = "Gaming",
 	[93] = "Xianyun",
 	[94] = "Chiori",
+	[95] = "Sigewinne",
 	[96] = "Arlecchino",
+	[97] = "Sethos",
+	[98] = "Clorinde",
 };
 
 const char* getCharacter(unsigned int id) {

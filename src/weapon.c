@@ -206,6 +206,7 @@ static const char* const FourStarBows[27] = {
 	"Ibis Piercer",
 	[23] = "Scion of the Blazing Sun",
 	[24] = "Song of Stillness",
+	[25] = "Cloudweaver",
 	[26] = "Range Gauge",
 };
 
@@ -218,7 +219,7 @@ static const char* const* const FourStarWeapons[6] = {
 	FourStarBows,
 };
 
-static const char* const FiveStarSwords[14] = {
+static const char* const FiveStarSwords[15] = {
 	"Aquila Favonia",
 	"Skyward Blade",
 	"Freedom-Sworn",
@@ -233,6 +234,7 @@ static const char* const FiveStarSwords[14] = {
 	"Light of Foliar Incision",
 	"Splendor of Tranquil Waters",
 	"Uraku Misugiri",
+	"Absolution",
 };
 
 static const char* const FiveStarClaymores[12] = {
@@ -283,7 +285,7 @@ static const char* const FiveStarCatalysts[15] = {
 	"Crane's Echoing Call",
 };
 
-static const char* const FiveStarBows[12] = {
+static const char* const FiveStarBows[13] = {
 	"Skyward Harp",
 	"Amos' Bow",
 	"Elegy for the End",
@@ -296,6 +298,7 @@ static const char* const FiveStarBows[12] = {
 	NULL,
 	"Hunter's Path",
 	"The First Great Magic",
+	"Pouring Heartstrings",
 };
 
 static const char* const* const FiveStarWeapons[6] = {
@@ -360,15 +363,15 @@ const char* getWeapon(unsigned int _id) {
 		maxId = 28;
 		break;
 	case 15:
-		maxId = 14;
+	case 45:
+		maxId = 15;
 		break;
 	case 25:
 	case 35:
-	case 55:
 		maxId = 12;
 		break;
-	case 45:
-		maxId = 15;
+	case 55:
+		maxId = 13;
 		break;
 	}
 	if (id >= maxId) return NULL;

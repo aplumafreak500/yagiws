@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MPL-2.0 */
 /* This file is part of Yet Another Genshin Impact Wish Simulator */
-/* ©2023 Alex Pensinger (ArcticLuma113) */
+/* ©2024 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
 #include <stddef.h>
@@ -18,6 +18,8 @@ static const char* const Artifacts[100][6] = {
 	[32] = {"Golden Troupe", "Golden Night's Bustle", "Golden Bird's Shedding", "Golden Troupe's Reward", "Golden Song's Variation", "Golden Era's Prelude"},
 	[33] = {"Song of Days Past", "Promised Dream of Days Past", "Recollection of Days Past", "Poem Passed Down from Days Past", "Forgotten Oath of Days Past", "Echoing Sound from Days Past"},
 	[34] = {"Nighttime Whispers in the Echoing Woods", "Magnanimous Ink Bottle", "Honest Quill", "Compassionate Ladies' Hat", "Selfless Floral Accessory", "Faithful Hourglass"},
+	[35] = {"Fragment of Harmonic Whimsy", "Ichor Shower Rhapsody", "Ancient Sea's Nocturnal Musing", "Whimsical Dance of the Withered", "Harmonious Symphony Prelude", "The Grand Jape of the Turning of Fate"},
+	[36] = {"Unfinished Reverie", "The Wine-Flask Over Which the Plan Was Hatched", "Faded Emerald Tail", "Crownless Crown", "Dark Fruit of Bright Flowers", "Moment of Attainment"},
 	[51] = {"Resolution of Sojourner", "Goblet of the Sojourner", "Feather of Homecoming", "Crown of Parting", "Heart of Comradeship", "Sundial of the Sojourner"},
 	[52] = {"Brave Heart", "Outset of the Brave", "Prospect of the Brave", "Crown of the Brave", "Medal of the Brave", "Fortitude of the Brave"},
 	[53] = {"Defender's Will", "Guardian's Vessel", "Guardian's Sigil", "Guardian's Band", "Guardian's Flower", "Guardian's Clock"},

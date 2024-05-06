@@ -6,7 +6,7 @@
 #ifndef ITEM_H
 #define ITEM_H
 // Characters
-#define MAX_CHARS 97
+#define MAX_CHARS 99
 
 const char* getCharacter(unsigned int);
 
