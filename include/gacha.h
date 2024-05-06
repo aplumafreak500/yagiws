@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: MPL-2.0 */
-/* This file is part of Yet Another Genshin Impact Wish Simulator */
+/* This file is part of Yet Another Star Rail Warp Simulator */
 /* ©2024 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
@@ -10,48 +10,35 @@ enum {
 	STD_WPN, // non-vanilla
 	CHAR1,
 	CHAR2,
-	WPN,
+	WPN1,
+	WPN2,
 	NOVICE,
-	CHRONICLED,
-	WISH_CNT
+	WARP_CNT
 };
 
-#define IDX_MAX 34
-
-typedef struct {
-	const unsigned short* FiveStarPool;
-	unsigned int FiveStarCharCount;
-	unsigned int FiveStarWeaponCount;
-	const unsigned short* FourStarPool;
-	unsigned int FourStarCharCount;
-	unsigned int FourStarWeaponCount;
-} ChroniclePool_t;
+#define IDX_MAX 11
 
 // Banner data
 extern const unsigned short FourStarChrUp[IDX_MAX*2][3];
 extern const unsigned short FiveStarChrUp[IDX_MAX*2][2];
-extern const unsigned short FourStarWpnUp[IDX_MAX*2][5];
+extern const unsigned short FourStarWpnUp[IDX_MAX*2][3];
 extern const unsigned short FiveStarWpnUp[IDX_MAX*2][2];
-extern const ChroniclePool_t* ChroniclePool[(IDX_MAX-30)*2];
-extern const unsigned short FourStarChr[40];
+extern const unsigned char FourStarChrMaxIndex[IDX_MAX];
+extern const unsigned char FourStarWpnMaxIndex[IDX_MAX];
+extern const unsigned short FourStarChr[22];
+extern const unsigned short FourStarWpn[24];
 extern const unsigned short FiveStarChr[7];
-extern const unsigned short ThreeStar[13];
-extern const unsigned short FourStarWpn[18];
-extern const unsigned short FiveStarWpn[10];
-extern const unsigned char FourStarMaxIndex[IDX_MAX];
-extern const unsigned char FiveStarMaxIndex[IDX_MAX];
+extern const unsigned short FiveStarWpn[7];
 
 // Configuration variables
 extern unsigned char pity[2];
 extern unsigned char pityS[4];
 extern unsigned char getRateUp[2];
-extern unsigned char fatePoints;
-extern unsigned short epitomizedPath;
 extern int doSmooth[2];
 extern int doPity[2];
 extern int do5050;
 
-extern const char* const banners[WISH_CNT][2];
+extern const char* const banners[WARP_CNT][2];
 
 #ifndef DEBUG
 unsigned int doAPull(unsigned int, unsigned int, unsigned int, unsigned int*, unsigned int*);

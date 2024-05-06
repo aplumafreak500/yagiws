@@ -1,40 +1,30 @@
-* v1.0 (2023-10-20):
+* yagips v1.0 (2023-10-20):
 	* Initial release
 
-* v1.0.1 (2023-11-04):
-	* Add 4.1 weapons and initial support for 4.2
+* yagips v1.0.1 (2023-11-04):
 	* Fix getWeight4SW using smooth weight even when smooth function is disabled
 
-* v1.1 (2023-11-05):
+* yagips v1.1 (2023-11-05):
 	* Add support for multiple banners. Choose one with the -B switch.
 	* Debug mode that disables most sanity checks. (Beware of segfaults!)
 	* Extra sanity checks for displaying characters in Wish Details
 	* Check for a valid weapon ID, even on character banners (and vice versa) in Wish Details
-	* Fix getWeapon not returning a valid weapon if its ID is not 1xxxx
 
-* v1.1.1 (2023-11-06):
-	* 4.2 Phase 1 banners and two new swords
-	* Add missing Solar Pearl 4-star catalyst, thus fixing an off-by-one error
-	* Add most test/placeholder weapons (data from https://genshin.honeyhunterworld.com/?lang=EN)
-	* Fix typo on Charlotte's name
+* yagips v1.1.1 (2023-11-06):
+	* (only Genshin-related changes, otherwise no new functionality)
 
-* v1.2 (2023-11-25):
+* yagips v1.2 (2023-11-25):
 	* Split into different files and add Autotools support
 	* Consolidate item/weapon funcs into one call
-	* Initial support for artifacts
 	* Add -r flag to display or drop the rate-up items only. (The opposite effect is not implemented because that's effectively just the standard banner)
 	* Clarified the meaning of the -g flag
-	* Add Amber, Kayea, and Lisa into the standard banner pool
-	* 4.2 Phase 2 banners & initial support for 4.3
 
-* v1.3 (2024-04-16):
-	* Full 4.3, 4.4, and 4.5 support, initial support for 4.6
-	* Add initial support for Chronicled Wish
-	* Fix a typo in 1.1 phase 1's weapon banner data making Eye of Perception the rate-up catalyst instead of Wine and Song
-	* Fix a typo in the name string for Rightful Reward
+* yagips v1.3 (2024-04-16):
+	* (only Genshin-related changes, otherwise no new functionality)
 
-* v1.3.1 (2024-05-06):
-	* Fix bug relating to Chronicled Wish preventing all banners from working except those from 4.4 phase 1
-	* Finalize 4.6 phase 1
-	* 4.6 artifacts
-	* Initial support for 4.7
+* yagips v1.3.1 (2024-05-06):
+	* (only Genshin-related changes, otherwise no new functionality)
+
+* v1.0 (2024-05-06):
+	* Initial release based on yagips v1.3.1
+	* Data up to game version 2.2

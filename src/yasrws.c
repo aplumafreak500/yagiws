@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: MPL-2.0 */
-/* This file is part of Yet Another Genshin Impact Wish Simulator */
+/* This file is part of Yet Another Star Rail Warp Simulator */
 /* ©2024 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
@@ -25,14 +25,11 @@ static int shouldBold(unsigned int rare, unsigned int banner, unsigned int rateU
 	if (banner == STD_CHR) return 1;
 	if (banner == STD_WPN) return 1;
 	if (banner == NOVICE) return 1;
-	if (banner == CHRONICLED) {
-		if (rare == 4) return 1;
-	}
 	return rateUp ? 1 : 0;
 }
 
 static void ver() {
-		printf("Yet Another Genshin Impact Gacha Simulator v%s\n"
+		printf("Yet Another Star Rail Warp Simulator v%s\n"
 		"\n©2024 Alex Pensinger (ArcticLuma113).\nThis program is released under the terms of the MPLv2, which can be viewed at:\nhttps://mozilla.org/MPL/2.0/.\n", PACKAGE_VERSION);
 }
 
@@ -44,7 +41,7 @@ static void usage() {
 		"\t-b, --banner           Choose a banner type. Valid banners:\n"
 		"\t                       \t"
 	);
-	for (i = 0; i < WISH_CNT; i++) {
+	for (i = 0; i < WARP_CNT; i++) {
 		printf("%s%s", i != 0 ? ", " : "", banners[i][0]);
 	}
 	printf("\n"
@@ -58,35 +55,25 @@ static void usage() {
 		"\t-5, --pity5            Specify initial 5★ pity.\n"
 		"\t-l, --lostRateUp4      Specify that the next 4★ is guaranteed to be the\n"
 		"\t                       \trate-up item. Only relevant on the Character and\n"
-		"\t                       \tWeapon Event banners.\n"
+		"\t                       \tLight Cone Event banners.\n"
 		"\t-L, --lostRateUp5      Specify that the next 5★ is guaranteed to be the\n"
 		"\t                       \trate-up item. Only relevant on the Character and\n"
-		"\t                       \tWeapon Event banners.\n"
-		"\t-f, --fate_points      Specify the accumulated Fate Points. Only\n"
-		"\t                       \trelevant on the Weapon Event banner.\n"
-		"\t-e, --epitomized_path  Specify the course to chart for the Epitomized\n"
-		"\t                       \tPath. Only relevant on the Weapon Event banner.\n"
+		"\t                       \tLight Cone Event banners.\n"
 		"\t-c, --noviceCnt        Specify how many pulls have been made previously.\n"
-		"\t                       \tOnly relevant on the Beginners' banner and is\n"
-		"\t                       \tcapped at 8.\n"
+		"\t                       \tOnly relevant on the Departure banner and is capped at 50.\n"
 		"\t-h, --help, --usage    Show this text and exit.\n"
 		"\t-v, --version          Show application version and exit.\n"
 		"\nAdvanced Usage:\n"
 		"\t-n, --noPity4          Disable 4★ pity.\n"
 		"\t-N, --noPity5          Disable 5★ pity.\n"
 		"\t-g, --noGuarantee      Disable the rate-up guarantee mechanism.\n"
-		"\t                       \tOnly relevant on the Character and Weapon Event\n"
-		"\t                       \tbanners.\n"
-		"\t                       \t(note that Epitomized Path will still work if it\n"
-		"\t                       \tis set.)\n"
+		"\t                       \tOnly relevant on the Character and Light Cone Event banners.\n"
 		"\t-r, --rateUpOnly       Display (with -d) or drop only rate-up items.\n"
-		"\t                       \tOnly relevant on the Character and Weapon Event\n"
-		"\t                       \tbanners.\n"
+		"\t                       \tOnly relevant on the Character and Light Cone Event banners.\n"
 		"\t                       \tImplies -g.\n"
 		"\t-V, --pool_version     Specify the version from which the standard pool\n"
 		"\t                       \tof items will be drawn from.\n"
-		"\t                       \tNot relevant on the Beginners' banner, which\n"
-		"\t                       \tuses a fixed pool.\n"
+		"\t                       \tNot relevant on the Departure banner, which uses a fixed pool.\n"
 		"\nTuning the \"Stable Pity\" Mechanism:\n"
 		"(the mechanic that prevents too many character or weapon drops in a row)\n"
 		"\t--smooth4c             Specify the number of pulls since receiving a\n"
@@ -104,7 +91,7 @@ static void usage() {
 		"\t-S, --noSmooth5        Disable the \"smooth\" pity mechanism for 5★\n"
 		"\t                       \titems.\n"
 		"\nDisclaimer:\n"
-		"This project is not affiliated with miHoYo/Hoyoverse/Cogonosphere or any of\ntheir subsidiaries. It is designed for entertainment purposes only, and gacha\npulls made with this program can not and will not be reflected in your in-game\naccount.\n"
+		"This project is not affiliated with Hoyoverse/Cogonosphere or any of their subsidiaries. It is designed for entertainment purposes only, and gacha pulls made with this program can not and will not be reflected in your in-game account.\n"
 	);
 }
 
@@ -113,8 +100,6 @@ typedef struct option opt_t;
 static const opt_t long_opts[] = {
 	{"banner", required_argument, 0, 'b'},
 	{"pulls", required_argument, 0, 'p'},
-	{"fate_points", required_argument, 0, 'f'},
-	{"epitomized_path", required_argument, 0, 'e'},
 	{"pity4", required_argument, 0, '4'},
 	{"pity5", required_argument, 0, '5'},
 	{"smooth4c", required_argument, 0, 1},
@@ -157,11 +142,11 @@ int main(int argc, char** argv) {
 	const unsigned short* fourPool;
 	int c = 0;
 	long long n = 0;
-	int v[4] = {-1, -1, 0, 0x46};
-	int b[5] = {-1, -1, -1, 0, 0x461};
+	int v[4] = {-1, -1, 0, 0x22};
+	int b[5] = {-1, -1, -1, 0, 0x221};
 	char* p = NULL;
 	while (1) {
-		c = getopt_long(argc, argv, "4:5:B:LNSV:b:c:de:f:ghlnrsp:v", long_opts, NULL);
+		c = getopt_long(argc, argv, "4:5:B:LNSV:b:c:dghlnrsp:v", long_opts, NULL);
 		if (c == -1) break;
 		switch (c) {
 		case '4':
@@ -249,15 +234,15 @@ int main(int argc, char** argv) {
 			}
 			break;
 		case 'b':
-			for (n = 0; n < WISH_CNT; n++) {
+			for (n = 0; n < WARP_CNT; n++) {
 				if (strcasecmp(optarg, banners[n][0]) == 0) {
 					banner = n;
 					break;
 				}
 			}
-			if (n >= WISH_CNT) {
+			if (n >= WARP_CNT) {
 				fprintf(stderr, "Invalid banner type \"%s\". Valid banner types:\n", optarg);
-				for (n = 0; n < WISH_CNT; n++) {
+				for (n = 0; n < WARP_CNT; n++) {
 					fprintf(stderr, "\t%s: %s\n", banners[n][0], banners[n][1]);
 				}
 				return -1;
@@ -267,53 +252,21 @@ int main(int argc, char** argv) {
 			n = strtoull(optarg, &p, 0);
 #ifndef DEBUG
 			if (n < 0) {
-				fprintf(stderr, "Wish count cannot be negative.\n");
+				fprintf(stderr, "Warp count cannot be negative.\n");
 				return -1;
 			}
-			if (n > 8) {
-				n = 8;
+			if (n > 50) {
+				n = 50;
 			}
 #endif
 			if ((unsigned long) optarg == (unsigned long) p) {
-				fprintf(stderr, "Wish count must be numeric.\n");
+				fprintf(stderr, "Warp count must be numeric.\n");
 				return -1;
 			}
 			noviceCnt = n;
 			break;
 		case 'd':
 			detailsRequested = 1;
-			break;
-		case 'e':
-			n = strtoull(optarg, &p, 0);
-#ifndef DEBUG
-			if (n < 1) {
-				fprintf(stderr, "Epitomized Path index is invalid.\n");
-				return -1;
-			}
-#endif
-			if ((unsigned long) optarg == (unsigned long) p) {
-				fprintf(stderr, "Epitomized Path index must be numeric.\n");
-				return -1;
-			}
-			epitomizedPathIndex = n;
-			break;
-		case 'f':
-			n = strtoull(optarg, &p, 0);
-#ifndef DEBUG
-			if (n < 0) {
-				fprintf(stderr, "Fate Points cannot be negative.\n");
-				return -1;
-			}
-			if (n > 2) {
-				fprintf(stderr, "Fate Points cannot be more than 2.\n");
-				return -1;
-			}
-#endif
-			if ((unsigned long) optarg == (unsigned long) p) {
-				fprintf(stderr, "Fate Points must be numeric.\n");
-				return -1;
-			}
-			fatePoints = n;
 			break;
 		case 'g':
 			do5050 = 0;
@@ -382,14 +335,14 @@ int main(int argc, char** argv) {
 	}
 	if (banner < 0) {
 		fprintf(stderr, "We need a banner to pull from!\nValid banner indexes:\n");
-		for (n = 0; n < WISH_CNT; n++) {
+		for (n = 0; n < WARP_CNT; n++) {
 			fprintf(stderr, "\t%s: %s\n", banners[n][0], banners[n][1]);
 		}
 		fprintf(stderr, "Pick one with the -b option.\n");
 		return -1;
 	}
 #ifndef DEBUG
-	if (banner == WPN || banner == STD_WPN) {
+	if (banner == WPN1 || banner == WPN2 || banner == STD_WPN) {
 		if (pity[0] >= 10) {
 			fprintf(stderr, "4★ pity cannot be more than 10 for weapon banners.\n");
 			return -1;
@@ -411,59 +364,18 @@ int main(int argc, char** argv) {
 	b[0]--;
 	b[1] = b[4] >> 4;
 #ifndef DEBUG
-	if (b[1] > 0x47) b[1] = 0x47;
+	if (b[1] > 0x22) b[1] = 0x22;
 #endif
-	if (b[1] >= 0x40) {
-		b[1] -= 0x7;
-	}
-	if (b[1] >= 0x30) {
-		b[1] -= 0x7;
-	}
 	if (b[1] >= 0x20) {
 		b[1] -= 0x9;
 	}
-	if (b[1] >= 0x14) {
-		b[1] += 0x1;
-	}
 	b[1] -= 0x10;
-#ifdef DEBUG
-	if (banner == CHRONICLED) {
-#else
-	if (1) {
-#endif
-		if (b[1] > IDX_MAX - 1) {
-			b[1] = IDX_MAX - 1;
-		}
-	}
-	b[0] += (b[1] << 1);
-	// 60 = v4.4 phase 1
-	if (banner == CHRONICLED && (b[0] < 60 || ChroniclePool[b[0] - 60] == NULL)) {
-		fprintf(stderr, "Error: Chronicled Wish didn't run during version %d.%d phase %d\n", (b[4] >> 8 & 0xf), (b[4] >> 4) & 0xf, b[4] & 0xf);
-		return -1;
-	}
-	fivePool = ChroniclePool[b[0] - 60]->FiveStarPool;
 #ifndef DEBUG
-	fiveMaxIdx = ChroniclePool[b[0] - 60]->FiveStarWeaponCount + ChroniclePool[b[0] - 60]->FiveStarCharCount;
-	if (
-		(
-			banner == WPN && (epitomizedPathIndex > 2)
-		) || (
-			banner == CHRONICLED && (epitomizedPathIndex - 1 > fiveMaxIdx)
-		)
-	) {
-		fprintf(stderr, "Epitomized Path index is invalid.\n");
-		return -1;
+	if (b[1] > IDX_MAX - 1) {
+		b[1] = IDX_MAX - 1;
 	}
 #endif
-	if (epitomizedPathIndex > 0) {
-		epitomizedPathIndex--;
-		if (banner == WPN) {
-			epitomizedPath = FiveStarWpnUp[b[0]][epitomizedPathIndex];
-		}
-		else if (banner == CHRONICLED) {
-			epitomizedPath = fivePool[epitomizedPathIndex];
-		}
-	}
+	b[0] += (b[1] << 1);
 	if (!(banner == STD_CHR || banner == STD_WPN) && do5050 < 0) {
 		v[2] = 0;
 		v[3] = 0;
@@ -488,36 +400,33 @@ int main(int argc, char** argv) {
 	}
 	else {
 #ifndef DEBUG
-		if (v[0] > 0x47) v[0] = 0x47;
+		if (v[0] > 0x22) v[0] = 0x22;
 #endif
-		if (v[0] >= 0x40) {
-			v[0] -= 0x7;
-		}
-		if (v[0] >= 0x30) {
-			v[0] -= 0x7;
-		}
 		if (v[0] >= 0x20) {
 			v[0] -= 0x9;
 		}
-		v[0] -= 0xf;
+		v[0] -= 0x10;
 #ifndef DEBUG
-		if ((int) v[0] < 1) v[0] = 1;
 		if (v[0] > IDX_MAX) v[0] = IDX_MAX;
 #endif
 	}
 #ifndef DEBUG
 	if (FiveStarChrUp[b[0]][1] == 0xffff && banner == CHAR2) {
-		fprintf(stderr, "Warning: Character Event Banner-2 didn't run during version %d.%d phase %d, switching to main Character Event Banner\n", (b[4] >> 8 & 0xf), (b[4] >> 4) & 0xf, b[4] & 0xf);
+		fprintf(stderr, "Warning: Character Event Warp-2 banner didn't run during version %d.%d phase %d, switching to main Character Event Warp banner\n", (b[4] >> 8 & 0xf), (b[4] >> 4) & 0xf, b[4] & 0xf);
 		banner = CHAR1;
+	}
+	if (FiveStarWpnUp[b[0]][1] == 0xffff && banner == WPN2) {
+		fprintf(stderr, "Warning: Light Cone Event Warp-2 banner didn't run during version %d.%d phase %d, switching to main Light Cone Event Warp banner\n", (b[4] >> 8 & 0xf), (b[4] >> 4) & 0xf, b[4] & 0xf);
+		banner = WPN1;
 	}
 #endif
 	if (detailsRequested) {
 		printf("Details for the %s banner", banners[banner][1]);
-		if ((banner == CHAR1 || banner == CHAR2 || banner == WPN || banner == CHRONICLED) && b[3]) {
+		if ((banner == CHAR1 || banner == CHAR2 || banner == WPN1 || banner == WPN2) && b[3]) {
 			printf(" from v%d.%d phase %d", b[4] >> 8, (b[4] >> 4) & 0xf, b[4] & 0xf);
 		}
 		printf(":");
-		if (!(banner == NOVICE || banner == CHRONICLED) && v[2]) {
+		if ((banner != NOVICE) && v[2]) {
 			printf(" (v%d.%d standard pool)", v[3] >> 4, v[3] & 0xf);
 		}
 		printf("\n\n");
@@ -543,21 +452,17 @@ int main(int argc, char** argv) {
 			}
 			printf("\n");
 		}
-		else if (banner == WPN) {
-			printf("Rate-Up 5★ Weapons:\n");
-			for (n = 0; n < 2; n++) {
-				item = FiveStarWpnUp[b[0]][n];
-				if (getItem(item) != NULL) {
-					snprintf(buf, 1024, "\e[33;1m%s\e[39;0m (id %u)", getItem(item), item);
-				}
-				else {
-					snprintf(buf, 1024, "id \e[33;1m%u\e[39;0m", item);
-				}
-				printf("\t%d: %s\n", (int) n + 1, buf);
+		else if (banner == WPN1 || banner == WPN2) {
+			item = FiveStarWpnUp[b[0]][banner - WPN1];
+			if (getItem(item) != NULL) {
+				snprintf(buf, 1024, "\e[33;1m%s\e[39;0m (id %u)", getItem(item), item);
 			}
-			printf("(Chart a course by passing -e x, where x is the desired index listed above.)\n\n");
-			printf("Rate-Up 4★ Weapons:\n");
-			for (n = 0; n < 5; n++) {
+			else {
+				snprintf(buf, 1024, "id \e[33;1m%u\e[39;0m", item);
+			}
+			printf("Rate-Up 5★ Light Cone:\n\t%s\n\n", buf);
+			printf("Rate-Up 4★ Light Cones:\n");
+			for (n = 0; n < 3; n++) {
 				item = FourStarWpnUp[b[0]][n];
 				if (getItem(item) != NULL) {
 					snprintf(buf, 1024, "\e[35;1m%s\e[39;0m (id %u)", getItem(item), item);
@@ -569,83 +474,38 @@ int main(int argc, char** argv) {
 			}
 			printf("\n");
 		}
-		if (banner != WPN && banner != STD_WPN && do5050 >= 0) {
+		if (banner != WPN1 && banner != WPN2 && banner != STD_WPN && do5050 >= 0) {
 			printf("5★ Character Pool:\n");
-			if (banner == CHRONICLED) {
-				fivePool = ChroniclePool[b[0] - 60]->FiveStarPool;
-				fiveMaxIdx = ChroniclePool[b[0] - 60]->FiveStarCharCount;
-			}
-			else {
-				fivePool = FiveStarChr;
-				fiveMaxIdx = FiveStarMaxIndex[v[0]];
-			}
-			for (n = 0; n < fiveMaxIdx; n++) {
-				item = fivePool[n];
+			for (n = 0; n < 7; n++) {
+				item = FiveStarChr[n];
 				if (getItem(item) != NULL) {
-					snprintf(buf, 1024, "\e[33%sm%s\e[39;0m (id %u)", shouldBold(5, banner, banner == CHRONICLED) ? ";1" : ";22", getItem(item), item);
+					snprintf(buf, 1024, "\e[33%sm%s\e[39;0m (id %u)", shouldBold(5, banner, 0) ? ";1" : ";22", getItem(item), item);
 				}
 				else {
-					snprintf(buf, 1024, "id \e[33%sm%u\e[39;0m", shouldBold(5, banner, banner == CHRONICLED) ? ";1" : ";22", item);
+					snprintf(buf, 1024, "id \e[33%sm%u\e[39;0m", shouldBold(5, banner, 0) ? ";1" : ";22", item);
 				}
-				if (banner == CHRONICLED) {
-					printf("\t%d: %s\n", (int) n + 1, buf);
-				}
-				else {
-					printf("\t%s\n", buf);
-				}
+				printf("\t%s\n", buf);
 			}
 			printf("\n");
 		}
 		if (banner != CHAR1 && banner != CHAR2 && banner != NOVICE && do5050 >= 0) {
-			printf("5★ Weapon Pool:\n");
-			if (banner == CHRONICLED) {
-				fivePool = ChroniclePool[b[0] - 60]->FiveStarPool;
-				fiveMinIdx = ChroniclePool[b[0] - 60]->FiveStarCharCount;
-				fiveMaxIdx = ChroniclePool[b[0] - 60]->FiveStarWeaponCount + fiveMinIdx;
-			}
-			else {
-				fivePool = FiveStarWpn;
-				fiveMinIdx = 0;
-				fiveMaxIdx = 10;
-			}
-			for (n = fiveMinIdx; n < fiveMaxIdx; n++) {
-				item = fivePool[n];
+			printf("5★ Light Cone Pool:\n");
+			for (n = 0; n < 7; n++) {
+				item = FiveStarWpn[n];
 				if (getItem(item) != NULL) {
-					snprintf(buf, 1024, "\e[33%sm%s\e[39;0m (id %u)", shouldBold(5, banner, banner == CHRONICLED) ? ";1" : ";22", getItem(item), item);
+					snprintf(buf, 1024, "\e[33%sm%s\e[39;0m (id %u)", shouldBold(5, banner, 0) ? ";1" : ";22", getItem(item), item);
 				}
 				else {
-					snprintf(buf, 1024, "id \e[33%sm%u\e[39;0m", shouldBold(5, banner, banner == CHRONICLED) ? ";1" : ";22", item);
+					snprintf(buf, 1024, "id \e[33%sm%u\e[39;0m", shouldBold(5, banner, 0) ? ";1" : ";22", item);
 				}
-				if (banner == CHRONICLED) {
-					printf("\t%d: %s\n", (int) n + 1, buf);
-				}
-				else {
-					printf("\t%s\n", buf);
-				}
+				printf("\t%s\n", buf);
 			}
 			printf("\n");
-			if (banner == CHRONICLED) {
-				printf("(Chart a course by passing -e x, where x is the desired index listed above.)\n\n");
-			}
 		}
 		if (do5050 >= 0) {
 			printf("4★ Character Pool:\n");
-			if (banner == CHRONICLED) {
-				fourPool = ChroniclePool[b[0] - 60]->FourStarPool;
-				fourMaxIdx = ChroniclePool[b[0] - 60]->FourStarCharCount;
-				fourMinIdx = 0;
-			}
-			else {
-				fourPool = FourStarChr;
-				fourMaxIdx = FourStarMaxIndex[v[0]];
-				fourMinIdx = 0;
-				if (!(banner == STD_CHR || banner == STD_WPN)) {
-					fourMinIdx = 3;
-					fourMaxIdx += 3;
-				}
-			}
-			for (n = fourMinIdx; n < fourMaxIdx; n++) {
-				item = fourPool[n];
+			for (n = 0; n < FourStarChrMaxIndex[v[0]]; n++) {
+				item = FourStarChr[n];
 				if (getItem(item) != NULL) {
 					snprintf(buf, 1024, "\e[35%sm%s\e[39;0m (id %u)", shouldBold(4, banner, 0) ? ";1" : ";22", getItem(item), item);
 				}
@@ -657,19 +517,9 @@ int main(int argc, char** argv) {
 			printf("\n");
 		}
 		if (banner != NOVICE && do5050 >= 0) {
-			printf("4★ Weapon Pool:\n");
-			if (banner == CHRONICLED) {
-				fourPool = ChroniclePool[b[0] - 60]->FourStarPool;
-				fourMinIdx = ChroniclePool[b[0] - 60]->FourStarCharCount;
-				fourMaxIdx = ChroniclePool[b[0] - 60]->FourStarWeaponCount + fourMinIdx;
-			}
-			else {
-				fourPool = FourStarWpn;
-				fourMinIdx = 0;
-				fourMaxIdx = 18;
-			}
-			for (n = fourMinIdx; n < fourMaxIdx; n++) {
-				item = fourPool[n];
+			printf("4★ Light Cone Pool:\n");
+			for (n = 0; n < FourStarWpnMaxIndex[v[0]]; n++) {
+				item = FourStarWpn[n];
 				if (getItem(item) != NULL) {
 					snprintf(buf, 1024, "\e[35%sm%s\e[39;0m (id %u)", shouldBold(4, banner, 0) ? ";1" : ";22", getItem(item), item);
 				}
@@ -681,9 +531,9 @@ int main(int argc, char** argv) {
 			printf("\n");
 		}
 		if (do5050 >= 0) {
-			printf("3★ Weapon Pool:\n");
-			for (n = 0; n < 13; n++) {
-				item = ThreeStar[n];
+			printf("3★ Light Cone Pool:\n");
+			for (n = 0; n < 21; n++) {
+				item = 20000 + n;
 				if (getItem(item) != NULL) {
 					snprintf(buf, 1024, "\e[34;22m%s\e[39;0m (id %u)", getItem(item), item);
 				}
@@ -695,27 +545,24 @@ int main(int argc, char** argv) {
 		}
 		return 0;
 	}
-	fprintf(stderr, "Making %u wishes on the %s banner", pulls, banners[banner][1]);
-	if ((banner == CHAR1 || banner == CHAR2 || banner == WPN || banner == CHRONICLED) && b[3]) {
+	fprintf(stderr, "Performing %u warps - %s banner", pulls, banners[banner][1]);
+	if ((banner == CHAR1 || banner == CHAR2 || banner == WPN1 || banner == WPN2) && b[3]) {
 		fprintf(stderr, " from v%d.%d phase %d", b[4] >> 8, (b[4] >> 4) & 0xf, b[4] & 0xf);
 	}
-	if (!(banner == NOVICE || banner == CHRONICLED) && v[2]) {
+	if ((banner != NOVICE) && v[2]) {
 		fprintf(stderr, " (v%d.%d standard pool)", v[3] >> 4, v[3] & 0xf);
 	}
 	fprintf(stderr, "\n\n");
 	for (i = 0; i < pulls; i++) {
-		if (banner == NOVICE && i == (7 - noviceCnt)) { // 8th wish is always Noelle on novice banner
-			rare = 4;
-			item = 1034;
-			won5050 = 0;
-			getRateUp[0] = 0;
-			pity[0] = 0;
-			pity[1]++;
-			pityS[0] = 0;
-			pityS[1] = 0;
+		if (banner == NOVICE && i == (50 - noviceCnt)) {
+			// If 5-star pity is 50 or more...
+			if (pity[1] >= 50) {
+				// Then max it out before making a pull. This (should) force a 5-star character no matter what.
+				pity[1] = ~0;
+			}
 		}
 		// TODO Implement logic for character vs. item pool instead of checking the ID to determine that
-		else item = doAPull(banner, v[0], b[0], &rare, &won5050);
+		item = doAPull(banner, v[0], b[0], &rare, &won5050);
 		if (item < 0) {
 			fprintf(stderr, "Pull #%u failed (retcode = %d)\n", i + 1, item);
 			break;
@@ -739,7 +586,7 @@ int main(int argc, char** argv) {
 			color = 33;
 			break;
 		}
-		if (item <= 1000 + MAX_CHARS && item >= 1000) {
+		if (item <= 1315 && item >= 1000) {
 			isChar = 1;
 			if (getItem(item) != NULL) {
 				snprintf(buf, 1024, "\e[%u%sm%s\e[39;0m (id %u)", color, shouldBold(rare, banner, won5050) ? ";1" : ";22", getItem(item), item);
@@ -757,7 +604,7 @@ int main(int argc, char** argv) {
 				snprintf(buf, 1024, "with id \e[%u%sm%u\e[39;0m", color, shouldBold(rare, banner, won5050) ? ";1" : ";22", item);
 			}
 		}
-		printf("Pull %u: %u★ %s %s\n", i + 1, rare, isChar ? "Character" : "Weapon", buf);
+		printf("Pull %u: %u★ %s %s\n", i + 1, rare, isChar ? "Character" : "Light Cone", buf);
 	}
 	printf("\nResults after last pull:\n");
 	if (doPity[0]) {
@@ -767,18 +614,15 @@ int main(int argc, char** argv) {
 		printf("\n5★ pity: %u\n", pity[1]);
 	}
 	else printf("\n");
-	if (do5050 > 0 && (banner == CHAR1 || banner == CHAR2 || banner == WPN || (banner == CHRONICLED && epitomizedPath))) {
+	if (do5050 > 0 && (banner == CHAR1 || banner == CHAR2 || banner == WPN1 || banner == WPN2)) {
 		printf("\n4★ guaranteed: %u\n", getRateUp[0] ? 1 : 0);
 		printf("5★ guaranteed: %u\n", getRateUp[1] ? 1 : 0);
-	}
-	if (banner == WPN && epitomizedPath) {
-		printf("Fate Points: %u\n", fatePoints);
 	}
 	if (do5050 >= 0 && doSmooth[0] && banner != NOVICE) {
 		printf("\n4★ stable val (characters): %u\n", pityS[0]);
 		printf("4★ stable val (weapons): %u", pityS[1]);
 	}
-	if (do5050 >= 0 && doSmooth[1] && (banner == STD_CHR || banner == STD_WPN || (banner == CHRONICLED && !epitomizedPath))) {
+	if (do5050 >= 0 && doSmooth[1] && (banner == STD_CHR || banner == STD_WPN)) {
 		printf("\n5★ stable val (characters): %u\n", pityS[2]);
 		printf("5★ stable val (weapons): %u\n", pityS[3]);
 	}
