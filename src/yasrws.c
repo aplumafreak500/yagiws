@@ -550,11 +550,11 @@ int main(int argc, char** argv) {
 	}
 	fprintf(stderr, "\n\n");
 	for (i = 0; i < pulls; i++) {
-		if (banner == NOVICE && i == (50 - noviceCnt)) {
+		if (banner == NOVICE && i == (49 - noviceCnt)) {
 			// If 5-star pity is 50 or more...
-			if (pity[1] >= 50) {
+			if (pity[1] + 1 >= 50) {
 				// Then max it out before making a pull. This (should) force a 5-star character no matter what.
-				pity[1] = ~0;
+				pity[1] = ~1;
 			}
 		}
 		// TODO Implement logic for character vs. item pool instead of checking the ID to determine that
