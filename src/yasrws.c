@@ -75,16 +75,16 @@ static void usage() {
 		"\t                       \tof items will be drawn from.\n"
 		"\t                       \tNot relevant on the Departure banner, which uses a fixed pool.\n"
 		"\nTuning the \"Stable Pity\" Mechanism:\n"
-		"(the mechanic that prevents too many character or weapon drops in a row)\n"
+		"(the mechanic that prevents too many character or Light Cone drops in a row)\n"
 		"\t--smooth4c             Specify the number of pulls since receiving a\n"
 		"\t                       \t4★ character.\n"
 		"\t--smooth4w             Specify the number of pulls since receiving a\n"
-		"\t                       \t4★ weapon.\n"
+		"\t                       \t4★ Light Cone.\n"
 		"\t--smooth5c             Specify the number of pulls since receiving a\n"
 		"\t                       \t5★ character. Only relevant on the standard\n"
 		"\t                       \tbanner.\n"
 		"\t--smooth5w             Specify the number of pulls since receiving a\n"
-		"\t                       \t5★ weapon. Only relevant on the standard\n"
+		"\t                       \t5★ Light Cone. Only relevant on the standard\n"
 		"\t                       \tbanner.\n"
 		"\t-s, --noSmooth4        Disable the \"smooth\" pity mechanism for 4★\n"
 		"\t                       \titems.\n"
@@ -340,11 +340,11 @@ int main(int argc, char** argv) {
 #ifndef DEBUG
 	if (banner == WPN1 || banner == WPN2 || banner == STD_WPN) {
 		if (pity[0] >= 10) {
-			fprintf(stderr, "4★ pity cannot be more than 10 for weapon banners.\n");
+			fprintf(stderr, "4★ pity cannot be more than 10 for Light Cone banners.\n");
 			return -1;
 		}
 		if (pity[1] >= 80) {
-			fprintf(stderr, "5★ pity cannot be more than 80 for weapon banners.\n");
+			fprintf(stderr, "5★ pity cannot be more than 80 for Light Cone banners.\n");
 			return -1;
 		}
 	}
@@ -616,11 +616,11 @@ int main(int argc, char** argv) {
 	}
 	if (do5050 >= 0 && doSmooth[0] && banner != NOVICE) {
 		printf("\n4★ stable val (characters): %u\n", pityS[0]);
-		printf("4★ stable val (weapons): %u", pityS[1]);
+		printf("4★ stable val (Light Cones): %u", pityS[1]);
 	}
 	if (do5050 >= 0 && doSmooth[1] && (banner == STD_CHR || banner == STD_WPN)) {
 		printf("\n5★ stable val (characters): %u\n", pityS[2]);
-		printf("5★ stable val (weapons): %u\n", pityS[3]);
+		printf("5★ stable val (Light Cones): %u\n", pityS[3]);
 	}
 	else printf("\n");
 	return 0;
