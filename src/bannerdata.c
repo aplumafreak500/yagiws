@@ -103,9 +103,9 @@ const unsigned short FourStarChrUp[IDX_MAX*2][3] = {
 	// v4.5 - Alchemical Ascension
 	{1055, 1068, 1064},
 	{1014, 1025, 1048},
-	// v4.6 - Sea of Bygone Eras (phase 2 TODO)
+	// v4.6 - Sea of Bygone Eras
 	{1083, 1085, 1023},
-	{1006, 1015, 1021},
+	{1074, 1076, 1024},
 	// v4.7 - TODO
 	{1006, 1015, 1021},
 	{1006, 1015, 1021},
@@ -233,7 +233,7 @@ const unsigned short FourStarWpnUp[IDX_MAX*2][5] = {
 	{11405, 12410, 13406, 14402, 15403}, // Lithic Blade, Lithic Spear (second half)
 	// v1.4 - Windblume
 	{13401, 12401, 15401, 11410, 14410}, // Alley Flash
-	{15410, 11401, 13407, 14401, 12403}, // Alley Hunter
+	{15410, 11401, 13407, 14401, 12403}, // Alley Hunter, Favonius Sword
 	// v1.5 - Serenitea Pot
 	{12410, 13406, 15403, 11402, 14409},
 	{13401, 14403, 11403, 15405, 12405},
@@ -312,9 +312,9 @@ const unsigned short FourStarWpnUp[IDX_MAX*2][5] = {
 	// v4.5 - Alchemical Ascension
 	{11410, 12402, 13401, 14401, 15410},
 	{11402, 12401, 13407, 14410, 15412},
-	// v4.6 - Sea of Bygone Eras (phase 2 TODO)
+	// v4.6 - Sea of Bygone Eras
 	{11427, 12427, 13401, 14409, 15401},
-	{11400, 12400, 13400, 14400, 15400},
+	{11401, 12405, 13427, 14403, 15427},
 	// v4.7 - TODO
 	{11400, 12400, 13400, 14400, 15400},
 	{11400, 12400, 13400, 14400, 15400},
@@ -416,7 +416,7 @@ const unsigned short FiveStarWpnUp[IDX_MAX*2][2] = {
 	// v4.5 - Alchemical Ascension
 	{11514, 12510}, // Uraku Misugiri
 	{14514, 11503},
-	// v4.6 - Sea of Bygone Eras (phase 2 TODO)
+	// v4.6 - Sea of Bygone Eras
 	{13512, 15512}, // Crimson Moon's Semblance
 	{14512, 14505},
 	// v4.7 - TODO
@@ -450,7 +450,7 @@ const ChroniclePool_t* ChroniclePool[(IDX_MAX-30)*2] = {
 	// v4.5 - Alchemical Ascension
 	NULL,
 	NULL,
-	// v4.6 - Sea of Bygone Eras (phase 2 TODO)
+	// v4.6 - Sea of Bygone Eras
 	NULL,
 	NULL,
 	// v4.7 - TODO
