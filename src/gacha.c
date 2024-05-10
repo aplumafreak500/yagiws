@@ -44,7 +44,7 @@ static long double getWeight4(unsigned int _pity) {
 static long double getWeight5W(unsigned int _pity) {
 	if (_pity <= 62 || !doPity[1]) return 0.008l;
 	else if (_pity <= 73) return 0.008l + 0.08l * (long double) (_pity - 62);
-	return 0.888l + 0.08l * (long double) (_pity - 73);
+	return 0.888l + 0.04l * (long double) (_pity - 73);
 }
 
 static long double getWeight4W(unsigned int _pity) {
