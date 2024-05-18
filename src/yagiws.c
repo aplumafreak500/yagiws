@@ -254,7 +254,7 @@ int main(int argc, char** argv) {
 			if (n >= WISH_CNT) {
 				fprintf(stderr, _("Invalid banner type \"%s\". Valid banner types:\n"), optarg);
 				for (n = 0; n < WISH_CNT; n++) {
-					fprintf(stderr, "\t%s: %s\n", banners[n][0], gettext(banners[n][1]));
+					fprintf(stderr, _("\t%s: %s\n"), banners[n][0], gettext(banners[n][1]));
 				}
 				return -1;
 			}
@@ -379,7 +379,7 @@ int main(int argc, char** argv) {
 	if (banner < 0) {
 		fprintf(stderr, _("We need a banner to pull from!\nValid banner indexes:\n"));
 		for (n = 0; n < WISH_CNT; n++) {
-			fprintf(stderr, "\t%s: %s\n", banners[n][0], gettext(banners[n][1]));
+			fprintf(stderr, _("\t%s: %s\n"), banners[n][0], gettext(banners[n][1]));
 		}
 		fprintf(stderr, _("Pick one with the -b option.\n"));
 		return -1;
@@ -507,13 +507,13 @@ int main(int argc, char** argv) {
 		banner = CHAR1;
 	}
 #endif
-	const char* _id = _N("id");
 	if (detailsRequested) {
-		printf(_("Details for the %s banner"), gettext(banners[banner][1]));
 		if ((banner == CHAR1 || banner == CHAR2 || banner == WPN || banner == CHRONICLED) && b[3]) {
-			printf(_(" from v%d.%d phase %d"), b[4] >> 8, (b[4] >> 4) & 0xf, b[4] & 0xf);
+			printf(_("Details for the %s banner from v%d.%d phase %d:"), gettext(banners[banner][1]), b[4] >> 8, (b[4] >> 4) & 0xf, b[4] & 0xf);
 		}
-		printf(":");
+		else {
+			printf(_("Details for the %s banner:"), gettext(banners[banner][1]));
+		}
 		if (!(banner == NOVICE || banner == CHRONICLED) && v[2]) {
 			printf(_(" (v%d.%d standard pool)"), v[3] >> 4, v[3] & 0xf);
 		}
@@ -521,20 +521,20 @@ int main(int argc, char** argv) {
 		if (banner == CHAR1 || banner == CHAR2) {
 			item = FiveStarChrUp[b[0]][banner - CHAR1];
 			if (getItem(item) != NULL) {
-				snprintf(buf, 1024, "\e[33;1m%s\e[39;0m (%s %u)", getItem(item), gettext(_id), item);
+				snprintf(buf, 1024, _("\e[33;1m%s\e[39;0m (id %u)"), getItem(item), item);
 			}
 			else {
-				snprintf(buf, 1024, "%s \e[33;1m%u\e[39;0m", gettext(_id), item);
+				snprintf(buf, 1024, _("id \e[33;1m%u\e[39;0m"), item);
 			}
 			printf(_("Rate-Up 5★ Character:\n\t%s\n\n"), buf);
 			printf(_("Rate-Up 4★ Characters:\n"));
 			for (n = 0; n < 3; n++) {
 				item = FourStarChrUp[b[0]][n];
 				if (getItem(item) != NULL) {
-					snprintf(buf, 1024, "\e[35;1m%s\e[39;0m (%s %u)", getItem(item), gettext(_id), item);
+					snprintf(buf, 1024, _("\e[35;1m%s\e[39;0m (id %u)"), getItem(item), item);
 				}
 				else {
-					snprintf(buf, 1024, "%s \e[35;1m%u\e[39;0m", gettext(_id), item);
+					snprintf(buf, 1024, _("id \e[35;1m%u\e[39;0m"), item);
 				}
 				printf("\t%s\n", buf);
 			}
@@ -545,22 +545,22 @@ int main(int argc, char** argv) {
 			for (n = 0; n < 2; n++) {
 				item = FiveStarWpnUp[b[0]][n];
 				if (getItem(item) != NULL) {
-					snprintf(buf, 1024, "\e[33;1m%s\e[39;0m (%s %u)", getItem(item), gettext(_id), item);
+					snprintf(buf, 1024, _("\e[33;1m%s\e[39;0m (id %u)"), getItem(item), item);
 				}
 				else {
-					snprintf(buf, 1024, "%s \e[33;1m%u\e[39;0m", gettext(_id), item);
+					snprintf(buf, 1024, _("id \e[33;1m%u\e[39;0m"), item);
 				}
-				printf("\t%d: %s\n", (int) n + 1, buf);
+				printf(_("\t%d: %s\n"), (int) n + 1, buf);
 			}
 			printf(_("(Chart a course by passing -e x, where x is the desired index listed above.)\n\n"));
 			printf(_("Rate-Up 4★ Weapons:\n"));
 			for (n = 0; n < 5; n++) {
 				item = FourStarWpnUp[b[0]][n];
 				if (getItem(item) != NULL) {
-					snprintf(buf, 1024, "\e[35;1m%s\e[39;0m (%s %u)", getItem(item), gettext(_id), item);
+					snprintf(buf, 1024, _("\e[35;1m%s\e[39;0m (id %u)"), getItem(item), item);
 				}
 				else {
-					snprintf(buf, 1024, "%s \e[35;1m%u\e[39;0m", gettext(_id), item);
+					snprintf(buf, 1024, _("id \e[35;1m%u\e[39;0m"), item);
 				}
 				printf("\t%s\n", buf);
 			}
@@ -579,13 +579,13 @@ int main(int argc, char** argv) {
 			for (n = 0; n < fiveMaxIdx; n++) {
 				item = fivePool[n];
 				if (getItem(item) != NULL) {
-					snprintf(buf, 1024, "\e[33%sm%s\e[39;0m (%s %u)", shouldBold(5, banner, banner == CHRONICLED) ? ";1" : ";22", getItem(item), gettext(_id), item);
+					snprintf(buf, 1024, _("\e[33%sm%s\e[39;0m (id %u)"), shouldBold(5, banner, banner == CHRONICLED) ? ";1" : ";22", getItem(item), item);
 				}
 				else {
-					snprintf(buf, 1024, "%s \e[33%sm%u\e[39;0m", shouldBold(5, banner, banner == CHRONICLED) ? ";1" : ";22", gettext(_id), item);
+					snprintf(buf, 1024, _("id \e[33%sm%u\e[39;0m"), shouldBold(5, banner, banner == CHRONICLED) ? ";1" : ";22", item);
 				}
 				if (banner == CHRONICLED) {
-					printf("\t%d: %s\n", (int) n + 1, buf);
+					printf(_("\t%d: %s\n"), (int) n + 1, buf);
 				}
 				else {
 					printf("\t%s\n", buf);
@@ -608,13 +608,13 @@ int main(int argc, char** argv) {
 			for (n = fiveMinIdx; n < fiveMaxIdx; n++) {
 				item = fivePool[n];
 				if (getItem(item) != NULL) {
-					snprintf(buf, 1024, "\e[33%sm%s\e[39;0m (%s %u)", shouldBold(5, banner, banner == CHRONICLED) ? ";1" : ";22", getItem(item), gettext(_id), item);
+					snprintf(buf, 1024, _("\e[33%sm%s\e[39;0m (id %u)"), shouldBold(5, banner, banner == CHRONICLED) ? ";1" : ";22", getItem(item), item);
 				}
 				else {
-					snprintf(buf, 1024, "%s \e[33%sm%u\e[39;0m", shouldBold(5, banner, banner == CHRONICLED) ? ";1" : ";22", gettext(_id), item);
+					snprintf(buf, 1024, _("id \e[33%sm%u\e[39;0m"), shouldBold(5, banner, banner == CHRONICLED) ? ";1" : ";22", item);
 				}
 				if (banner == CHRONICLED) {
-					printf("\t%d: %s\n", (int) n + 1, buf);
+					printf(_("\t%d: %s\n"), (int) n + 1, buf);
 				}
 				else {
 					printf("\t%s\n", buf);
@@ -644,10 +644,10 @@ int main(int argc, char** argv) {
 			for (n = fourMinIdx; n < fourMaxIdx; n++) {
 				item = fourPool[n];
 				if (getItem(item) != NULL) {
-					snprintf(buf, 1024, "\e[35%sm%s\e[39;0m (%s %u)", shouldBold(4, banner, 0) ? ";1" : ";22", getItem(item), gettext(_id), item);
+					snprintf(buf, 1024, _("\e[35%sm%s\e[39;0m (id %u)"), shouldBold(4, banner, 0) ? ";1" : ";22", getItem(item), item);
 				}
 				else {
-					snprintf(buf, 1024, "%s \e[35%sm%u\e[39;0m", shouldBold(4, banner, 0) ? ";1" : ";22", gettext(_id), item);
+					snprintf(buf, 1024, _("id \e[35%sm%u\e[39;0m"), shouldBold(4, banner, 0) ? ";1" : ";22", item);
 				}
 				printf("\t%s\n", buf);
 			}
@@ -668,10 +668,10 @@ int main(int argc, char** argv) {
 			for (n = fourMinIdx; n < fourMaxIdx; n++) {
 				item = fourPool[n];
 				if (getItem(item) != NULL) {
-					snprintf(buf, 1024, "\e[35%sm%s\e[39;0m (%s %u)", shouldBold(4, banner, 0) ? ";1" : ";22", getItem(item), gettext(_id), item);
+					snprintf(buf, 1024, _("\e[35%sm%s\e[39;0m (id %u)"), shouldBold(4, banner, 0) ? ";1" : ";22", getItem(item), item);
 				}
 				else {
-					snprintf(buf, 1024, "%s \e[35%sm%u\e[39;0m", shouldBold(4, banner, 0) ? ";1" : ";22", gettext(_id), item);
+					snprintf(buf, 1024, _("id \e[35%sm%u\e[39;0m"), shouldBold(4, banner, 0) ? ";1" : ";22", item);
 				}
 				printf("\t%s\n", buf);
 			}
@@ -682,19 +682,21 @@ int main(int argc, char** argv) {
 			for (n = 0; n < 13; n++) {
 				item = ThreeStar[n];
 				if (getItem(item) != NULL) {
-					snprintf(buf, 1024, "\e[34;22m%s\e[39;0m (%s %u)", getItem(item), gettext(_id), item);
+					snprintf(buf, 1024, _("\e[34;22m%s\e[39;0m (id %u)"), getItem(item), item);
 				}
 				else {
-					snprintf(buf, 1024, "%s \e[34;22m%u\e[39;0m", gettext(_id), item);
+					snprintf(buf, 1024, _("id \e[34;22m%u\e[39;0m"), item);
 				}
 				printf("\t%s\n", buf);
 			}
 		}
 		return 0;
 	}
-	fprintf(stderr, _("Making %u wishes on the %s banner"), pulls, gettext(banners[banner][1]));
 	if ((banner == CHAR1 || banner == CHAR2 || banner == WPN || banner == CHRONICLED) && b[3]) {
-		fprintf(stderr, _(" from v%d.%d phase %d"), b[4] >> 8, (b[4] >> 4) & 0xf, b[4] & 0xf);
+	fprintf(stderr, _("Making %u wishes on the %s banner from v%d.%d phase %d"), pulls, gettext(banners[banner][1]), b[4] >> 8, (b[4] >> 4) & 0xf, b[4] & 0xf);
+	}
+	else {
+		fprintf(stderr, _("Making %u wishes on the %s banner"), pulls, gettext(banners[banner][1]));
 	}
 	if (!(banner == NOVICE || banner == CHRONICLED) && v[2]) {
 		fprintf(stderr, _(" (v%d.%d standard pool)"), v[3] >> 4, v[3] & 0xf);
@@ -739,19 +741,19 @@ int main(int argc, char** argv) {
 		if (item <= 1000 + MAX_CHARS && item >= 1000) {
 			isChar = 1;
 			if (getItem(item) != NULL) {
-				snprintf(buf, 1024, "\e[%u%sm%s\e[39;0m (%s %u)", color, shouldBold(rare, banner, won5050) ? ";1" : ";22", getItem(item), gettext(_id), item);
+				snprintf(buf, 1024, _("\e[%u%sm%s\e[39;0m (id %u)"), color, shouldBold(rare, banner, won5050) ? ";1" : ";22", getItem(item), item);
 			}
 			else {
-				snprintf(buf, 1024, "%s \e[%u%sm%u\e[39;0m", _("with id"), color, shouldBold(rare, banner, won5050) ? ";1" : ";22", item);
+				snprintf(buf, 1024, _("with id \e[%u%sm%u\e[39;0m"), color, shouldBold(rare, banner, won5050) ? ";1" : ";22", item);
 			}
 		}
 		else {
 			isChar = 0;
 			if (getItem(item) != NULL) {
-				snprintf(buf, 1024, "\e[%u%sm%s\e[39;0m (%s %u)", color, shouldBold(rare, banner, won5050) ? ";1" : ";22", getItem(item), gettext(_id), item);
+				snprintf(buf, 1024, _("\e[%u%sm%s\e[39;0m (id %u)"), color, shouldBold(rare, banner, won5050) ? ";1" : ";22", getItem(item), item);
 			}
 			else {
-				snprintf(buf, 1024, "%s \e[%u%sm%u\e[39;0m", _("with id"), color, shouldBold(rare, banner, won5050) ? ";1" : ";22", item);
+				snprintf(buf, 1024, _("with id \e[%u%sm%u\e[39;0m"), color, shouldBold(rare, banner, won5050) ? ";1" : ";22", item);
 			}
 		}
 		printf(_("Pull %u: %u★ %s %s\n"), i + 1, rare, isChar ? _("Character") : _("Weapon"), buf);
