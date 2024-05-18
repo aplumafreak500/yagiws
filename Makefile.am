@@ -5,4 +5,11 @@
 
 SUBDIRS = po src
 dist_doc_DATA = Readme.md Changelog License.txt
-ACLOCAL_AMFLAGS = -I m4
+EXTRA_DIST = include $(top_srcdir)/.version
+BUILT_SOURCES = $(top_srcdir)/.version
+
+$(top_srcdir)/.version:
+	$(AM_V_GEN)echo '$(VERSION)' > $@-t && mv $@-t $@
+
+dist-hook:
+	$(AM_V_GEN)echo '$(VERSION)' > $(distdir)/.tarball-version

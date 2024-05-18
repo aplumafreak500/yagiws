@@ -8,6 +8,7 @@ Makefile.in
 /config.h
 /config.h.in
 /stamp-h?
+/.version
 /autom4te.cache
 /aclocal.m4
 /po/POTFILES

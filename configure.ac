@@ -3,9 +3,11 @@
 # ©2024 Alex Pensinger (ArcticLuma113)
 # Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/
 
-AC_INIT([yagiws], [1.3.9])
+AC_INIT([yagiws], m4_esyscmd([./git-version-gen .tarball-version]))
+AC_CONFIG_MACRO_DIRS([m4])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign dist-xz no-dist-gzip])
 AM_MAINTAINER_MODE([disable])
+AM_SILENT_RULES([yes])
 AC_ARG_ENABLE(
 	[debug-mode],
 	AS_HELP_STRING(
