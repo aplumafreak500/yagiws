@@ -25,8 +25,11 @@ static int shouldBold(unsigned int rare, unsigned int banner, unsigned int rateU
 }
 
 static void ver() {
-		printf(_("Yet Another Genshin Impact Gacha Simulator v%s\n"
-		"\n©2024 Alex Pensinger (ArcticLuma113).\nThis program is released under the terms of the MPLv2, which can be viewed at:\nhttps://mozilla.org/MPL/2.0/.\n"), PACKAGE_VERSION);
+	printf(_(
+		"Yet Another Genshin Impact Gacha Simulator v%s\n"
+		"\n©2024 Alex Pensinger (ArcticLuma113)."
+		"\nThis program is released under the terms of the MPLv2, which can be viewed at:\nhttps://mozilla.org/MPL/2.0/.\n"
+	), PACKAGE_VERSION);
 }
 
 static void usage() {
