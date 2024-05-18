@@ -5,5 +5,11 @@
 
 #ifndef UTIL_H
 #define UTIL_H
+// Gettext
+#include "gettext.h"
+#define _(x) gettext(x)
+#define _N(x) gettext_noop(x)
+
+// RNG
 long double rndFloat();
 #endif

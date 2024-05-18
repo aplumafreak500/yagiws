@@ -22,13 +22,13 @@ int doPity[2] = {1, 1};
 int do5050 = 1;
 
 const char* const banners[WISH_CNT][2] = {
-	[CHAR1] = {"char1", "Character Event Wish"},
-	[CHAR2] = {"char2", "Character Event Wish-2"},
-	[WPN] = {"weapon", "Weapon Event Wish"},
-	[STD_CHR] = {"std", "Wanderlust Invocation"},
-	[STD_WPN] = {"std_weapon", "Wanderlust Incocation (Weapons)"},
-	[NOVICE] = {"novice", "Beginners' Wish"},
-	[CHRONICLED] = {"chronicle", "Chronicled Wish"}
+	[CHAR1] = {"char1", _N("Character Event Wish")},
+	[CHAR2] = {"char2", _N("Character Event Wish-2")},
+	[WPN] = {"weapon", _N("Weapon Event Wish")},
+	[STD_CHR] = {"std", _N("Wanderlust Invocation")},
+	[STD_WPN] = {"std_weapon", _N("Wanderlust Incocation (Weapons)")},
+	[NOVICE] = {"novice", _N("Beginners' Wish")},
+	[CHRONICLED] = {"chronicle", _N("Chronicled Wish")}
 };
 
 // TODO: There is a different linear rise for standard prior to reaching soft pity. Figure out what it is or if it even exists.

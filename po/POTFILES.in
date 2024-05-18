@@ -1,0 +1,6 @@
+# List of source files which contain translatable strings.
+src/yagiws.c
+src/gacha.c
+src/character.c
+src/weapon.c
+src/artifact.c

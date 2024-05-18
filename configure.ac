@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: MPL-2.0
 # This file is part of Yet Another Genshin Impact Wish Simulator
-# ©2023 Alex Pensinger (ArcticLuma113)
+# ©2024 Alex Pensinger (ArcticLuma113)
 # Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/
 
-AC_INIT([yagiws], [1.3.1])
+AC_INIT([yagiws], [1.3.9])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign dist-xz no-dist-gzip])
 AM_MAINTAINER_MODE([disable])
 AC_ARG_ENABLE(
@@ -18,6 +18,8 @@ AC_PROG_CC
 AS_IF([test "x$enable_debug_mode" = "xyes"], [
 	AC_DEFINE([DEBUG], [1], [If debug mode is enabled.])
 ])
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION(0.21)
 AC_CHECK_HEADERS(stdlib.h)
 AC_CHECK_HEADERS(string.h)
 AC_CHECK_HEADERS(sys/random.h)
@@ -43,5 +45,5 @@ AC_CHECK_DECL(optind, [], [AC_MSG_ERROR([required symbol optind is not defined])
 AC_CHECK_DECL(LLONG_MAX, [], [AC_MSG_ERROR([required symbol LLONG_MAX is not defined])], [[#include <limits.h>]])
 AC_CHECK_DECL(NULL, [], [AC_MSG_ERROR([required symbol NULL is not defined])], [[#include <stddef.h>]])
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile po/Makefile.in])
 AC_OUTPUT

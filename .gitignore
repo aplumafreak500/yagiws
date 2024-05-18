@@ -10,5 +10,9 @@ Makefile.in
 /stamp-h?
 /autom4te.cache
 /aclocal.m4
+/po/POTFILES
+/po/yagiws.pot
+/po/stamp-po
+/po/remove-potcdate.sed
 *.o
 src/yagiws

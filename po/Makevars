@@ -1,0 +1,13 @@
+DOMAIN = $(PACKAGE)
+subdir = po
+top_builddir = ..
+XGETTEXT_OPTIONS = --keyword=_ --keyword=_N --from-code=utf-8
+COPYRIGHT_HOLDER = Alex Pensinger (ArcticLuma113)
+PACKAGE_GNU = no
+MSGID_BUGS_ADDRESS = https://github.com/aplumafreak500/yagiws
+EXTRA_LOCALE_CATEGORIES =
+USE_MSGCTXT = no
+MSGMERGE_OPTIONS =
+MSGINIT_OPTIONS =
+PO_DEPENDS_ON_POT = yes
+DIST_DEPENDS_ON_UPDATE_PO = yes

@@ -5,6 +5,7 @@
 
 #ifndef GACHA_H
 #define GACHA_H
+// Banner types
 enum {
 	STD_CHR = 0,
 	STD_WPN, // non-vanilla
@@ -15,9 +16,9 @@ enum {
 	CHRONICLED,
 	WISH_CNT
 };
+extern const char* const banners[WISH_CNT][2];
 
-#define IDX_MAX 34
-
+// Chronicled Wish
 typedef struct {
 	const unsigned short* FiveStarPool;
 	unsigned int FiveStarCharCount;
@@ -28,6 +29,7 @@ typedef struct {
 } ChroniclePool_t;
 
 // Banner data
+#define IDX_MAX 34
 extern const unsigned short FourStarChrUp[IDX_MAX*2][3];
 extern const unsigned short FiveStarChrUp[IDX_MAX*2][2];
 extern const unsigned short FourStarWpnUp[IDX_MAX*2][5];
@@ -51,8 +53,7 @@ extern int doSmooth[2];
 extern int doPity[2];
 extern int do5050;
 
-extern const char* const banners[WISH_CNT][2];
-
+// Main gacha function
 #ifndef DEBUG
 unsigned int doAPull(unsigned int, unsigned int, unsigned int, unsigned int*, unsigned int*);
 #else
