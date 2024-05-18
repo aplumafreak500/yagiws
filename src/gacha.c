@@ -3,11 +3,9 @@
 /* ©2024 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
-#include <stddef.h>
 #include "config.h"
-#ifdef HAVE_SYS_RANDOM_H
+#include <stddef.h>
 #include <sys/random.h>
-#endif
 #include "gacha.h"
 #include "util.h"
 

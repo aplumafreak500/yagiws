@@ -40,5 +40,5 @@
 	* Initial support for 4.7
 
 * v1.4 (2024-??-??):
-	* Add GNU Gettext support
+	* Add support for Gnulib and GNU Gettext
 	* Finalize 4.6 phase 2

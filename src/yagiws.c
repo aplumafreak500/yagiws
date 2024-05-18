@@ -3,21 +3,12 @@
 /* ©2024 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
-#define _GNU_SOURCE
-
+#include "config.h"
 #include <errno.h>
 #include <getopt.h>
-#include "config.h"
-#include "gettext.h"
-#ifdef HAVE_STDIO_H
 #include <stdio.h>
-#endif
-#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
-#endif
-#ifdef HAVE_STRING_H
 #include <string.h>
-#endif
 #include "gacha.h"
 #include "item.h"
 #include "util.h"

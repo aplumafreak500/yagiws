@@ -4,9 +4,7 @@
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
 #include "config.h"
-#ifdef HAVE_STDIO_H
 #include <stdio.h>
-#endif
 #include "item.h"
 #include "util.h"
 
