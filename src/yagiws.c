@@ -437,13 +437,17 @@ int main(int argc, char** argv) {
 	}
 	b[0] += (b[1] << 1);
 	// 60 = v4.4 phase 1
-	if (banner == CHRONICLED && (b[0] < 60 || ChroniclePool[b[0] - 60] == NULL)) {
-		fprintf(stderr, "Error: Chronicled Wish didn't run during version %d.%d phase %d\n", (b[4] >> 8 & 0xf), (b[4] >> 4) & 0xf, b[4] & 0xf);
-		return -1;
-	}
-	fivePool = ChroniclePool[b[0] - 60]->FiveStarPool;
+	if (banner == CHRONICLED) {
+		if (b[0] < 60 || ChroniclePool[b[0] - 60] == NULL) {
+			fprintf(stderr, "Error: Chronicled Wish didn't run during version %d.%d phase %d\n", (b[4] >> 8 & 0xf), (b[4] >> 4) & 0xf, b[4] & 0xf);
+			return -1;
+		}
+		fivePool = ChroniclePool[b[0] - 60]->FiveStarPool;
 #ifndef DEBUG
-	fiveMaxIdx = ChroniclePool[b[0] - 60]->FiveStarWeaponCount + ChroniclePool[b[0] - 60]->FiveStarCharCount;
+		fiveMaxIdx = ChroniclePool[b[0] - 60]->FiveStarWeaponCount + ChroniclePool[b[0] - 60]->FiveStarCharCount;
+#endif
+	}
+#ifndef DEBUG
 	if (
 		(
 			banner == WPN && (epitomizedPathIndex > 2)

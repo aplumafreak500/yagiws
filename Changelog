@@ -39,5 +39,6 @@
 	* 4.6 artifacts
 	* Initial support for 4.7
 
-* v1.3.2 (2024-??-??):
+* v1.3.2 (2024-05-18):
+	* Fix another bug relating to Chronicled Wish preventing all banners from working except those from 4.4 phase 1
 	* Finalize 4.6 phase 2
