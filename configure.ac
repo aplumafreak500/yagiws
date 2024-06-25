@@ -23,7 +23,7 @@ AS_IF([test "x$enable_debug_mode" = "xyes"], [
 ])
 AC_C_CONST
 AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION(0.21)
+AM_GNU_GETTEXT_VERSION([0.21])
 AC_CHECK_DECL(program_invocation_name, [], [AC_MSG_ERROR([required symbol program_invocation_name is not defined])], [[#include <errno.h>]])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile src/Makefile po/Makefile.in gnulib/Makefile])

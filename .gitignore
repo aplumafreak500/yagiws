@@ -18,6 +18,7 @@ Makefile.in
 /po/stamp-po
 /po/remove-potcdate.sed
 *.o
+*.gmo
 src/yagiws
 gnulib/libgnu.a
 gnulib/alloca.h
