@@ -31,7 +31,7 @@ static const char* const ThreeStarLightCones[21] = {
 	"Sagacity",
 };
 
-static const char* const FourStarLightCones[45] = {
+static const char* const FourStarLightCones[47] = {
 	"Post-Op Conversation",
 	"Good Night and Sleep Well",
 	"Day One of My New Life",
@@ -77,6 +77,8 @@ static const char* const FourStarLightCones[45] = {
 	"Indelible Promise",
 	"Concert for Two",
 	"Boundless Choreo",
+	"After the Charmony Fall",
+	"Poised to Bloom",
 };
 
 static const char* const FourStarLightCones_Series2[3] = {
@@ -85,7 +87,7 @@ static const char* const FourStarLightCones_Series2[3] = {
 	"For Tomorrow's Journey",
 };
 
-static const char* const FiveStarLightCones[27] = {
+static const char* const FiveStarLightCones[31] = {
 	"Night on the Milky Way",
 	"In the Night",
 	"Something Irreplaceable",
@@ -111,23 +113,28 @@ static const char* const FiveStarLightCones[27] = {
 	"Reforged Remembrance",
 	"Inherently Unjust Destiny",
 	"Along the Passing Shore",
+	"Whereabouts Should Dreams Rest",
 	"Flowing Nightglow",
 	"Sailing Towards A Second Life",
+	"Yet Hope Is Priceless",
+	"Those Many Springs",
+	"Dance at Sunset",
 };
 
-static const char* const FiveStarLightCones_Series2[4] = {
+static const char* const FiveStarLightCones_Series2[5] = {
 	"On the Fall of an Aeon",
 	"Cruising in the Stellar Sea",
 	"Texture of Memories",
 	"Solitary Healing",
+	"Eternal Calculus",
 };
 
 const char* getLightcone(unsigned int id) {
 	if (id < 20000) return NULL;
 	if (id >= 20000 && id <= 20021) return ThreeStarLightCones[id - 20000];
-	if (id >= 21000 && id <= 21044) return FourStarLightCones[id - 21000];
+	if (id >= 21000 && id <= 21046) return FourStarLightCones[id - 21000];
 	if (id >= 22000 && id <= 22002) return FourStarLightCones_Series2[id - 22000];
-	if (id >= 23000 && id <= 23027) return FiveStarLightCones[id - 23000];
-	if (id >= 24000 && id <= 24003) return FiveStarLightCones_Series2[id - 24000];
+	if (id >= 23000 && id <= 23030) return FiveStarLightCones[id - 23000];
+	if (id >= 24000 && id <= 24004) return FiveStarLightCones_Series2[id - 24000];
 	return NULL;
 }

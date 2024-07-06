@@ -9,7 +9,7 @@
 #endif
 #include "item.h"
 
-static const char* const chrList[316] = {
+static const char* const chrList[325] = {
 	[0] = "None",
 	[1] = "March 7th",
 	[2] = "Dan Heng",
@@ -57,8 +57,13 @@ static const char* const chrList[316] = {
 	[307] = "Black Swan",
 	[308] = "Acheron",
 	[309] = "Robin",
+	[310] = "Firefly",
 	[312] = "Misha",
+	[314] = "Jade",
 	[315] = "Boothill",
+	[318] = "Jiaoqiu",
+	[321] = "Yunli",
+	[324] = "March 7th", // The Hunt variant
 };
 
 const char* getCharacter(unsigned int id) {

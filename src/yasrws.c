@@ -22,15 +22,24 @@
 
 static int shouldBold(unsigned int rare, unsigned int banner, unsigned int rateUp) {
 	if (rare <= 3) return 0;
-	if (banner == STD_CHR) return 1;
-	if (banner == STD_WPN) return 1;
-	if (banner == NOVICE) return 1;
+	switch (banner) {
+	case STD_CHR:
+	case STD_WPN:
+	case STD_ONLY_CHR:
+	case NOVICE:
+		return 1;
+	default:
+		break;
+	}
 	return rateUp ? 1 : 0;
 }
 
 static void ver() {
 		printf("Yet Another Star Rail Warp Simulator v%s\n"
-		"\n©2024 Alex Pensinger (ArcticLuma113).\nThis program is released under the terms of the MPLv2, which can be viewed at:\nhttps://mozilla.org/MPL/2.0/.\n", PACKAGE_VERSION);
+			"\n©2024 Alex Pensinger (ArcticLuma113)."
+			"\nThis program is released under the terms of the MPLv2, which can be viewed at:\n"
+			"https://mozilla.org/MPL/2.0/\n",
+		PACKAGE_VERSION);
 }
 
 static void usage() {
@@ -41,7 +50,12 @@ static void usage() {
 		"\t-b, --banner           Choose a banner type. Valid banners:\n"
 		"\t                       \t"
 	);
+	const char* sep;
 	for (i = 0; i < WARP_CNT; i++) {
+		/*if (i == 0) sep = "";
+		else if (i == CHRONICLED) sep = ",\t\n\t                       \t";
+		else sep = ", ";
+		printf("%s%s", sep, banners[i][0]);*/
 		printf("%s%s", i != 0 ? ", " : "", banners[i][0]);
 	}
 	printf("\n"
@@ -90,8 +104,17 @@ static void usage() {
 		"\t                       \titems.\n"
 		"\t-S, --noSmooth5        Disable the \"smooth\" pity mechanism for 5★\n"
 		"\t                       \titems.\n"
+		"\t-C, --forceSmoothChar  Forces the \"smooth\" pity mechanism into dropping\n"
+		"\t                       \tonly characters.\n"
+		"\t-W, --forceSmoothWpn   Forces the \"smooth\" pity mechanism into dropping\n"
+		"\t                       \tonly Light Cones.\n"
+		"\t                       \t(Note: If both -C and -W are given, neither\n"
+		"\t                       \toption will take effect.)\n"
 		"\nDisclaimer:\n"
-		"This project is not affiliated with Hoyoverse/Cogonosphere or any of their subsidiaries. It is designed for entertainment purposes only, and gacha pulls made with this program can not and will not be reflected in your in-game account.\n"
+		"This project is not affiliated with miHoYo/Hoyoverse/Cogonosphere or any of\n"
+		"their subsidiaries. It is designed for entertainment purposes only, and gacha\n"
+		"pulls made with this program can not and will not be reflected in your in-game\n"
+		"account.\n"
 	);
 }
 
@@ -121,6 +144,8 @@ static const opt_t long_opts[] = {
 	{"usage", no_argument, 0, 5},
 	{"banner_version", required_argument, 0, 'B'},
 	{"rateUpOnly", no_argument, 0, 'r'},
+	{"forceSmoothChar", no_argument, 0, 'C'},
+	{"forceSmoothWpn", no_argument, 0, 'W'},
 	{NULL, 0, 0, 0},
 };
 
@@ -138,11 +163,12 @@ int main(int argc, char** argv) {
 	unsigned int detailsRequested = 0;
 	int c = 0;
 	long long n = 0;
-	int v[4] = {-1, -1, 0, 0x22};
-	int b[5] = {-1, -1, -1, 0, 0x221};
+	int v[4] = {-1, -1, 0, 0x23};
+	int b[5] = {-1, -1, -1, 0, 0x232};
+	unsigned int forceSmooth = 0;
 	char* p = NULL;
 	while (1) {
-		c = getopt_long(argc, argv, "4:5:B:LNSV:b:c:dghlnrsp:v", long_opts, NULL);
+		c = getopt_long(argc, argv, "4:5:B:CLNSV:Wb:c:dghlnrsp:v", long_opts, NULL);
 		if (c == -1) break;
 		switch (c) {
 		case '4':
@@ -209,6 +235,9 @@ int main(int argc, char** argv) {
 			}
 #endif
 			break;
+		case 'C':
+			forceSmooth |= 1;
+			break;
 		case 'L':
 			getRateUp[1] = 1;
 			break;
@@ -228,6 +257,9 @@ int main(int argc, char** argv) {
 				fprintf(stderr, "Only got major pool version, using %d.0\n", v[0]);
 				v[1] = 0;
 			}
+			break;
+		case 'W':
+			forceSmooth |= 2;
 			break;
 		case 'b':
 			for (n = 0; n < WARP_CNT; n++) {
@@ -360,8 +392,9 @@ int main(int argc, char** argv) {
 	b[0]--;
 	b[1] = b[4] >> 4;
 #ifndef DEBUG
-	if (b[1] > 0x22) b[1] = 0x22;
+	if (b[1] > 0x24) b[1] = 0x24;
 #endif
+
 	if (b[1] >= 0x20) {
 		b[1] -= 0x9;
 	}
@@ -396,7 +429,7 @@ int main(int argc, char** argv) {
 	}
 	else {
 #ifndef DEBUG
-		if (v[0] > 0x22) v[0] = 0x22;
+		if (v[0] > 0x24) v[0] = 0x24;
 #endif
 		if (v[0] >= 0x20) {
 			v[0] -= 0x9;
@@ -416,6 +449,10 @@ int main(int argc, char** argv) {
 		banner = WPN1;
 	}
 #endif
+	if ((forceSmooth & 3) == 3) {
+		fprintf(stderr, "Both characters and Light Cones specified as forced. Reverting to normal behavior.\n");
+		forceSmooth = 0;
+	}
 	if (detailsRequested) {
 		printf("Details for the %s banner", banners[banner][1]);
 		if ((banner == CHAR1 || banner == CHAR2 || banner == WPN1 || banner == WPN2) && b[3]) {
@@ -484,7 +521,7 @@ int main(int argc, char** argv) {
 			}
 			printf("\n");
 		}
-		if (banner != CHAR1 && banner != CHAR2 && banner != NOVICE && do5050 >= 0) {
+		if (banner != CHAR1 && banner != CHAR2 && banner != NOVICE && banner != STD_ONLY_CHR && do5050 >= 0) {
 			printf("5★ Light Cone Pool:\n");
 			for (n = 0; n < 7; n++) {
 				item = FiveStarWpn[n];
@@ -558,6 +595,18 @@ int main(int argc, char** argv) {
 			}
 		}
 		// TODO Implement logic for character vs. item pool instead of checking the ID to determine that
+		if (forceSmooth & 1) {
+			pityS[0] = ~1;
+			pityS[2] = ~1;
+			pityS[1] = -1;
+			pityS[3] = -1;
+		}
+		if (forceSmooth & 2) {
+			pityS[1] = ~1;
+			pityS[3] = ~1;
+			pityS[0] = -1;
+			pityS[2] = -1;
+		}
 		item = doAPull(banner, v[0], b[0], &rare, &won5050);
 		if (item < 0) {
 			fprintf(stderr, "Pull #%u failed (retcode = %d)\n", i + 1, item);
@@ -582,7 +631,7 @@ int main(int argc, char** argv) {
 			color = 33;
 			break;
 		}
-		if (item <= 1315 && item >= 1000) {
+		if (item <= 1324 && item >= 1000) {
 			isChar = 1;
 			if (getItem(item) != NULL) {
 				snprintf(buf, 1024, "\e[%u%sm%s\e[39;0m (id %u)", color, shouldBold(rare, banner, won5050) ? ";1" : ";22", getItem(item), item);
@@ -618,7 +667,7 @@ int main(int argc, char** argv) {
 		printf("\n4★ stable val (characters): %u\n", pityS[0]);
 		printf("4★ stable val (Light Cones): %u", pityS[1]);
 	}
-	if (do5050 >= 0 && doSmooth[1] && (banner == STD_CHR || banner == STD_WPN)) {
+	if (do5050 >= 0 && doSmooth[1] && (banner == STD_CHR || banner == STD_WPN || banner == STD_ONLY_CHR)) {
 		printf("\n5★ stable val (characters): %u\n", pityS[2]);
 		printf("5★ stable val (Light Cones): %u\n", pityS[3]);
 	}

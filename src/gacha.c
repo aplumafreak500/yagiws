@@ -26,6 +26,7 @@ const char* const banners[WARP_CNT][2] = {
 	[WPN2] = {"lc2", "Light Cone Event Warp-2"},
 	[STD_CHR] = {"std", "Stellar Warp"},
 	[STD_WPN] = {"std_lc", "Stellar Warp (Light Cones)"},
+	[STD_ONLY_CHR] = {"std_char", "Stellar Warp (Characters Only)"},
 	[NOVICE] = {"novice", "Departure Warp"},
 };
 
@@ -44,7 +45,7 @@ static long double getWeight4(unsigned int _pity) {
 static long double getWeight5W(unsigned int _pity) {
 	if (_pity <= 62 || !doPity[1]) return 0.008l;
 	else if (_pity <= 73) return 0.008l + 0.08l * (long double) (_pity - 62);
-	return 0.888l + 0.04l * (long double) (_pity - 73);
+	return 0.888l + 0.08l * (long double) (_pity - 73);
 }
 
 static long double getWeight4W(unsigned int _pity) {
@@ -111,6 +112,7 @@ In the future, this should be handled by either:
 	1) treating this as actually an event-rate win, or
 	2) rerolling.
 */
+// TODO Ignoring getrandom's return value should not really be done.
 #ifndef DEBUG
 unsigned int doAPull(unsigned int banner, unsigned int stdPoolIndex, unsigned int bannerIndex, unsigned int* rare, unsigned int* isRateUp) {
 #else
@@ -118,6 +120,8 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 #endif
 	unsigned long long rnd;
 	long double rndF;
+	unsigned int maxIdx;
+	unsigned int minIdx;
 	if (banner >= WARP_CNT) return -1;
 	if (rare == NULL) return -1;
 	if (isRateUp == NULL) return -1;
@@ -186,6 +190,7 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 				return FiveStarWpn[rnd % 7];
 			}
 		case NOVICE:
+		case STD_ONLY_CHR: // Same drops for 5-stars in this case
 			// Novice banner does not use the rate-up function
 			*isRateUp = 0;
 			getRateUp[1] = 0;
@@ -312,6 +317,7 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 			getrandom(&rnd, sizeof(long long), 0);
 			return FourStarChr[rnd % FourStarChrMaxIndex[stdPoolIndex]];
 		case STD_CHR:
+		case STD_ONLY_CHR:
 		default:
 			// Standard banner does not use the rate-up function
 			*isRateUp = 0;

@@ -13,10 +13,11 @@ enum {
 	WPN1,
 	WPN2,
 	NOVICE,
+	STD_ONLY_CHR,
 	WARP_CNT
 };
 
-#define IDX_MAX 11
+#define IDX_MAX 12
 
 // Banner data
 extern const unsigned short FourStarChrUp[IDX_MAX*2][3];

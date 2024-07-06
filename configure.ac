@@ -3,7 +3,7 @@
 # ©2024 Alex Pensinger (ArcticLuma113)
 # Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/
 
-AC_INIT([yasrws], [1.0])
+AC_INIT([yasrws], [1.1])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign dist-xz no-dist-gzip])
 AM_MAINTAINER_MODE([disable])
 AC_ARG_ENABLE(
