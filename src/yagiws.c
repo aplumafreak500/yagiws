@@ -15,11 +15,17 @@
 
 static int shouldBold(unsigned int rare, unsigned int banner, unsigned int rateUp) {
 	if (rare <= 3) return 0;
-	if (banner == STD_CHR) return 1;
-	if (banner == STD_WPN) return 1;
-	if (banner == NOVICE) return 1;
-	if (banner == CHRONICLED) {
+	switch (banner) {
+	case STD_CHR:
+	case STD_WPN:
+	case STD_ONLY_CHR:
+	case NOVICE:
+		return 1;
+	case CHRONICLED:
 		if (rare == 4) return 1;
+		break;
+	default:
+		break;
 	}
 	return rateUp ? 1 : 0;
 }
@@ -27,8 +33,9 @@ static int shouldBold(unsigned int rare, unsigned int banner, unsigned int rateU
 static void ver() {
 	printf(_(
 		"Yet Another Genshin Impact Gacha Simulator v%s\n"
-		"\n©2024 Alex Pensinger (ArcticLuma113)."
-		"\nThis program is released under the terms of the MPLv2, which can be viewed at:\nhttps://mozilla.org/MPL/2.0/.\n"
+		"\n©2024 Alex Pensinger (ArcticLuma113)"
+		"\nThis program is released under the terms of the MPLv2, which can be viewed at:"
+		"\nhttps://mozilla.org/MPL/2.0/\n"
 	), PACKAGE_VERSION);
 }
 
@@ -40,8 +47,12 @@ static void usage() {
 		"\t-b, --banner           Choose a banner type. Valid banners:\n"
 		"\t                       \t"
 	));
+	const char* sep;
 	for (i = 0; i < WISH_CNT; i++) {
-		printf("%s%s", i != 0 ? ", " : "", gettext(banners[i][0]));
+		if (i == 0) sep = "";
+		else if (i == CHRONICLED) sep = ",\t\n\t                       \t";
+		else sep = ", ";
+		printf("%s%s", sep, gettext(banners[i][0]));
 	}
 	printf(_("\n"
 		"\t                       \t(Required argument)\n"
@@ -56,12 +67,15 @@ static void usage() {
 		"\t                       \trate-up item. Only relevant on the Character and\n"
 		"\t                       \tWeapon Event banners.\n"
 		"\t-L, --lostRateUp5      Specify that the next 5★ is guaranteed to be the\n"
-		"\t                       \trate-up item. Only relevant on the Character and\n"
-		"\t                       \tWeapon Event banners.\n"
+		"\t                       \trate-up item. Only relevant on the Character\n"
+		"\t                       \tEvent, Weapon Event, and Chronicled banners.\n"
 		"\t-f, --fate_points      Specify the accumulated Fate Points. Only\n"
 		"\t                       \trelevant on the Weapon Event banner.\n"
+		"\t                       \t(Note: Use option -L instead for the Chronicled\n"
+		"\t                       \tWish banner.)\n"
 		"\t-e, --epitomized_path  Specify the course to chart for the Epitomized\n"
-		"\t                       \tPath. Only relevant on the Weapon Event banner.\n"
+		"\t                       \tPath or Chronicled Path. Only relevant on the\n"
+		"\t                       \tWeapon Event and Chronicled banners.\n"
 		"\t-c, --noviceCnt        Specify how many pulls have been made previously.\n"
 		"\t                       \tOnly relevant on the Beginners' banner and is\n"
 		"\t                       \tcapped at 8.\n"
@@ -77,7 +91,8 @@ static void usage() {
 		"\t                       \tis set.)\n"
 		"\t-r, --rateUpOnly       Display (with -d) or drop only rate-up items.\n"
 		"\t                       \tOnly relevant on the Character and Weapon Event\n"
-		"\t                       \tbanners.\n"
+		"\t                       \tbanners, and on the Chronicled banner if\n"
+		"\t                       \tEpitomized Path is set.\n"
 		"\t                       \tImplies -g.\n"
 		"\t-V, --pool_version     Specify the version from which the standard pool\n"
 		"\t                       \tof items will be drawn from.\n"
@@ -99,8 +114,17 @@ static void usage() {
 		"\t                       \titems.\n"
 		"\t-S, --noSmooth5        Disable the \"smooth\" pity mechanism for 5★\n"
 		"\t                       \titems.\n"
+		"\t-C, --forceSmoothChar  Forces the \"smooth\" pity mechanism into dropping\n"
+		"\t                       \tonly characters.\n"
+		"\t-W, --forceSmoothWpn   Forces the \"smooth\" pity mechanism into dropping\n"
+		"\t                       \tonly weapons.\n"
+		"\t                       \t(Note: If both -C and -W are given, neither\n"
+		"\t                       \toption will take effect.)\n"
 		"\nDisclaimer:\n"
-		"This project is not affiliated with miHoYo/Hoyoverse/Cogonosphere or any of\ntheir subsidiaries. It is designed for entertainment purposes only, and gacha\npulls made with this program can not and will not be reflected in your in-game\naccount.\n"
+		"This project is not affiliated with miHoYo/Hoyoverse/Cogonosphere or any of\n"
+		"their subsidiaries. It is designed for entertainment purposes only, and gacha\n"
+		"pulls made with this program can not and will not be reflected in your in-game\n"
+		"account.\n"
 	));
 }
 
@@ -132,6 +156,8 @@ static const opt_t long_opts[] = {
 	{"usage", no_argument, 0, 5},
 	{"banner_version", required_argument, 0, 'B'},
 	{"rateUpOnly", no_argument, 0, 'r'},
+	{"forceSmoothChar", no_argument, 0, 'C'},
+	{"forceSmoothWpn", no_argument, 0, 'W'},
 	{NULL, 0, 0, 0},
 };
 
@@ -147,20 +173,22 @@ int main(int argc, char** argv) {
 	unsigned int pulls = 10;
 	unsigned int noviceCnt = 0;
 	unsigned int detailsRequested = 0;
+	unsigned int forceSmooth = 0;
 	int epitomizedPathIndex = -1;
 	unsigned int fiveMaxIdx, fourMaxIdx, fiveMinIdx, fourMinIdx;
 	const unsigned short* fivePool;
 	const unsigned short* fourPool;
 	int c = 0;
 	long long n = 0;
-	int v[4] = {-1, -1, 0, 0x46};
-	int b[5] = {-1, -1, -1, 0, 0x462};
+	int v[4] = {-1, -1, 0, 0x472};
+	int b[5] = {-1, -1, -1, 0, 0x472};
 	char* p = NULL;
+	const ChroniclePool_t* ChroniclePool = NULL;
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, LOCALEDIR);
 	textdomain(PACKAGE);
 	while (1) {
-		c = getopt_long(argc, argv, "4:5:B:LNSV:b:c:de:f:ghlnrsp:v", long_opts, NULL);
+		c = getopt_long(argc, argv, "4:5:B:CLNSV:Wb:c:de:f:ghlnrsp:v", long_opts, NULL);
 		if (c == -1) break;
 		switch (c) {
 		case '4':
@@ -227,6 +255,9 @@ int main(int argc, char** argv) {
 			}
 #endif
 			break;
+		case 'C':
+			forceSmooth |= 1;
+			break;
 		case 'L':
 			getRateUp[1] = 1;
 			break;
@@ -246,6 +277,9 @@ int main(int argc, char** argv) {
 				fprintf(stderr, _("Only got major pool version, using %d.0\n"), v[0]);
 				v[1] = 0;
 			}
+			break;
+		case 'W':
+			forceSmooth |= 2;
 			break;
 		case 'b':
 			for (n = 0; n < WISH_CNT; n++) {
@@ -410,8 +444,11 @@ int main(int argc, char** argv) {
 	b[0]--;
 	b[1] = b[4] >> 4;
 #ifndef DEBUG
-	if (b[1] > 0x47) b[1] = 0x47;
+	if (b[1] > 0x50) b[1] = 0x50;
 #endif
+	if (b[1] >= 0x50) {
+		b[1] -= 0x7;
+	}
 	if (b[1] >= 0x40) {
 		b[1] -= 0x7;
 	}
@@ -435,14 +472,18 @@ int main(int argc, char** argv) {
 		}
 	}
 	b[0] += (b[1] << 1);
-	// 60 = v4.4 phase 1
-	if (banner == CHRONICLED && (b[0] < 60 || ChroniclePool[b[0] - 60] == NULL)) {
-		fprintf(stderr, _("Error: Chronicled Wish didn't run during version %d.%d phase %d\n"), (b[4] >> 8 & 0xf), (b[4] >> 4) & 0xf, b[4] & 0xf);
-		return -1;
-	}
-	fivePool = ChroniclePool[b[0] - 60]->FiveStarPool;
+	if (banner == CHRONICLED) {
+		ChroniclePool = getChroniclePool(b[0]);
+		if (ChroniclePool == NULL) {
+			fprintf(stderr, _("Error: Chronicled Wish didn't run during version %d.%d phase %d\n"), (b[4] >> 8 & 0xf), (b[4] >> 4) & 0xf, b[4] & 0xf);
+			return -1;
+		}
+		fivePool = ChroniclePool->FiveStarPool;
 #ifndef DEBUG
-	fiveMaxIdx = ChroniclePool[b[0] - 60]->FiveStarWeaponCount + ChroniclePool[b[0] - 60]->FiveStarCharCount;
+		fiveMaxIdx = ChroniclePool->FiveStarWeaponCount + ChroniclePool->FiveStarCharCount;
+#endif
+	}
+#ifndef DEBUG
 	if (
 		(
 			banner == WPN && (epitomizedPathIndex > 2)
@@ -487,8 +528,11 @@ int main(int argc, char** argv) {
 	}
 	else {
 #ifndef DEBUG
-		if (v[0] > 0x47) v[0] = 0x47;
+		if (v[0] > 0x50) v[0] = 0x50;
 #endif
+		if (v[0] >= 0x50) {
+			v[0] -= 0x7;
+		}
 		if (v[0] >= 0x40) {
 			v[0] -= 0x7;
 		}
@@ -510,6 +554,10 @@ int main(int argc, char** argv) {
 		banner = CHAR1;
 	}
 #endif
+	if ((forceSmooth & 3) == 3) {
+		fprintf(stderr, _("Both characters and weapons specified as forced. Reverting to normal behavior.\n"));
+		forceSmooth = 0;
+	}
 	if (detailsRequested) {
 		if ((banner == CHAR1 || banner == CHAR2 || banner == WPN || banner == CHRONICLED) && b[3]) {
 			printf(_("Details for the %s banner from v%d.%d phase %d:"), gettext(banners[banner][1]), b[4] >> 8, (b[4] >> 4) & 0xf, b[4] & 0xf);
@@ -572,8 +620,8 @@ int main(int argc, char** argv) {
 		if (banner != WPN && banner != STD_WPN && do5050 >= 0) {
 			printf(_("5★ Character Pool:\n"));
 			if (banner == CHRONICLED) {
-				fivePool = ChroniclePool[b[0] - 60]->FiveStarPool;
-				fiveMaxIdx = ChroniclePool[b[0] - 60]->FiveStarCharCount;
+				fivePool = ChroniclePool->FiveStarPool;
+				fiveMaxIdx = ChroniclePool->FiveStarCharCount;
 			}
 			else {
 				fivePool = FiveStarChr;
@@ -596,12 +644,12 @@ int main(int argc, char** argv) {
 			}
 			printf("\n");
 		}
-		if (banner != CHAR1 && banner != CHAR2 && banner != NOVICE && do5050 >= 0) {
+		if (banner != CHAR1 && banner != CHAR2 && banner != NOVICE && banner != STD_ONLY_CHR && do5050 >= 0) {
 			printf(_("5★ Weapon Pool:\n"));
 			if (banner == CHRONICLED) {
-				fivePool = ChroniclePool[b[0] - 60]->FiveStarPool;
-				fiveMinIdx = ChroniclePool[b[0] - 60]->FiveStarCharCount;
-				fiveMaxIdx = ChroniclePool[b[0] - 60]->FiveStarWeaponCount + fiveMinIdx;
+				fivePool = ChroniclePool->FiveStarPool;
+				fiveMinIdx = ChroniclePool->FiveStarCharCount;
+				fiveMaxIdx = ChroniclePool->FiveStarWeaponCount + fiveMinIdx;
 			}
 			else {
 				fivePool = FiveStarWpn;
@@ -631,15 +679,15 @@ int main(int argc, char** argv) {
 		if (do5050 >= 0) {
 			printf(_("4★ Character Pool:\n"));
 			if (banner == CHRONICLED) {
-				fourPool = ChroniclePool[b[0] - 60]->FourStarPool;
-				fourMaxIdx = ChroniclePool[b[0] - 60]->FourStarCharCount;
+				fourPool = ChroniclePool->FourStarPool;
+				fourMaxIdx = ChroniclePool->FourStarCharCount;
 				fourMinIdx = 0;
 			}
 			else {
 				fourPool = FourStarChr;
 				fourMaxIdx = FourStarMaxIndex[v[0]];
 				fourMinIdx = 0;
-				if (!(banner == STD_CHR || banner == STD_WPN)) {
+				if (!(banner == STD_CHR || banner == STD_ONLY_CHR || banner == STD_WPN)) {
 					fourMinIdx = 3;
 					fourMaxIdx += 3;
 				}
@@ -659,9 +707,9 @@ int main(int argc, char** argv) {
 		if (banner != NOVICE && do5050 >= 0) {
 			printf(_("4★ Weapon Pool:\n"));
 			if (banner == CHRONICLED) {
-				fourPool = ChroniclePool[b[0] - 60]->FourStarPool;
-				fourMinIdx = ChroniclePool[b[0] - 60]->FourStarCharCount;
-				fourMaxIdx = ChroniclePool[b[0] - 60]->FourStarWeaponCount + fourMinIdx;
+				fourPool = ChroniclePool->FourStarPool;
+				fourMinIdx = ChroniclePool->FourStarCharCount;
+				fourMaxIdx = ChroniclePool->FourStarWeaponCount + fourMinIdx;
 			}
 			else {
 				fourPool = FourStarWpn;
@@ -716,8 +764,22 @@ int main(int argc, char** argv) {
 			pityS[0] = 0;
 			pityS[1] = 0;
 		}
-		// TODO Implement logic for character vs. item pool instead of checking the ID to determine that
-		else item = doAPull(banner, v[0], b[0], &rare, &won5050);
+		else {
+			if (forceSmooth & 1) {
+				pityS[0] = ~1;
+				pityS[2] = ~1;
+				pityS[1] = -1;
+				pityS[3] = -1;
+			}
+			if (forceSmooth & 2) {
+				pityS[1] = ~1;
+				pityS[3] = ~1;
+				pityS[0] = -1;
+				pityS[2] = -1;
+			}
+			// TODO Implement logic for character vs. item pool instead of checking the ID to determine that
+			item = doAPull(banner, v[0], b[0], &rare, &won5050);
+		}
 		if (item < 0) {
 			fprintf(stderr, _("Pull #%u failed (retcode = %d)\n"), i + 1, item);
 			break;
@@ -741,7 +803,8 @@ int main(int argc, char** argv) {
 			color = 33;
 			break;
 		}
-		if (item <= 1000 + MAX_CHARS && item >= 1000) {
+		// TODO Upon v5.0's release, new character IDs will overlap constellation IDs; find out how Hoyoverse handles this and adjust accordingly
+		if (item < 1100 && item >= 1000) {
 			isChar = 1;
 			if (getItem(item) != NULL) {
 				snprintf(buf, 1024, _("\e[%u%sm%s\e[39;0m (id %u)"), color, shouldBold(rare, banner, won5050) ? ";1" : ";22", getItem(item), item);
@@ -770,7 +833,10 @@ int main(int argc, char** argv) {
 	}
 	else printf("\n");
 	if (do5050 > 0 && (banner == CHAR1 || banner == CHAR2 || banner == WPN || (banner == CHRONICLED && epitomizedPath))) {
-		printf(_("\n4★ guaranteed: %u\n"), getRateUp[0] ? 1 : 0);
+		printf("\n");
+		if (banner != CHRONICLED) {
+			printf(_("4★ guaranteed: %u\n"), getRateUp[0] ? 1 : 0);
+		}
 		printf(_("5★ guaranteed: %u\n"), getRateUp[1] ? 1 : 0);
 	}
 	if (banner == WPN && epitomizedPath) {
@@ -780,7 +846,7 @@ int main(int argc, char** argv) {
 		printf(_("\n4★ stable val (characters): %u\n"), pityS[0]);
 		printf(_("4★ stable val (weapons): %u"), pityS[1]);
 	}
-	if (do5050 >= 0 && doSmooth[1] && (banner == STD_CHR || banner == STD_WPN || (banner == CHRONICLED && !epitomizedPath))) {
+	if (do5050 >= 0 && doSmooth[1] && (banner == STD_CHR || banner == STD_WPN || banner == STD_ONLY_CHR || (banner == CHRONICLED && !epitomizedPath))) {
 		printf(_("\n5★ stable val (characters): %u\n"), pityS[2]);
 		printf(_("5★ stable val (weapons): %u\n"), pityS[3]);
 	}

@@ -39,6 +39,19 @@
 	* 4.6 artifacts
 	* Initial support for 4.7
 
-* v1.4 (2024-??-??):
-	* Add support for Gnulib and GNU Gettext
+* v1.3.2 (2024-05-18):
+	* Fix another bug relating to Chronicled Wish preventing all banners from working except those from 4.4 phase 1
 	* Finalize 4.6 phase 2
+
+* v1.4 (2024-07-06):
+	* Finalize 4.7
+	* Rename "Pouring Heartstrings" (Sigewinne's bow) to "Silvershower Heartstrings"
+	* 4.8 phase 1 banners
+	* Initial support for 5.0
+	* Convert Chronicled Wish pool data to a function, since because it hasn't ran for a while, it doesn't make sense to continue using an lut containing just one entry and a bunch of `NULL`s
+	* Don't display 4-star guarantee status on the end results of a Chronicled Wish (which is only used for 5-stars and only with Chronicled Path set)
+	* Add non-vanilla "character-only" variant of standard banner
+	* Add options to force the "smooth" function to drop only characters or only weapons
+
+* v1.5 (2024-??-??):
+	* Add support for Gnulib and GNU Gettext

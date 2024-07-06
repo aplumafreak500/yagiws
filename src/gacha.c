@@ -25,6 +25,7 @@ const char* const banners[WISH_CNT][2] = {
 	[WPN] = {"weapon", _N("Weapon Event Wish")},
 	[STD_CHR] = {"std", _N("Wanderlust Invocation")},
 	[STD_WPN] = {"std_weapon", _N("Wanderlust Incocation (Weapons)")},
+	[STD_ONLY_CHR] = {"std_char", _N("Wanderlust Incocation (Characters Only)")},
 	[NOVICE] = {"novice", _N("Beginners' Wish")},
 	[CHRONICLED] = {"chronicle", _N("Chronicled Wish")}
 };
@@ -110,6 +111,7 @@ In the future, this should be handled by either:
 	1) treating this as actually a event-rate win, or
 	2) rerolling.
 */
+// TODO Ignoring getrandom's return value should not really be done.
 #ifndef DEBUG
 unsigned int doAPull(unsigned int banner, unsigned int stdPoolIndex, unsigned int bannerIndex, unsigned int* rare, unsigned int* isRateUp) {
 #else
@@ -120,6 +122,7 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 	unsigned int maxIdx;
 	unsigned int minIdx;
 	const unsigned short* pool;
+	const ChroniclePool_t* ChroniclePool = getChroniclePool(bannerIndex);
 	if (banner >= WISH_CNT) return -1;
 	if (rare == NULL) return -1;
 	if (isRateUp == NULL) return -1;
@@ -206,13 +209,12 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 				return FiveStarWpn[rnd % 10];
 			}
 		case CHRONICLED:
-			// 60 = v4.4 phase 1
-			if (ChroniclePool[bannerIndex - 60] == NULL) {
+			if (ChroniclePool == NULL) {
 				return -1;
 			}
-			pool = ChroniclePool[bannerIndex - 60]->FiveStarPool;
+			pool = ChroniclePool->FiveStarPool;
 			minIdx = 0;
-			maxIdx = ChroniclePool[bannerIndex - 60]->FiveStarWeaponCount + ChroniclePool[bannerIndex - 60]->FiveStarCharCount;
+			maxIdx = ChroniclePool->FiveStarWeaponCount + ChroniclePool->FiveStarCharCount;
 
 			if (epitomizedPath) {
 				// If Chronicled Path is set, behave like a character event banner.
@@ -220,10 +222,10 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 				pityS[2] = 0;
 				pityS[3] = 0;
 				if (epitomizedPath >= 10000) {
-					minIdx = ChroniclePool[bannerIndex - 60]->FiveStarCharCount;
+					minIdx = ChroniclePool->FiveStarCharCount;
 				}
 				else {
-					maxIdx = ChroniclePool[bannerIndex - 60]->FiveStarCharCount;
+					maxIdx = ChroniclePool->FiveStarCharCount;
 				}
 				if (!getRateUp[1]) {
 					getrandom(&rnd, sizeof(long long), 0);
@@ -251,28 +253,29 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 				if (pityS[2] <= pityS[3]) {
 					if (rndF <= getWeight5S(pityS[3])) {
 						pityS[3] = 0;
-						minIdx = ChroniclePool[bannerIndex - 60]->FiveStarCharCount;
+						minIdx = ChroniclePool->FiveStarCharCount;
 
 					}
 					else {
 						pityS[2] = 0;
-						maxIdx = ChroniclePool[bannerIndex - 60]->FiveStarCharCount;
+						maxIdx = ChroniclePool->FiveStarCharCount;
 					}
 				}
 				else {
 					if (rndF <= getWeight5S(pityS[2])) {
 						pityS[2] = 0;
-						maxIdx = ChroniclePool[bannerIndex - 60]->FiveStarCharCount;
+						maxIdx = ChroniclePool->FiveStarCharCount;
 					}
 					else {
 						pityS[3] = 0;
-						minIdx = ChroniclePool[bannerIndex - 60]->FiveStarCharCount;
+						minIdx = ChroniclePool->FiveStarCharCount;
 					}
 				}
 			}
 			getrandom(&rnd, sizeof(long long), 0);
 			return pool[(rnd % (maxIdx - minIdx)) + minIdx];
 		case NOVICE:
+		case STD_ONLY_CHR: // Same drops for 5-stars in this case
 			// Novice banner does not use the rate-up function
 			*isRateUp = 0;
 			getRateUp[1] = 0;
@@ -394,36 +397,35 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 			getrandom(&rnd, sizeof(long long), 0);
 			return FourStarWpn[rnd % 18];
 		case CHRONICLED:
-			// 60 = v4.4 phase 1
-			if (ChroniclePool[bannerIndex - 60] == NULL) {
+			if (ChroniclePool == NULL) {
 				return -1;
 			}
 			*isRateUp = 1;
 			getRateUp[0] = 0;
-			pool = ChroniclePool[bannerIndex - 60]->FourStarPool;
+			pool = ChroniclePool->FourStarPool;
 			minIdx = 0;
-			maxIdx = ChroniclePool[bannerIndex - 60]->FourStarWeaponCount + ChroniclePool[bannerIndex - 60]->FourStarCharCount;
+			maxIdx = ChroniclePool->FourStarWeaponCount + ChroniclePool->FourStarCharCount;
 
 			rndF = rndFloat();
 			if (pityS[0] <= pityS[1]) {
 				if (rndF <= getWeight4S(pityS[1])) {
 					pityS[1] = 0;
-					minIdx = ChroniclePool[bannerIndex - 60]->FourStarCharCount;
+					minIdx = ChroniclePool->FourStarCharCount;
 
 				}
 				else {
 					pityS[0] = 0;
-					maxIdx = ChroniclePool[bannerIndex - 60]->FourStarCharCount;
+					maxIdx = ChroniclePool->FourStarCharCount;
 				}
 			}
 			else {
 				if (rndF <= getWeight4S(pityS[0])) {
 					pityS[0] = 0;
-					maxIdx = ChroniclePool[bannerIndex - 60]->FourStarCharCount;
+					maxIdx = ChroniclePool->FourStarCharCount;
 				}
 				else {
 					pityS[1] = 0;
-					minIdx = ChroniclePool[bannerIndex - 60]->FourStarCharCount;
+					minIdx = ChroniclePool->FourStarCharCount;
 				}
 			}
 			getrandom(&rnd, sizeof(long long), 0);
@@ -439,6 +441,7 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 			getrandom(&rnd, sizeof(long long), 0);
 			return FourStarChr[(rnd % FourStarMaxIndex[stdPoolIndex]) + 3];
 		case STD_CHR:
+		case STD_ONLY_CHR:
 		default:
 			// Standard banner does not use the rate-up function
 			*isRateUp = 0;

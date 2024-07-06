@@ -253,7 +253,7 @@ static const char* const FiveStarClaymores[12] = {
 	_N("Verdict"),
 };
 
-static const char* const FiveStarPolearms[12] = {
+static const char* const FiveStarPolearms[13] = {
 	_N("Staff of Homa"),
 	_N("Skyward Spine"),
 	_N("(Test) (Beginner's Protector icon)"),
@@ -266,6 +266,7 @@ static const char* const FiveStarPolearms[12] = {
 	NULL,
 	_N("Staff of the Scarlet Fields"),
 	_N("Crimson Moon's Semblance"),
+	_N("Lumidouce Elegy"),
 };
 
 static const char* const FiveStarCatalysts[15] = {
@@ -299,7 +300,7 @@ static const char* const FiveStarBows[13] = {
 	NULL,
 	_N("Hunter's Path"),
 	_N("The First Great Magic"),
-	_N("Pouring Heartstrings"),
+	_N("Silvershower Heartstrings"),
 };
 
 static const char* const* const FiveStarWeapons[6] = {
@@ -368,9 +369,9 @@ const char* getWeapon(unsigned int _id) {
 		maxId = 15;
 		break;
 	case 25:
-	case 35:
 		maxId = 12;
 		break;
+	case 35:
 	case 55:
 		maxId = 13;
 		break;
