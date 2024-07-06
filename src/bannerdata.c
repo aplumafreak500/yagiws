@@ -106,7 +106,13 @@ const unsigned short FourStarChrUp[IDX_MAX*2][3] = {
 	// v4.6 - Sea of Bygone Eras
 	{1083, 1085, 1023},
 	{1074, 1076, 1024},
-	// v4.7 - TODO
+	// v4.7 - Imaginarium Theater
+	{1097, 1032, 1050}, // Sethos
+	{1034, 1045, 1092},
+	// v4.8 - Summertide Scales and Tales TODO
+	{1006, 1015, 1021},
+	{1006, 1015, 1021},
+	// v5.0 - Natlan TODO
 	{1006, 1015, 1021},
 	{1006, 1015, 1021},
 };
@@ -211,7 +217,13 @@ const unsigned short FiveStarChrUp[IDX_MAX*2][2] = {
 	// v4.6 - Sea of Bygone Eras
 	{1096, 1084}, // Arlecchino
 	{1075, 1082},
-	// v4.7 - TODO
+	// v4.7 - Imaginarium Theater
+	{1098, 1078}, // Clorinde
+	{1095, 1089}, // Sigewinne
+	// v4.8 - Summertide Scales and Tales
+	{1091, 1070},
+	{1099, 1060}, // Emile
+	// v5.0 - Natlan TODO
 	{1005, 1007},
 	{1005, 1007},
 };
@@ -315,7 +327,13 @@ const unsigned short FourStarWpnUp[IDX_MAX*2][5] = {
 	// v4.6 - Sea of Bygone Eras
 	{11427, 12427, 13401, 14409, 15401},
 	{11401, 12405, 13427, 14403, 15427},
-	// v4.7 - TODO
+	// v4.7 - Imaginarium Theater
+	{11403, 12403, 13406, 14402, 15402},
+	{11405, 12410, 13407, 14401, 15403},
+	// v4.8 - Summertide Scales and Tales TODO
+	{11400, 12400, 13400, 14400, 15400},
+	{11400, 12400, 13400, 14400, 15400},
+	// v5.0 - Natlan TODO
 	{11400, 12400, 13400, 14400, 15400},
 	{11400, 12400, 13400, 14400, 15400},
 };
@@ -419,7 +437,13 @@ const unsigned short FiveStarWpnUp[IDX_MAX*2][2] = {
 	// v4.6 - Sea of Bygone Eras
 	{13512, 15512}, // Crimson Moon's Semblance
 	{14512, 14505},
-	// v4.7 - TODO
+	// v4.7 - Imaginarium Theater
+	{11515, 11512}, // Absolution
+	{15513, 11513}, // Silvershower Heartstrings
+	// v4.8 - Summertide Scales and Tales
+	{12512, 11511},
+	{13513, 15508}, // Lumidouce Elegy
+	// v5.0 - Natlan TODO
 	{10500, 10501},
 	{10500, 10501},
 };
@@ -443,20 +467,14 @@ static const ChroniclePool_t ChroniclePool_441 = {
 	ChroniclePool4_441, 12, 21,
 };
 
-const ChroniclePool_t* ChroniclePool[(IDX_MAX-30)*2] = {
-	// v4.4 - Lantern Rite 4 & Chenyu Vale
-	&ChroniclePool_441,
-	NULL,
-	// v4.5 - Alchemical Ascension
-	NULL,
-	NULL,
-	// v4.6 - Sea of Bygone Eras
-	NULL,
-	NULL,
-	// v4.7 - TODO
-	NULL,
-	NULL,
-};
+const ChroniclePool_t* getChroniclePool(unsigned short v) {
+	switch (v) {
+	default:
+		return NULL;
+	case 30: // v4.4 - Lantern Rite 4 & Chenyu Vale (phase 1)
+		return &ChroniclePool_441;
+	}
+}
 
 // The list of 4-star characters in the pool, used together with the rate-up drops.
 const unsigned short FourStarChr[40] = {
@@ -531,7 +549,7 @@ const unsigned char FourStarMaxIndex[IDX_MAX] = {
 	/* v2.x */ 15, 16, 17, 18, 19, 20, 20, 20, 21,
 	/* v3.x */ 22, 24, 25, 26, 27, 28, 29, 30, 31,
 	/* v4.x */ 31, 33, 33, 34, 35, 36, 36, 36, 37,
-	/* v5.x */ 
+	/* v5.x */ 37,
 };
 
 // Max indexes into FiveStarChr per version (for old banners)
@@ -541,7 +559,7 @@ const unsigned char FiveStarMaxIndex[IDX_MAX] = {
 	/* v2.x */ 5, 5, 5, 5, 5, 5, 5, 5, 5,
 	/* v3.x */ 5, 6, 6, 6, 6, 6, 7, 7, 7,
 	/* v4.x */ 7, 7, 7, 7, 7, 7, 7, 7, 7,
-	/* v5.x */ 
+	/* v5.x */ 7,
 };
 
 // The list of 3-star weapons in the pool.

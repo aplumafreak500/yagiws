@@ -13,10 +13,11 @@ enum {
 	WPN,
 	NOVICE,
 	CHRONICLED,
+	STD_ONLY_CHR,
 	WISH_CNT
 };
 
-#define IDX_MAX 34
+#define IDX_MAX 36
 
 typedef struct {
 	const unsigned short* FiveStarPool;
@@ -32,7 +33,6 @@ extern const unsigned short FourStarChrUp[IDX_MAX*2][3];
 extern const unsigned short FiveStarChrUp[IDX_MAX*2][2];
 extern const unsigned short FourStarWpnUp[IDX_MAX*2][5];
 extern const unsigned short FiveStarWpnUp[IDX_MAX*2][2];
-extern const ChroniclePool_t* ChroniclePool[(IDX_MAX-30)*2];
 extern const unsigned short FourStarChr[40];
 extern const unsigned short FiveStarChr[7];
 extern const unsigned short ThreeStar[13];
@@ -58,4 +58,5 @@ unsigned int doAPull(unsigned int, unsigned int, unsigned int, unsigned int*, un
 #else
 unsigned int doAPull(unsigned int, int, int, unsigned int*, unsigned int*);
 #endif
+const ChroniclePool_t* getChroniclePool(unsigned short);
 #endif

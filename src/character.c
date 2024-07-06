@@ -9,7 +9,7 @@
 #endif
 #include "item.h"
 
-static const char* const chrList[MAX_CHARS] = {
+static const char* const chrList[100] = {
 	[0] = "None",
 	[1] = "Kate",
 	[2] = "Kamisato Ayaka",
@@ -97,21 +97,23 @@ static const char* const chrList[MAX_CHARS] = {
 	[96] = "Arlecchino",
 	[97] = "Sethos",
 	[98] = "Clorinde",
+	[99] = "Emilie",
 };
 
 const char* getCharacter(unsigned int id) {
 	static char stellaBuf[1024];
 	if (id < 1000) return NULL;
-	if (id < 1000 + MAX_CHARS) {
+	if (id < 1100) {
 		return chrList[id - 1000];
 	}
-	if (id >= 1100 && id < 1100 + MAX_CHARS) {
+	if (id < 1200) {
 		if (chrList[id - 1100] == NULL) {
 			return NULL;
 		}
 		snprintf(stellaBuf, 1024, "%s's Stella Fortuna", chrList[id - 1100]);
 		return stellaBuf;
 	}
+	// TODO Upon v5.0's release, new character IDs will overlap constellation IDs; find out how Hoyoverse handles this and adjust accordingly
 	// TODO handle avatar IDs (> 10000000)
 	return NULL;
 }
