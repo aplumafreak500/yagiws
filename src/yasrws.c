@@ -52,11 +52,10 @@ static void usage() {
 	);
 	const char* sep;
 	for (i = 0; i < WARP_CNT; i++) {
-		/*if (i == 0) sep = "";
-		else if (i == CHRONICLED) sep = ",\t\n\t                       \t";
+		if (i == 0) sep = "";
+		else if (i == STD_ONLY_CHR) sep = ",\t\n\t                       \t";
 		else sep = ", ";
-		printf("%s%s", sep, banners[i][0]);*/
-		printf("%s%s", i != 0 ? ", " : "", banners[i][0]);
+		printf("%s%s", sep, banners[i][0]);
 	}
 	printf("\n"
 		"\t                       \t(Required argument)\n"
@@ -74,20 +73,24 @@ static void usage() {
 		"\t                       \trate-up item. Only relevant on the Character and\n"
 		"\t                       \tLight Cone Event banners.\n"
 		"\t-c, --noviceCnt        Specify how many pulls have been made previously.\n"
-		"\t                       \tOnly relevant on the Departure banner and is capped at 50.\n"
+		"\t                       \tOnly relevant on the Departure banner and is\n"
+		"\t                       \tcapped at 50.\n"
 		"\t-h, --help, --usage    Show this text and exit.\n"
 		"\t-v, --version          Show application version and exit.\n"
 		"\nAdvanced Usage:\n"
 		"\t-n, --noPity4          Disable 4★ pity.\n"
 		"\t-N, --noPity5          Disable 5★ pity.\n"
 		"\t-g, --noGuarantee      Disable the rate-up guarantee mechanism.\n"
-		"\t                       \tOnly relevant on the Character and Light Cone Event banners.\n"
+		"\t                       \tOnly relevant on the Character and Light Cone\n"
+		"\t                       \tEvent banners.\n"
 		"\t-r, --rateUpOnly       Display (with -d) or drop only rate-up items.\n"
-		"\t                       \tOnly relevant on the Character and Light Cone Event banners.\n"
+		"\t                       \tOnly relevant on the Character and Light Cone\n"
+		"\t                       \tEvent banners.\n"
 		"\t                       \tImplies -g.\n"
 		"\t-V, --pool_version     Specify the version from which the standard pool\n"
 		"\t                       \tof items will be drawn from.\n"
-		"\t                       \tNot relevant on the Departure banner, which uses a fixed pool.\n"
+		"\t                       \tNot relevant on the Departure banner, which uses\n"
+		"\t                       \ta fixed pool.\n"
 		"\nTuning the \"Stable Pity\" Mechanism:\n"
 		"(the mechanic that prevents too many character or Light Cone drops in a row)\n"
 		"\t--smooth4c             Specify the number of pulls since receiving a\n"
