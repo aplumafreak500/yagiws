@@ -123,6 +123,10 @@ AC_DEFUN([gl_EARLY],
   # Code from module nocrash:
   # Code from module open:
   # Code from module pathmax:
+  # Code from module pthread-h:
+  gl_ANYTHREADLIB_EARLY
+  # Code from module pthread-once:
+  # Code from module sched:
   # Code from module setlocale:
   # Code from module setlocale-null:
   # Code from module setlocale-null-unlocked:
@@ -147,6 +151,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module sys_random:
   # Code from module sys_stat:
   # Code from module sys_types:
+  AC_REQUIRE([AC_USE_SYSTEM_EXTENSIONS])
   # Code from module thread-optim:
   # Code from module threadlib:
   gl_THREADLIB_EARLY
@@ -213,84 +218,98 @@ AC_DEFUN([gl_INIT],
   dnl determined.  It describes how mbrtoc32 is implemented.
   AC_REQUIRE([gl_MBSTATE_T_BROKEN])
   AC_REQUIRE([gl_MBRTOC32_SANITYCHECK])
+  AC_REQUIRE([gl_C32RTOMB_SANITYCHECK])
   gl_UCHAR_MODULE_INDICATOR([c32isalnum])
   AC_REQUIRE([gl_UCHAR_H])
   dnl Determine REPLACE_MBSTATE_T, from which GNULIB_defined_mbstate_t is
   dnl determined.  It describes how mbrtoc32 is implemented.
   AC_REQUIRE([gl_MBSTATE_T_BROKEN])
   AC_REQUIRE([gl_MBRTOC32_SANITYCHECK])
+  AC_REQUIRE([gl_C32RTOMB_SANITYCHECK])
   gl_UCHAR_MODULE_INDICATOR([c32isalpha])
   AC_REQUIRE([gl_UCHAR_H])
   dnl Determine REPLACE_MBSTATE_T, from which GNULIB_defined_mbstate_t is
   dnl determined.  It describes how mbrtoc32 is implemented.
   AC_REQUIRE([gl_MBSTATE_T_BROKEN])
   AC_REQUIRE([gl_MBRTOC32_SANITYCHECK])
+  AC_REQUIRE([gl_C32RTOMB_SANITYCHECK])
   gl_UCHAR_MODULE_INDICATOR([c32isblank])
   AC_REQUIRE([gl_UCHAR_H])
   dnl Determine REPLACE_MBSTATE_T, from which GNULIB_defined_mbstate_t is
   dnl determined.  It describes how mbrtoc32 is implemented.
   AC_REQUIRE([gl_MBSTATE_T_BROKEN])
   AC_REQUIRE([gl_MBRTOC32_SANITYCHECK])
+  AC_REQUIRE([gl_C32RTOMB_SANITYCHECK])
   gl_UCHAR_MODULE_INDICATOR([c32iscntrl])
   AC_REQUIRE([gl_UCHAR_H])
   dnl Determine REPLACE_MBSTATE_T, from which GNULIB_defined_mbstate_t is
   dnl determined.  It describes how mbrtoc32 is implemented.
   AC_REQUIRE([gl_MBSTATE_T_BROKEN])
   AC_REQUIRE([gl_MBRTOC32_SANITYCHECK])
+  AC_REQUIRE([gl_C32RTOMB_SANITYCHECK])
   gl_UCHAR_MODULE_INDICATOR([c32isdigit])
   AC_REQUIRE([gl_UCHAR_H])
   dnl Determine REPLACE_MBSTATE_T, from which GNULIB_defined_mbstate_t is
   dnl determined.  It describes how mbrtoc32 is implemented.
   AC_REQUIRE([gl_MBSTATE_T_BROKEN])
   AC_REQUIRE([gl_MBRTOC32_SANITYCHECK])
+  AC_REQUIRE([gl_C32RTOMB_SANITYCHECK])
   gl_UCHAR_MODULE_INDICATOR([c32isgraph])
   AC_REQUIRE([gl_UCHAR_H])
   dnl Determine REPLACE_MBSTATE_T, from which GNULIB_defined_mbstate_t is
   dnl determined.  It describes how mbrtoc32 is implemented.
   AC_REQUIRE([gl_MBSTATE_T_BROKEN])
   AC_REQUIRE([gl_MBRTOC32_SANITYCHECK])
+  AC_REQUIRE([gl_C32RTOMB_SANITYCHECK])
   gl_UCHAR_MODULE_INDICATOR([c32islower])
   AC_REQUIRE([gl_UCHAR_H])
   dnl Determine REPLACE_MBSTATE_T, from which GNULIB_defined_mbstate_t is
   dnl determined.  It describes how mbrtoc32 is implemented.
   AC_REQUIRE([gl_MBSTATE_T_BROKEN])
   AC_REQUIRE([gl_MBRTOC32_SANITYCHECK])
+  AC_REQUIRE([gl_C32RTOMB_SANITYCHECK])
   gl_UCHAR_MODULE_INDICATOR([c32isprint])
   AC_REQUIRE([gl_UCHAR_H])
   dnl Determine REPLACE_MBSTATE_T, from which GNULIB_defined_mbstate_t is
   dnl determined.  It describes how mbrtoc32 is implemented.
   AC_REQUIRE([gl_MBSTATE_T_BROKEN])
   AC_REQUIRE([gl_MBRTOC32_SANITYCHECK])
+  AC_REQUIRE([gl_C32RTOMB_SANITYCHECK])
   gl_UCHAR_MODULE_INDICATOR([c32ispunct])
   AC_REQUIRE([gl_UCHAR_H])
   dnl Determine REPLACE_MBSTATE_T, from which GNULIB_defined_mbstate_t is
   dnl determined.  It describes how mbrtoc32 is implemented.
   AC_REQUIRE([gl_MBSTATE_T_BROKEN])
   AC_REQUIRE([gl_MBRTOC32_SANITYCHECK])
+  AC_REQUIRE([gl_C32RTOMB_SANITYCHECK])
   gl_UCHAR_MODULE_INDICATOR([c32isspace])
   AC_REQUIRE([gl_UCHAR_H])
   dnl Determine REPLACE_MBSTATE_T, from which GNULIB_defined_mbstate_t is
   dnl determined.  It describes how mbrtoc32 is implemented.
   AC_REQUIRE([gl_MBSTATE_T_BROKEN])
   AC_REQUIRE([gl_MBRTOC32_SANITYCHECK])
+  AC_REQUIRE([gl_C32RTOMB_SANITYCHECK])
   gl_UCHAR_MODULE_INDICATOR([c32isupper])
   AC_REQUIRE([gl_UCHAR_H])
   dnl Determine REPLACE_MBSTATE_T, from which GNULIB_defined_mbstate_t is
   dnl determined.  It describes how mbrtoc32 is implemented.
   AC_REQUIRE([gl_MBSTATE_T_BROKEN])
   AC_REQUIRE([gl_MBRTOC32_SANITYCHECK])
+  AC_REQUIRE([gl_C32RTOMB_SANITYCHECK])
   gl_UCHAR_MODULE_INDICATOR([c32isxdigit])
   AC_REQUIRE([gl_UCHAR_H])
   dnl Determine REPLACE_MBSTATE_T, from which GNULIB_defined_mbstate_t is
   dnl determined.  It describes how mbrtoc32 is implemented.
   AC_REQUIRE([gl_MBSTATE_T_BROKEN])
   AC_REQUIRE([gl_MBRTOC32_SANITYCHECK])
+  AC_REQUIRE([gl_C32RTOMB_SANITYCHECK])
   gl_UCHAR_MODULE_INDICATOR([c32tolower])
   AC_REQUIRE([gl_UCHAR_H])
   dnl Determine REPLACE_MBSTATE_T, from which GNULIB_defined_mbstate_t is
   dnl determined.  It describes how mbrtoc32 is implemented.
   AC_REQUIRE([gl_MBSTATE_T_BROKEN])
   AC_REQUIRE([gl_MBRTOC32_SANITYCHECK])
+  AC_REQUIRE([gl_C32RTOMB_SANITYCHECK])
   gl_UCHAR_MODULE_INDICATOR([c32width])
   gl_MODULE_INDICATOR_FOR_TESTS([cloexec])
   gl_FUNC_CLOSE
@@ -497,6 +516,16 @@ AC_DEFUN([gl_INIT],
   ])
   gl_FCNTL_MODULE_INDICATOR([open])
   gl_PATHMAX
+  gl_PTHREAD_H
+  gl_PTHREAD_H_REQUIRE_DEFAULTS
+  AC_PROG_MKDIR_P
+  gl_PTHREAD_ONCE
+  gl_CONDITIONAL([GL_COND_OBJ_PTHREAD_ONCE],
+                 [test $HAVE_PTHREAD_ONCE = 0 || test $REPLACE_PTHREAD_ONCE = 1])
+  gl_PTHREAD_MODULE_INDICATOR([pthread-once])
+  gl_SCHED_H
+  gl_SCHED_H_REQUIRE_DEFAULTS
+  AC_PROG_MKDIR_P
   gl_FUNC_SETLOCALE
   gl_CONDITIONAL([GL_COND_OBJ_SETLOCALE], [test $REPLACE_SETLOCALE = 1])
   AM_COND_IF([GL_COND_OBJ_SETLOCALE], [
@@ -942,6 +971,9 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/msvc-nothrow.h
   lib/open.c
   lib/pathmax.h
+  lib/pthread-once.c
+  lib/pthread.in.h
+  lib/sched.in.h
   lib/setlocale-lock.c
   lib/setlocale.c
   lib/setlocale_null-unlocked.c
@@ -1033,6 +1065,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/alloca.m4
   m4/assert_h.m4
   m4/c-bool.m4
+  m4/c32rtomb.m4
   m4/close.m4
   m4/codeset.m4
   m4/dup2.m4
@@ -1098,13 +1131,18 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/multiarch.m4
   m4/musl.m4
   m4/nocrash.m4
+  m4/off64_t.m4
   m4/off_t.m4
   m4/open-cloexec.m4
   m4/open-slash.m4
   m4/open.m4
   m4/pathmax.m4
   m4/pid_t.m4
+  m4/pthread-once.m4
+  m4/pthread-spin.m4
+  m4/pthread_h.m4
   m4/pthread_rwlock_rdlock.m4
+  m4/sched_h.m4
   m4/setlocale.m4
   m4/setlocale_null.m4
   m4/signbit.m4
@@ -1117,6 +1155,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/stdlib_h.m4
   m4/string_h.m4
   m4/strtoull.m4
+  m4/sys_cdefs_h.m4
   m4/sys_random_h.m4
   m4/sys_stat_h.m4
   m4/sys_types_h.m4
@@ -1131,7 +1170,6 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/visibility.m4
   m4/warn-on-use.m4
   m4/wchar_h.m4
-  m4/wchar_t.m4
   m4/wctype_h.m4
   m4/wcwidth.m4
   m4/wint_t.m4
