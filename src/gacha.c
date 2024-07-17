@@ -3,11 +3,9 @@
 /* ©2024 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
-#include <stddef.h>
 #include "config.h"
-#ifdef HAVE_SYS_RANDOM_H
+#include <stddef.h>
 #include <sys/random.h>
-#endif
 #include "gacha.h"
 #include "util.h"
 
@@ -22,14 +20,14 @@ int doPity[2] = {1, 1};
 int do5050 = 1;
 
 const char* const banners[WISH_CNT][2] = {
-	[CHAR1] = {"char1", "Character Event Wish"},
-	[CHAR2] = {"char2", "Character Event Wish-2"},
-	[WPN] = {"weapon", "Weapon Event Wish"},
-	[STD_CHR] = {"std", "Wanderlust Invocation"},
-	[STD_WPN] = {"std_weapon", "Wanderlust Incocation (Weapons)"},
-	[STD_ONLY_CHR] = {"std_char", "Wanderlust Incocation (Characters Only)"},
-	[NOVICE] = {"novice", "Beginners' Wish"},
-	[CHRONICLED] = {"chronicle", "Chronicled Wish"}
+	[CHAR1] = {"char1", _N("Character Event Wish")},
+	[CHAR2] = {"char2", _N("Character Event Wish-2")},
+	[WPN] = {"weapon", _N("Weapon Event Wish")},
+	[STD_CHR] = {"std", _N("Wanderlust Invocation")},
+	[STD_WPN] = {"std_weapon", _N("Wanderlust Incocation (Weapons)")},
+	[STD_ONLY_CHR] = {"std_char", _N("Wanderlust Incocation (Characters Only)")},
+	[NOVICE] = {"novice", _N("Beginners' Wish")},
+	[CHRONICLED] = {"chronicle", _N("Chronicled Wish")}
 };
 
 // TODO: There is a different linear rise for standard prior to reaching soft pity. Figure out what it is or if it even exists.

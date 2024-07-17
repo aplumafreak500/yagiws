@@ -52,3 +52,6 @@
 	* Don't display 4-star guarantee status on the end results of a Chronicled Wish (which is only used for 5-stars and only with Chronicled Path set)
 	* Add non-vanilla "character-only" variant of standard banner
 	* Add options to force the "smooth" function to drop only characters or only weapons
+
+* v1.5 (2024-??-??):
+	* Add support for Gnulib and GNU Gettext
