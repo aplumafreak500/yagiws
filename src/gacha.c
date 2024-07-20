@@ -3,11 +3,9 @@
 /* ©2024 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
-#include <stddef.h>
 #include "config.h"
-#ifdef HAVE_SYS_RANDOM_H
+#include <stddef.h>
 #include <sys/random.h>
-#endif
 #include "gacha.h"
 #include "util.h"
 
@@ -20,14 +18,14 @@ int doPity[2] = {1, 1};
 int do5050 = 1;
 
 const char* const banners[WARP_CNT][2] = {
-	[CHAR1] = {"char1", "Character Event Warp"},
-	[CHAR2] = {"char2", "Character Event Warp-2"},
-	[WPN1] = {"lc1", "Light Cone Event Warp"},
-	[WPN2] = {"lc2", "Light Cone Event Warp-2"},
-	[STD_CHR] = {"std", "Stellar Warp"},
-	[STD_WPN] = {"std_lc", "Stellar Warp (Light Cones)"},
-	[STD_ONLY_CHR] = {"std_char", "Stellar Warp (Characters Only)"},
-	[NOVICE] = {"novice", "Departure Warp"},
+	[CHAR1] = {"char1", _N("Character Event Warp")},
+	[CHAR2] = {"char2", _N("Character Event Warp-2")},
+	[WPN1] = {"lc1", _N("Light Cone Event Warp")},
+	[WPN2] = {"lc2", _N("Light Cone Event Warp-2")},
+	[STD_CHR] = {"std", _N("Stellar Warp")},
+	[STD_WPN] = {"std_lc", _N("Stellar Warp (Light Cones)")},
+	[STD_ONLY_CHR] = {"std_char", _N("Stellar Warp (Characters Only)")},
+	[NOVICE] = {"novice", _N("Departure Warp")},
 };
 
 // TODO: The below pity curves are derived from Genshin Impact's and are unconfirmed, particularly the 5-star lightcone banner's pity curve.

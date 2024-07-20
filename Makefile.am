@@ -3,5 +3,13 @@
 # ©2024 Alex Pensinger (ArcticLuma113)
 # Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/
 
-SUBDIRS = src
+SUBDIRS = gnulib po src
 dist_doc_DATA = Readme.md Changelog License.txt
+EXTRA_DIST = include m4/gnulib-cache.m4 $(top_srcdir)/.version
+BUILT_SOURCES = $(top_srcdir)/.version
+
+$(top_srcdir)/.version:
+	$(AM_V_GEN)echo '$(VERSION)' > $@-t && mv $@-t $@
+
+dist-hook:
+	$(AM_V_GEN)echo '$(VERSION)' > $(distdir)/.tarball-version

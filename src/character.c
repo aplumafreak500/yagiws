@@ -4,66 +4,65 @@
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
 #include "config.h"
-#ifdef HAVE_STDIO_H
 #include <stdio.h>
-#endif
 #include "item.h"
+#include "util.h"
 
 static const char* const chrList[325] = {
-	[0] = "None",
-	[1] = "March 7th",
-	[2] = "Dan Heng",
-	[3] = "Himeko",
-	[4] = "Welt",
-	[5] = "Kafka",
-	[6] = "Silver Wolf",
-	[8] = "Arlan",
-	[9] = "Asta",
-	[13] = "Herta",
-	[101] = "Bronya",
-	[102] = "Seele",
-	[103] = "Serval",
-	[104] = "Gepard",
-	[105] = "Natasha",
-	[106] = "Pela",
-	[107] = "Clara",
-	[108] = "Sampo",
-	[109] = "Hook",
-	[110] = "Lynx",
-	[111] = "Luka",
-	[112] = "Topaz & Numby",
-	[201] = "Qingque",
-	[202] = "Tingyun",
-	[203] = "Luocha",
-	[204] = "Jing Yuan",
-	[205] = "Blade",
-	[206] = "Sushang",
-	[207] = "Yukong",
-	[208] = "Fu Xuan",
-	[209] = "Yanqing",
-	[210] = "Guinaifen",
-	[211] = "Bailu",
-	[212] = "Jingliu",
-	[213] = "Dan Heng • Imbibitor Lunae",
-	[214] = "Xueyi",
-	[215] = "Hanya",
-	[217] = "Huohuo",
-	[301] = "Gallagher",
-	[302] = "Argenti",
-	[303] = "Ruan Mei",
-	[304] = "Aventurine",
-	[305] = "Dr. Ratio",
-	[306] = "Sparkle",
-	[307] = "Black Swan",
-	[308] = "Acheron",
-	[309] = "Robin",
-	[310] = "Firefly",
-	[312] = "Misha",
-	[314] = "Jade",
-	[315] = "Boothill",
-	[318] = "Jiaoqiu",
-	[321] = "Yunli",
-	[324] = "March 7th", // The Hunt variant
+	[0] = _N("None"),
+	[1] = _N("March 7th"),
+	[2] = _N("Dan Heng"),
+	[3] = _N("Himeko"),
+	[4] = _N("Welt"),
+	[5] = _N("Kafka"),
+	[6] = _N("Silver Wolf"),
+	[8] = _N("Arlan"),
+	[9] = _N("Asta"),
+	[13] = _N("Herta"),
+	[101] = _N("Bronya"),
+	[102] = _N("Seele"),
+	[103] = _N("Serval"),
+	[104] = _N("Gepard"),
+	[105] = _N("Natasha"),
+	[106] = _N("Pela"),
+	[107] = _N("Clara"),
+	[108] = _N("Sampo"),
+	[109] = _N("Hook"),
+	[110] = _N("Lynx"),
+	[111] = _N("Luka"),
+	[112] = _N("Topaz & Numby"),
+	[201] = _N("Qingque"),
+	[202] = _N("Tingyun"),
+	[203] = _N("Luocha"),
+	[204] = _N("Jing Yuan"),
+	[205] = _N("Blade"),
+	[206] = _N("Sushang"),
+	[207] = _N("Yukong"),
+	[208] = _N("Fu Xuan"),
+	[209] = _N("Yanqing"),
+	[210] = _N("Guinaifen"),
+	[211] = _N("Bailu"),
+	[212] = _N("Jingliu"),
+	[213] = _N("Dan Heng • Imbibitor Lunae"),
+	[214] = _N("Xueyi"),
+	[215] = _N("Hanya"),
+	[217] = _N("Huohuo"),
+	[301] = _N("Gallagher"),
+	[302] = _N("Argenti"),
+	[303] = _N("Ruan Mei"),
+	[304] = _N("Aventurine"),
+	[305] = _N("Dr. Ratio"),
+	[306] = _N("Sparkle"),
+	[307] = _N("Black Swan"),
+	[308] = _N("Acheron"),
+	[309] = _N("Robin"),
+	[310] = _N("Firefly"),
+	[312] = _N("Misha"),
+	[314] = _N("Jade"),
+	[315] = _N("Boothill"),
+	[318] = _N("Jiaoqiu"),
+	[321] = _N("Yunli"),
+	[324] = _N("March 7th"), // The Hunt variant
 };
 
 const char* getCharacter(unsigned int id) {
@@ -74,14 +73,14 @@ const char* getCharacter(unsigned int id) {
 	}
 	// Special logic for the Trailblazer
 	static const char* const paths[3] = {
-		"Destruction",
-		"Preservation",
-		"Harmony",
+		_N("Destruction"),
+		_N("Preservation"),
+		_N("Harmony"),
 	};
-	static const char* const names[2] = {"Caelus", "Stelle"};
+	static const char* const names[2] = {_N("Caelus"), _N("Stelle")};
 	unsigned int path = (id - 8001) / 2;
 	if (id >= 8001 && id <= 8006) {
-		snprintf(strBuf, 1024, "%s (%s)", names[id & 1], paths[path]);
+		snprintf(strBuf, 1024, _("%s (%s)"), gettext(names[id & 1]), gettext(paths[path]));
 		return strBuf;
 	}
 	// Special logic for Eidlons
@@ -89,12 +88,12 @@ const char* getCharacter(unsigned int id) {
 		if (chrList[id - 11000] == NULL) {
 			return NULL;
 		}
-		snprintf(strBuf, 1024, "%s's Eidolon", chrList[id - 11000]);
+		snprintf(strBuf, 1024, _("%s's Eidolon"), gettext(chrList[id - 11000]));
 		return strBuf;
 	}
 	// Special logic for the Trailblazer's Eidlons
 	if (id >= 18001 && id <= 18006) {
-		snprintf(strBuf, 1024, "Shadow of %s", paths[path]);
+		snprintf(strBuf, 1024, _("Shadow of %s"), gettext(paths[path]));
 		return strBuf;
 	}
 	return NULL;

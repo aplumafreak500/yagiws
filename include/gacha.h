@@ -5,6 +5,7 @@
 
 #ifndef GACHA_H
 #define GACHA_H
+// Banner types
 enum {
 	STD_CHR = 0,
 	STD_WPN, // non-vanilla
@@ -17,9 +18,10 @@ enum {
 	WARP_CNT
 };
 
-#define IDX_MAX 12
+extern const char* const banners[WARP_CNT][2];
 
 // Banner data
+#define IDX_MAX 12
 extern const unsigned short FourStarChrUp[IDX_MAX*2][3];
 extern const unsigned short FiveStarChrUp[IDX_MAX*2][2];
 extern const unsigned short FourStarWpnUp[IDX_MAX*2][3];
@@ -39,8 +41,7 @@ extern int doSmooth[2];
 extern int doPity[2];
 extern int do5050;
 
-extern const char* const banners[WARP_CNT][2];
-
+// Main gacha function
 #ifndef DEBUG
 unsigned int doAPull(unsigned int, unsigned int, unsigned int, unsigned int*, unsigned int*);
 #else

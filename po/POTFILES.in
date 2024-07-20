@@ -1,0 +1,5 @@
+# List of source files which contain translatable strings.
+src/yasrws.c
+src/gacha.c
+src/character.c
+src/lightcone.c

@@ -3,8 +3,8 @@
 /* ©2024 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
-#include <stddef.h>
 #include "config.h"
+#include <stddef.h>
 #include "item.h"
 
 static const char* const ThreeStarLightCones[21] = {

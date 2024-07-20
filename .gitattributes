@@ -1,4 +1,7 @@
 /compile linguist-vendored
 /depcomp linguist-vendored
+/git-version-gen linguist-vendored
 /install-sh linguist-vendored
 /missing linguist-vendored
+/gnulib/** linguist-vendored
+/m4/** linguist-vendored
