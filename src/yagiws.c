@@ -702,11 +702,10 @@ int main(int argc, char** argv) {
 			}
 			else {
 				fourPool = FourStarChr;
-				fourMaxIdx = FourStarMaxIndex[v[0]];
+				fourMaxIdx = FourStarMaxIndex[v[0]] + 3;
 				fourMinIdx = 0;
 				if (!(banner == STD_CHR || banner == STD_ONLY_CHR || banner == STD_WPN)) {
 					fourMinIdx = 3;
-					fourMaxIdx += 3;
 				}
 			}
 			for (n = fourMinIdx; n < fourMaxIdx; n++) {

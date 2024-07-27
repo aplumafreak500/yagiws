@@ -59,3 +59,4 @@
 	* Additional early support for 5.0
 	* Fix default standard pool version being too big
 	* Fix off by one error on the id for Ballad of the Boundless Blue
+	* Fix standard banner details not showing the last 3 characters in the 4-star pool
