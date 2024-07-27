@@ -54,6 +54,7 @@
 
 * v1.5 (2024-??-??):
 	* Add support for Gnulib and GNU Gettext
+	* Add new logic for when the "smooth" function is disabled. (The old behavior can still be utilized with the --noSmoothOld option.)
 	* Finalize 4.8 phase 1
 	* Additional early support for 5.0
 	* Fix default standard pool version being too big

@@ -121,6 +121,9 @@ static void usage() {
 		"\t                       \tonly weapons.\n"
 		"\t                       \t(Note: If both -C and -W are given, neither\n"
 		"\t                       \toption will take effect.)\n"
+		"\t--noSmoothOld          With -s and/or -S, specify that the >v1.4\n"
+		"\t                       \tbehavior should be used that forces \"smooth\"\n"
+		"\t                       \tpity to be 50/50 between characters and weapons.\n"
 		"\nDisclaimer:\n"
 		"This project is not affiliated with miHoYo/Hoyoverse/Cogonosphere or any of\n"
 		"their subsidiaries. It is designed for entertainment purposes only, and gacha\n"
@@ -159,6 +162,7 @@ static const opt_t long_opts[] = {
 	{"rateUpOnly", no_argument, 0, 'r'},
 	{"forceSmoothChar", no_argument, 0, 'C'},
 	{"forceSmoothWpn", no_argument, 0, 'W'},
+	{"noSmoothOld", no_argument, 0, 6},
 	{NULL, 0, 0, 0},
 };
 
@@ -175,6 +179,7 @@ int main(int argc, char** argv) {
 	unsigned int noviceCnt = 0;
 	unsigned int detailsRequested = 0;
 	unsigned int forceSmooth = 0;
+	unsigned int oldSmooth = 0;
 	int epitomizedPathIndex = -1;
 	unsigned int fiveMaxIdx, fourMaxIdx, fiveMinIdx, fourMinIdx;
 	const unsigned short* fivePool;
@@ -391,6 +396,9 @@ int main(int argc, char** argv) {
 			// TODO minor sanity checks, similar to main pity
 			pityS[c - 1] = n;
 			break;
+		case 6:
+			oldSmooth = 1;
+			break;
 		case 'v':
 			ver();
 			return 0;
@@ -558,6 +566,14 @@ int main(int argc, char** argv) {
 	if ((forceSmooth & 3) == 3) {
 		fprintf(stderr, _("Both characters and weapons specified as forced. Reverting to normal behavior.\n"));
 		forceSmooth = 0;
+	}
+	if (oldSmooth) {
+		if (doSmooth[0] == 0) {
+			doSmooth[0] = -1;
+		}
+		if (doSmooth[1] == 0) {
+			doSmooth[1] = -1;
+		}
 	}
 	if (detailsRequested) {
 		if ((banner == CHAR1 || banner == CHAR2 || banner == WPN || banner == CHRONICLED) && b[3]) {

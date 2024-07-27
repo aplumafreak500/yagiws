@@ -130,11 +130,11 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 	if (banner == WPN || banner == STD_WPN) _getWeight = getWeightW;
 	if (doPity[0]) pity[0]++;
 	if (doPity[1]) pity[1]++;
-	if (doSmooth[0]) {
+	if (doSmooth[0] > 0) {
 		pityS[0]++;
 		pityS[1]++;
 	}
-	if (doSmooth[1]) {
+	if (doSmooth[1] > 0) {
 		pityS[2]++;
 		pityS[3]++;
 	}
@@ -250,25 +250,27 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 				getRateUp[1] = 0;
 				fatePoints = 0;
 				rndF = rndFloat();
-				if (pityS[2] <= pityS[3]) {
-					if (rndF <= getWeight5S(pityS[3])) {
-						pityS[3] = 0;
-						minIdx = ChroniclePool->FiveStarCharCount;
+				if (doSmooth[1] >= 0) {
+					if (pityS[2] <= pityS[3]) {
+						if (rndF <= getWeight5S(pityS[3])) {
+							pityS[3] = 0;
+							minIdx = ChroniclePool->FiveStarCharCount;
 
+						}
+						else {
+							pityS[2] = 0;
+							maxIdx = ChroniclePool->FiveStarCharCount;
+						}
 					}
 					else {
-						pityS[2] = 0;
-						maxIdx = ChroniclePool->FiveStarCharCount;
-					}
-				}
-				else {
-					if (rndF <= getWeight5S(pityS[2])) {
-						pityS[2] = 0;
-						maxIdx = ChroniclePool->FiveStarCharCount;
-					}
-					else {
-						pityS[3] = 0;
-						minIdx = ChroniclePool->FiveStarCharCount;
+						if (rndF <= getWeight5S(pityS[2])) {
+							pityS[2] = 0;
+							maxIdx = ChroniclePool->FiveStarCharCount;
+						}
+						else {
+							pityS[3] = 0;
+							minIdx = ChroniclePool->FiveStarCharCount;
+						}
 					}
 				}
 			}
@@ -305,6 +307,18 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 			// Standard banner does not use Fate Points
 			fatePoints = 0;
 			rndF = rndFloat();
+			if (doSmooth[1] < 0) {
+				minIdx = FiveStarMaxIndex[stdPoolIndex];
+				maxIdx = minIdx + 10;
+				getrandom(&rnd, sizeof(long long), 0);
+				if ((rnd % maxIdx) < minIdx) {
+					return FiveStarChr[rnd % minIdx];
+				}
+				else {
+					minIdx = (rnd % maxIdx) - minIdx;
+					return FiveStarWpn[minIdx];
+				}
+			}
 			if (pityS[2] <= pityS[3]) {
 				if (rndF <= getWeight5S(pityS[3])) {
 					pityS[3] = 0;
@@ -345,6 +359,18 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 			*isRateUp = 0;
 			getRateUp[0] = 1;
 			rndF = rndFloat();
+			if (doSmooth[0] < 0) {
+				minIdx = FourStarMaxIndex[stdPoolIndex];
+				maxIdx = minIdx + 18;
+				getrandom(&rnd, sizeof(long long), 0);
+				if ((rnd % maxIdx) < minIdx) {
+					return FourStarChr[(rnd % minIdx) + 3];
+				}
+				else {
+					minIdx = (rnd % maxIdx) - minIdx;
+					return FourStarWpn[minIdx];
+				}
+			}
 			if (pityS[0] <= pityS[1]) {
 				if (rndF <= getWeight4S(pityS[1])) {
 					pityS[1] = 0;
@@ -378,6 +404,18 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 			*isRateUp = 0;
 			getRateUp[0] = 1;
 			rndF = rndFloat();
+			if (doSmooth[0] < 0) {
+				minIdx = FourStarMaxIndex[stdPoolIndex];
+				maxIdx = minIdx + 18;
+				getrandom(&rnd, sizeof(long long), 0);
+				if ((rnd % maxIdx) < minIdx) {
+					return FourStarChr[(rnd % minIdx) + 3];
+				}
+				else {
+					minIdx = (rnd % maxIdx) - minIdx;
+					return FourStarWpn[minIdx];
+				}
+			}
 			if (pityS[0] <= pityS[1]) {
 				if (rndF <= getWeight4SW(pityS[1])) {
 					pityS[1] = 0;
@@ -407,25 +445,27 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 			maxIdx = ChroniclePool->FourStarWeaponCount + ChroniclePool->FourStarCharCount;
 
 			rndF = rndFloat();
-			if (pityS[0] <= pityS[1]) {
-				if (rndF <= getWeight4S(pityS[1])) {
-					pityS[1] = 0;
-					minIdx = ChroniclePool->FourStarCharCount;
+			if (doSmooth[0] >= 0) {
+				if (pityS[0] <= pityS[1]) {
+					if (rndF <= getWeight4S(pityS[1])) {
+						pityS[1] = 0;
+						minIdx = ChroniclePool->FourStarCharCount;
 
+					}
+					else {
+						pityS[0] = 0;
+						maxIdx = ChroniclePool->FourStarCharCount;
+					}
 				}
 				else {
-					pityS[0] = 0;
-					maxIdx = ChroniclePool->FourStarCharCount;
-				}
-			}
-			else {
-				if (rndF <= getWeight4S(pityS[0])) {
-					pityS[0] = 0;
-					maxIdx = ChroniclePool->FourStarCharCount;
-				}
-				else {
-					pityS[1] = 0;
-					minIdx = ChroniclePool->FourStarCharCount;
+					if (rndF <= getWeight4S(pityS[0])) {
+						pityS[0] = 0;
+						maxIdx = ChroniclePool->FourStarCharCount;
+					}
+					else {
+						pityS[1] = 0;
+						minIdx = ChroniclePool->FourStarCharCount;
+					}
 				}
 			}
 			getrandom(&rnd, sizeof(long long), 0);
@@ -447,6 +487,18 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 			*isRateUp = 0;
 			getRateUp[0] = 0;
 			rndF = rndFloat();
+			if (doSmooth[0] < 0) {
+				minIdx = FourStarMaxIndex[stdPoolIndex] + 3;
+				maxIdx = minIdx + 18;
+				getrandom(&rnd, sizeof(long long), 0);
+				if ((rnd % maxIdx) < minIdx) {
+					return FourStarChr[rnd % minIdx];
+				}
+				else {
+					minIdx = (rnd % maxIdx) - minIdx;
+					return FourStarWpn[minIdx];
+				}
+			}
 			if (pityS[0] <= pityS[1]) {
 				if (rndF <= getWeight4S(pityS[1])) {
 					pityS[1] = 0;
@@ -470,6 +522,18 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 			*isRateUp = 0;
 			getRateUp[0] = 0;
 			rndF = rndFloat();
+			if (doSmooth[0] < 0) {
+				minIdx = FourStarMaxIndex[stdPoolIndex] + 3;
+				maxIdx = minIdx + 18;
+				getrandom(&rnd, sizeof(long long), 0);
+				if ((rnd % maxIdx) < minIdx) {
+					return FourStarChr[rnd % minIdx];
+				}
+				else {
+					minIdx = (rnd % maxIdx) - minIdx;
+					return FourStarWpn[minIdx];
+				}
+			}
 			if (pityS[0] <= pityS[1]) {
 				if (rndF <= getWeight4SW(pityS[1])) {
 					pityS[1] = 0;
