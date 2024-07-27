@@ -55,3 +55,5 @@
 
 * v1.5 (2024-??-??):
 	* Add support for Gnulib and GNU Gettext
+	* Finalize 4.8 phase 1
+	* Fix default standard pool version being too big

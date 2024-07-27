@@ -181,8 +181,8 @@ int main(int argc, char** argv) {
 	const unsigned short* fourPool;
 	int c = 0;
 	long long n = 0;
-	int v[4] = {-1, -1, 0, 0x472};
-	int b[5] = {-1, -1, -1, 0, 0x472};
+	int v[4] = {-1, -1, 0, 0x48};
+	int b[5] = {-1, -1, -1, 0, 0x481};
 	char* p = NULL;
 	const ChroniclePool_t* ChroniclePool = NULL;
 	setlocale(LC_ALL, "");
