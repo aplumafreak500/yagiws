@@ -477,7 +477,7 @@ const ChroniclePool_t* getChroniclePool(unsigned short v) {
 }
 
 // The list of 4-star characters in the pool, used together with the rate-up drops.
-const unsigned short FourStarChr[40] = {
+const unsigned short FourStarChr[41] = {
 	// v1.0 standard pool: Lisa, Kayea, Amber (standard banner only)
 	1006, 1015, 1021,
 	// v1.0 standard pool: Barbara, Razor, Xiangling, Beidou, Xingqiu, Ningguang, Fischl, Bennett, Noelle, Chongyun, Sucrose
@@ -530,6 +530,8 @@ const unsigned short FourStarChr[40] = {
 	1092,
 	// v4.8: Sethos
 	1097,
+	// v5.1: Kachina
+	4100,
 };
 
 // The list of 5-star characters in the pool, used together with the rate-up drops.
@@ -549,7 +551,7 @@ const unsigned char FourStarMaxIndex[IDX_MAX] = {
 	/* v2.x */ 15, 16, 17, 18, 19, 20, 20, 20, 21,
 	/* v3.x */ 22, 24, 25, 26, 27, 28, 29, 30, 31,
 	/* v4.x */ 31, 33, 33, 34, 35, 36, 36, 36, 37,
-	/* v5.x */ 37,
+	/* v5.x */ 37, 38,
 };
 
 // Max indexes into FiveStarChr per version (for old banners)
@@ -559,7 +561,7 @@ const unsigned char FiveStarMaxIndex[IDX_MAX] = {
 	/* v2.x */ 5, 5, 5, 5, 5, 5, 5, 5, 5,
 	/* v3.x */ 5, 6, 6, 6, 6, 6, 7, 7, 7,
 	/* v4.x */ 7, 7, 7, 7, 7, 7, 7, 7, 7,
-	/* v5.x */ 7,
+	/* v5.x */ 7, 7,
 };
 
 // The list of 3-star weapons in the pool.

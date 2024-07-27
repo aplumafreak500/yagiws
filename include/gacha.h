@@ -36,7 +36,7 @@ extern const unsigned short FourStarChrUp[IDX_MAX*2][3];
 extern const unsigned short FiveStarChrUp[IDX_MAX*2][2];
 extern const unsigned short FourStarWpnUp[IDX_MAX*2][5];
 extern const unsigned short FiveStarWpnUp[IDX_MAX*2][2];
-extern const unsigned short FourStarChr[40];
+extern const unsigned short FourStarChr[41];
 extern const unsigned short FiveStarChr[7];
 extern const unsigned short ThreeStar[13];
 extern const unsigned short FourStarWpn[18];

@@ -8,7 +8,7 @@
 #include "item.h"
 #include "util.h"
 
-static const char* const chrList[100] = {
+static const char* const chrList[103] = {
 	[0] = _N("None"),
 	[1] = _N("Kate"),
 	[2] = _N("Kamisato Ayaka"),
@@ -97,6 +97,9 @@ static const char* const chrList[100] = {
 	[97] = _N("Sethos"),
 	[98] = _N("Clorinde"),
 	[99] = _N("Emilie"),
+	[100] = _N("Kachina"),
+	[101] = _N("Kinich"),
+	[102] = _N("Mualani"),
 };
 
 const char* getCharacter(unsigned int id) {
@@ -112,7 +115,16 @@ const char* getCharacter(unsigned int id) {
 		snprintf(stellaBuf, 1024, _("%s's Stella Fortuna"), gettext(chrList[id - 1100]));
 		return stellaBuf;
 	}
-	// TODO Upon v5.0's release, new character IDs will overlap constellation IDs; find out how Hoyoverse handles this and adjust accordingly
+	if (id < 4100) {
+		return chrList[id - 4100];
+	}
+	if (id < 5100) {
+		if (chrList[id - 4100] == NULL) {
+			return NULL;
+		}
+		snprintf(stellaBuf, 1024, _("%s's Stella Fortuna"), gettext(chrList[id - 5100]));
+		return stellaBuf;
+	}
 	// TODO handle avatar IDs (> 10000000)
 	return NULL;
 }

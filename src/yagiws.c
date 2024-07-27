@@ -804,8 +804,8 @@ int main(int argc, char** argv) {
 			color = 33;
 			break;
 		}
-		// TODO Upon v5.0's release, new character IDs will overlap constellation IDs; find out how Hoyoverse handles this and adjust accordingly
-		if (item < 1100 && item >= 1000) {
+		// Make the check simple by assuming all IDs between 1000 and 6000 are characters.
+		if (item < 6000 && item >= 1000) {
 			isChar = 1;
 			if (getItem(item) != NULL) {
 				snprintf(buf, 1024, _("\e[%u%sm%s\e[39;0m (id %u)"), color, shouldBold(rare, banner, won5050) ? ";1" : ";22", getItem(item), item);
