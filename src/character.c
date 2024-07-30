@@ -115,11 +115,11 @@ const char* getCharacter(unsigned int id) {
 		snprintf(stellaBuf, 1024, _("%s's Stella Fortuna"), gettext(chrList[id - 1100]));
 		return stellaBuf;
 	}
-	if (id < 4100) {
+	if (id < 4100 && id > 4102) {
 		return chrList[id - 4100];
 	}
-	if (id < 5100) {
-		if (chrList[id - 4100] == NULL) {
+	if (id < 5100 && id > 5102) {
+		if (chrList[id - 5100] == NULL) {
 			return NULL;
 		}
 		snprintf(stellaBuf, 1024, _("%s's Stella Fortuna"), gettext(chrList[id - 5100]));
