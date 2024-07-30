@@ -60,3 +60,6 @@
 	* Fix default standard pool version being too big
 	* Fix off by one error on the id for Ballad of the Boundless Blue
 	* Fix standard banner details not showing the last 3 characters in the 4-star pool
+
+* v1.5.1 (2024-??-??):
+	* Don't call setlocale or bindtextdomain if NLS is disabled

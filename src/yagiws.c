@@ -9,7 +9,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef ENABLE_NLS
 #include <locale.h>
+#endif
 #include "gacha.h"
 #include "item.h"
 #include "util.h"
@@ -190,9 +192,11 @@ int main(int argc, char** argv) {
 	int b[5] = {-1, -1, -1, 0, 0x481};
 	char* p = NULL;
 	const ChroniclePool_t* ChroniclePool = NULL;
+#ifdef ENABLE_NLS
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, LOCALEDIR);
 	textdomain(PACKAGE);
+#endif
 	while (1) {
 		c = getopt_long(argc, argv, "4:5:B:CLNSV:Wb:c:de:f:ghlnrsp:v", long_opts, NULL);
 		if (c == -1) break;
