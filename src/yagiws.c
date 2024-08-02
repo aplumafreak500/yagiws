@@ -189,7 +189,7 @@ int main(int argc, char** argv) {
 	int c = 0;
 	long long n = 0;
 	int v[4] = {-1, -1, 0, 0x48};
-	int b[5] = {-1, -1, -1, 0, 0x481};
+	int b[5] = {-1, -1, -1, 0, 0x482};
 	char* p = NULL;
 	const ChroniclePool_t* ChroniclePool = NULL;
 #ifdef ENABLE_NLS

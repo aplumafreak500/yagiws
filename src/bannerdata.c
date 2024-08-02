@@ -109,9 +109,9 @@ const unsigned short FourStarChrUp[IDX_MAX*2][3] = {
 	// v4.7 - Imaginarium Theater
 	{1097, 1032, 1050}, // Sethos
 	{1034, 1045, 1092},
-	// v4.8 - Summertide Scales and Tales (phase 2 TODO)
+	// v4.8 - Summertide Scales and Tales
 	{1061, 1081, 1092},
-	{1006, 1015, 1021},
+	{1020, 1023, 1048},
 	// v5.0 - Natlan TODO
 	{1006, 1015, 1021},
 	{1006, 1015, 1021},
@@ -330,9 +330,9 @@ const unsigned short FourStarWpnUp[IDX_MAX*2][5] = {
 	// v4.7 - Imaginarium Theater
 	{11403, 12403, 13406, 14402, 15402},
 	{11405, 12410, 13407, 14401, 15403},
-	// v4.8 - Summertide Scales and Tales (phase 2 TODO)
+	// v4.8 - Summertide Scales and Tales
 	{11418, 12402, 13401, 14409, 15405},
-	{11400, 12400, 13400, 14400, 15400},
+	{11402, 12415, 13407, 14416, 15401},
 	// v5.0 - Natlan TODO
 	{11400, 12400, 13400, 14400, 15400},
 	{11400, 12400, 13400, 14400, 15400},
