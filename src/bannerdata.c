@@ -41,7 +41,10 @@ const unsigned short FourStarChrUp[IDX_MAX*2][3] = {
 	// v2.3
 	{1301, 1312, 1214},
 	{1103, 1105, 1009},
-	// v2.4 TODO
+	// v2.4 (phase 2 TODO)
+	{1215, 1207, 1110},
+	{8004, 8005, 8006},
+	// v2.5 TODO
 	{8001, 8002, 8003},
 	{8004, 8005, 8006},
 };
@@ -81,7 +84,10 @@ const unsigned short FiveStarChrUp[IDX_MAX*2][2] = {
 	// v2.3
 	{1310, 1303}, // Firefly
 	{1314, 1302}, // Jade
-	// v2.4 TODO
+	// v2.4
+	{1321, 1217}, // Yunli
+	{1318, 1306}, // Jiaoqiu
+	// v2.5 TODO
 	{8001, 8002},
 	{8003, 8004},
 };
@@ -120,7 +126,10 @@ const unsigned short FourStarWpnUp[IDX_MAX*2][3] = {
 	// v2.3
 	{21004, 21002, 21008},
 	{21018, 21012, 21009},
-	// v2.4 TODO
+	// v2.4 (phase 2 TODO)
+	{21005, 21006, 21014},
+	{21000, 21001, 21002},
+	// v2.5 TODO
 	{21000, 21001, 21002},
 	{21000, 21001, 21002},
 };
@@ -160,7 +169,10 @@ const unsigned short FiveStarWpnUp[IDX_MAX*2][2] = {
 	// v2.3
 	{23025, 23019}, // Whereabouts Should Dreams Rest
 	{23028, 23011}, // Yet Hope Is Priceless
-	// v2.4 TODO
+	// v2.4
+	{23031, 23017}, // Dance at Sunset
+	{23030, 23021}, // Those Many Springs
+	// v2.5 TODO
 	{23000, 23001},
 	{23000, 23001},
 };
@@ -168,12 +180,12 @@ const unsigned short FiveStarWpnUp[IDX_MAX*2][2] = {
 // Max indexes into FourStarChr per version (for old banners)
 const unsigned char FourStarChrMaxIndex[IDX_MAX] = {
 	/* v1.x */ 13, 13, 14, 15, 16, 17, 18,
-	/* v2.x */ 19, 20, 21, 21, 21
+	/* v2.x */ 19, 20, 21, 21, 21, 21
 };
 
 const unsigned char FourStarWpnMaxIndex[IDX_MAX] = {
 	/* v1.x */ 21, 21, 21, 21, 21, 21, 21,
-	/* v2.x */ 21, 22, 23, 24, 24
+	/* v2.x */ 21, 22, 23, 24, 24, 24
 };
 
 // The list of 4-star characters in the pool, used together with the rate-up drops.

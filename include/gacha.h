@@ -21,7 +21,7 @@ enum {
 extern const char* const banners[WARP_CNT][2];
 
 // Banner data
-#define IDX_MAX 12
+#define IDX_MAX 13
 extern const unsigned short FourStarChrUp[IDX_MAX*2][3];
 extern const unsigned short FiveStarChrUp[IDX_MAX*2][2];
 extern const unsigned short FourStarWpnUp[IDX_MAX*2][3];

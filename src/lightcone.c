@@ -31,7 +31,7 @@ static const char* const ThreeStarLightCones[21] = {
 	"Sagacity",
 };
 
-static const char* const FourStarLightCones[47] = {
+static const char* const FourStarLightCones[48] = {
 	"Post-Op Conversation",
 	"Good Night and Sleep Well",
 	"Day One of My New Life",
@@ -79,6 +79,7 @@ static const char* const FourStarLightCones[47] = {
 	"Boundless Choreo",
 	"After the Charmony Fall",
 	"Poised to Bloom",
+	"Shadowed by Night",
 };
 
 static const char* const FourStarLightCones_Series2[3] = {
@@ -87,7 +88,7 @@ static const char* const FourStarLightCones_Series2[3] = {
 	"For Tomorrow's Journey",
 };
 
-static const char* const FiveStarLightCones[31] = {
+static const char* const FiveStarLightCones[33] = {
 	"Night on the Milky Way",
 	"In the Night",
 	"Something Irreplaceable",
@@ -119,6 +120,8 @@ static const char* const FiveStarLightCones[31] = {
 	"Yet Hope Is Priceless",
 	"Those Many Springs",
 	"Dance at Sunset",
+	"I Venture Forth to Hunt",
+	"Scent Alone Stays True",
 };
 
 static const char* const FiveStarLightCones_Series2[5] = {
@@ -134,7 +137,7 @@ const char* getLightcone(unsigned int id) {
 	if (id >= 20000 && id <= 20021) return ThreeStarLightCones[id - 20000];
 	if (id >= 21000 && id <= 21046) return FourStarLightCones[id - 21000];
 	if (id >= 22000 && id <= 22002) return FourStarLightCones_Series2[id - 22000];
-	if (id >= 23000 && id <= 23030) return FiveStarLightCones[id - 23000];
+	if (id >= 23000 && id <= 23032) return FiveStarLightCones[id - 23000];
 	if (id >= 24000 && id <= 24004) return FiveStarLightCones_Series2[id - 24000];
 	return NULL;
 }

@@ -169,8 +169,8 @@ int main(int argc, char** argv) {
 	unsigned int oldSmooth = 0;
 	int c = 0;
 	long long n = 0;
-	int v[4] = {-1, -1, 0, 0x23};
-	int b[5] = {-1, -1, -1, 0, 0x232};
+	int v[4] = {-1, -1, 0, 0x24};
+	int b[5] = {-1, -1, -1, 0, 0x241};
 	unsigned int forceSmooth = 0;
 	char* p = NULL;
 #ifdef ENABLE_NLS
@@ -406,7 +406,7 @@ int main(int argc, char** argv) {
 	b[0]--;
 	b[1] = b[4] >> 4;
 #ifndef DEBUG
-	if (b[1] > 0x24) b[1] = 0x24;
+	if (b[1] > 0x25) b[1] = 0x25;
 #endif
 
 	if (b[1] >= 0x20) {
@@ -443,7 +443,7 @@ int main(int argc, char** argv) {
 	}
 	else {
 #ifndef DEBUG
-		if (v[0] > 0x24) v[0] = 0x24;
+		if (v[0] > 0x25) v[0] = 0x25;
 #endif
 		if (v[0] >= 0x20) {
 			v[0] -= 0x9;

@@ -47,6 +47,9 @@ static const char* const chrList[325] = {
 	[214] = _N("Xueyi"),
 	[215] = _N("Hanya"),
 	[217] = _N("Huohuo"),
+	[220] = _N("Feixiao"),
+	[222] = _N("Lingsha"),
+	[223] = _N("Moze"),
 	[301] = _N("Gallagher"),
 	[302] = _N("Argenti"),
 	[303] = _N("Ruan Mei"),
@@ -68,7 +71,7 @@ static const char* const chrList[325] = {
 const char* getCharacter(unsigned int id) {
 	static char strBuf[1024];
 	if (id < 1000) return NULL;
-	if (id >= 1000 && id <= 1315) {
+	if (id >= 1000 && id <= 1324) {
 		return chrList[id - 1000];
 	}
 	// Special logic for the Trailblazer
@@ -84,7 +87,7 @@ const char* getCharacter(unsigned int id) {
 		return strBuf;
 	}
 	// Special logic for Eidlons
-	if (id >= 11000 && id <= 11312) {
+	if (id >= 11000 && id <= 11324) {
 		if (chrList[id - 11000] == NULL) {
 			return NULL;
 		}
