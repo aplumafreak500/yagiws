@@ -1,7 +1,15 @@
 /compile linguist-vendored
+/config.guess linguist-vendored
+/config.rpath linguist-vendored
+/config.sub linguist-vendored
 /depcomp linguist-vendored
 /git-version-gen linguist-vendored
 /install-sh linguist-vendored
 /missing linguist-vendored
 /gnulib/** linguist-vendored
 /m4/** linguist-vendored
+/po/** linguist-vendored
+/po/LINGUAS -linguist-vendored
+/po/Makevars -linguist-vendored
+/po/POTFILES.in -linguist-vendored
+/po/*.po -linguist-vendored

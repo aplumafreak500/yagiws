@@ -9,7 +9,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef ENABLE_NLS
 #include <locale.h>
+#endif
 #include "gacha.h"
 #include "item.h"
 #include "util.h"
@@ -108,6 +110,10 @@ static void usage() {
 		"\t                       \tonly Light Cones.\n"
 		"\t                       \t(Note: If both -C and -W are given, neither\n"
 		"\t                       \toption will take effect.)\n"
+		"\t--noSmoothOld          With -s and/or -S, specify that the >v1.1\n"
+		"\t                       \tbehavior should be used that forces \"smooth\"\n"
+		"\t                       \tpity to be 50/50 between characters and Light\n"
+		"\t                       \tCones.\n"
 		"\nDisclaimer:\n"
 		"This project is not affiliated with miHoYo/Hoyoverse/Cogonosphere or any of\n"
 		"their subsidiaries. It is designed for entertainment purposes only, and gacha\n"
@@ -144,6 +150,7 @@ static const opt_t long_opts[] = {
 	{"rateUpOnly", no_argument, 0, 'r'},
 	{"forceSmoothChar", no_argument, 0, 'C'},
 	{"forceSmoothWpn", no_argument, 0, 'W'},
+	{"noSmoothOld", no_argument, 0, 6},
 	{NULL, 0, 0, 0},
 };
 
@@ -159,15 +166,18 @@ int main(int argc, char** argv) {
 	unsigned int pulls = 10;
 	unsigned int noviceCnt = 0;
 	unsigned int detailsRequested = 0;
+	unsigned int oldSmooth = 0;
 	int c = 0;
 	long long n = 0;
 	int v[4] = {-1, -1, 0, 0x23};
 	int b[5] = {-1, -1, -1, 0, 0x232};
 	unsigned int forceSmooth = 0;
 	char* p = NULL;
+#ifdef ENABLE_NLS
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, LOCALEDIR);
 	textdomain(PACKAGE);
+#endif
 	while (1) {
 		c = getopt_long(argc, argv, "4:5:B:CLNSV:Wb:c:dghlnrsp:v", long_opts, NULL);
 		if (c == -1) break;
@@ -339,6 +349,9 @@ int main(int argc, char** argv) {
 			// TODO minor sanity checks, similar to main pity
 			pityS[c - 1] = n;
 			break;
+		case 6:
+			oldSmooth = 1;
+			break;
 		case 'v':
 			ver();
 			return 0;
@@ -453,6 +466,14 @@ int main(int argc, char** argv) {
 	if ((forceSmooth & 3) == 3) {
 		fprintf(stderr, _("Both characters and Light Cones specified as forced. Reverting to normal behavior.\n"));
 		forceSmooth = 0;
+	}
+	if (oldSmooth) {
+		if (doSmooth[0] == 0) {
+			doSmooth[0] = -1;
+		}
+		if (doSmooth[1] == 0) {
+			doSmooth[1] = -1;
+		}
 	}
 	if (detailsRequested) {
 		if ((banner == CHAR1 || banner == CHAR2 || banner == WPN1 || banner == WPN2) && b[3]) {

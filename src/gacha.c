@@ -127,11 +127,11 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 	if (banner == WPN1 || banner == WPN2 || banner == STD_WPN) _getWeight = getWeightW;
 	if (doPity[0]) pity[0]++;
 	if (doPity[1]) pity[1]++;
-	if (doSmooth[0]) {
+	if (doSmooth[0] > 0) {
 		pityS[0]++;
 		pityS[1]++;
 	}
-	if (doSmooth[1]) {
+	if (doSmooth[1] > 0) {
 		pityS[2]++;
 		pityS[3]++;
 	}
@@ -212,6 +212,15 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 			*isRateUp = 0;
 			getRateUp[1] = 0;
 			rndF = rndFloat();
+			if (doSmooth[1] < 0) {
+				getrandom(&rnd, sizeof(long long), 0);
+				if ((rnd % 14) < 7) {
+					return FiveStarChr[rnd % 7];
+				}
+				else {
+					return FiveStarWpn[(rnd - 7) % 7];
+				}
+			}
 			if (pityS[2] <= pityS[3]) {
 				if (rndF <= getWeight5S(pityS[3])) {
 					pityS[3] = 0;
@@ -252,6 +261,18 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 			*isRateUp = 0;
 			getRateUp[0] = 1;
 			rndF = rndFloat();
+			if (doSmooth[0] < 0) {
+				minIdx = FourStarChrMaxIndex[stdPoolIndex];
+				maxIdx = minIdx + FourStarWpnMaxIndex[stdPoolIndex];
+				getrandom(&rnd, sizeof(long long), 0);
+				if ((rnd % maxIdx) < minIdx) {
+					return FourStarChr[rnd % minIdx];
+				}
+				else {
+					minIdx = (rnd % maxIdx) - minIdx;
+					return FourStarWpn[minIdx];
+				}
+			}
 			if (pityS[0] <= pityS[1]) {
 				if (rndF <= getWeight4S(pityS[1])) {
 					pityS[1] = 0;
@@ -286,6 +307,18 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 			*isRateUp = 0;
 			getRateUp[0] = 1;
 			rndF = rndFloat();
+			if (doSmooth[0] < 0) {
+				minIdx = FourStarChrMaxIndex[stdPoolIndex];
+				maxIdx = minIdx + FourStarWpnMaxIndex[stdPoolIndex];
+				getrandom(&rnd, sizeof(long long), 0);
+				if ((rnd % maxIdx) < minIdx) {
+					return FourStarChr[rnd % minIdx];
+				}
+				else {
+					minIdx = (rnd % maxIdx) - minIdx;
+					return FourStarWpn[minIdx];
+				}
+			}
 			if (pityS[0] <= pityS[1]) {
 				if (rndF <= getWeight4SW(pityS[1])) {
 					pityS[1] = 0;
@@ -321,6 +354,18 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 			*isRateUp = 0;
 			getRateUp[0] = 0;
 			rndF = rndFloat();
+			if (doSmooth[0] < 0) {
+				minIdx = FourStarChrMaxIndex[stdPoolIndex];
+				maxIdx = minIdx + FourStarWpnMaxIndex[stdPoolIndex];
+				getrandom(&rnd, sizeof(long long), 0);
+				if ((rnd % maxIdx) < minIdx) {
+					return FourStarChr[rnd % minIdx];
+				}
+				else {
+					minIdx = (rnd % maxIdx) - minIdx;
+					return FourStarWpn[minIdx];
+				}
+			}
 			if (pityS[0] <= pityS[1]) {
 				if (rndF <= getWeight4S(pityS[1])) {
 					pityS[1] = 0;
@@ -344,6 +389,18 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 			*isRateUp = 0;
 			getRateUp[0] = 0;
 			rndF = rndFloat();
+			if (doSmooth[0] < 0) {
+				minIdx = FourStarChrMaxIndex[stdPoolIndex];
+				maxIdx = minIdx + FourStarWpnMaxIndex[stdPoolIndex];
+				getrandom(&rnd, sizeof(long long), 0);
+				if ((rnd % maxIdx) < minIdx) {
+					return FourStarChr[rnd % minIdx];
+				}
+				else {
+					minIdx = (rnd % maxIdx) - minIdx;
+					return FourStarWpn[minIdx];
+				}
+			}
 			if (pityS[0] <= pityS[1]) {
 				if (rndF <= getWeight4SW(pityS[1])) {
 					pityS[1] = 0;

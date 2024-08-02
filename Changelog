@@ -35,3 +35,7 @@
 	* Add missing 5-star lightcone Whereabouts Should Dreams Rest (added in version 2.3), fixing an off-by-one error
 	* Add non-vanilla "character-only" variant of standard banner
 	* Add options to force the "smooth" function to drop only characters or only Light Cones
+
+* v1.2 (2024-??-??):
+	* Add support for Gnulib and GNU Gettext
+	* Add new logic for when the "smooth" function is disabled. (The old behavior can still be utilized with the --noSmoothOld option.)
