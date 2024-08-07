@@ -157,8 +157,7 @@ then
 elif test "`git log -1 --pretty=format:x . 2>&1`" = x \
     && v=`git describe --tags --abbrev=8 --match="$prefix*-sr" HEAD 2>/dev/null \
           || git describe --tags --abbrev=8 HEAD 2>/dev/null` \
-    && v=`printf '%s\n' "$v" | sed 's/-sr//'` \
-    && v=`echo "$v" | sed "$tag_sed_script"` \
+    && v=`printf '%s\n' "$v" | sed "$tag_sed_script"` \
     && case $v in
          $prefix[0-9]*) ;;
          *) (exit 1) ;;
@@ -196,7 +195,8 @@ else
     v=$fallback
 fi
 
-v=`echo "$v" |sed "s/^$prefix//"`
+v=`echo "$v" | sed 's/-sr//'`
+v=`echo "$v" | sed "s/^$prefix//"`
 
 # Test whether to append the "-dirty" suffix only if the version
 # string we're using came from git.  I.e., skip the test if it's "UNKNOWN"
