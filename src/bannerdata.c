@@ -115,6 +115,9 @@ const unsigned short FourStarChrUp[IDX_MAX*2][3] = {
 	// v5.0 - Natlan TODO
 	{4100, 1015, 1021}, // Kachina
 	{1006, 1015, 1021},
+	// v5.1 TODO
+	{1006, 1015, 1021},
+	{1006, 1015, 1021},
 };
 
 // 0xffff: No second banner
@@ -226,6 +229,9 @@ const unsigned short FiveStarChrUp[IDX_MAX*2][2] = {
 	// v5.0 - Natlan
 	{4102, 1047}, // Mualani
 	{4101, 1052}, // Kinich
+	// v5.1 TODO
+	{1005, 1007},
+	{1005, 1007},
 };
 
 const unsigned short FourStarWpnUp[IDX_MAX*2][5] = {
@@ -334,6 +340,9 @@ const unsigned short FourStarWpnUp[IDX_MAX*2][5] = {
 	{11418, 12402, 13401, 14409, 15405},
 	{11402, 12415, 13407, 14416, 15401},
 	// v5.0 - Natlan TODO
+	{11400, 12400, 13400, 14400, 15400},
+	{11400, 12400, 13400, 14400, 15400},
+	// v5.1 TODO
 	{11400, 12400, 13400, 14400, 15400},
 	{11400, 12400, 13400, 14400, 15400},
 };
@@ -446,6 +455,9 @@ const unsigned short FiveStarWpnUp[IDX_MAX*2][2] = {
 	// v5.0 - Natlan
 	{14516, 11503}, // Surf's Up
 	{12513, 13509}, // Fang of the Mountain King
+	// v5.1 TODO
+	{10500, 10501},
+	{10500, 10501},
 };
 
 static const unsigned short ChroniclePool5_441[17] = {

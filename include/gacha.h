@@ -31,7 +31,7 @@ typedef struct {
 const ChroniclePool_t* getChroniclePool(unsigned short);
 
 // Banner data
-#define IDX_MAX 36
+#define IDX_MAX 37
 extern const unsigned short FourStarChrUp[IDX_MAX*2][3];
 extern const unsigned short FiveStarChrUp[IDX_MAX*2][2];
 extern const unsigned short FourStarWpnUp[IDX_MAX*2][5];
