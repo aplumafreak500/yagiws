@@ -15,6 +15,8 @@ unsigned char getRateUp[2];
 unsigned char fatePoints;
 unsigned short epitomizedPath;
 
+int doRadiance = -1;
+int doEpitomized = -1;
 int doSmooth[2] = {1, 1};
 int doPity[2] = {1, 1};
 int do5050 = 1;
@@ -104,7 +106,6 @@ static long double getWeight4SW(unsigned int _pity) {
 
 /*
 TODO: It is currently possible to lose the event-rate chance, but get the rate-up item anyways. This is most prominently apparent in:
-	* 5-stars in the Chronicled Wish;
 	* 4-stars in the Character and Weapon Event Wishes; and
 	* 5-stars in the Character and Weapon Event Wishes, if the rate-up item is also	in the standard pool.
 In the future, this should be handled by either:
@@ -146,6 +147,17 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 		getRateUp[0] = 1;
 		getRateUp[1] = 1;
 	}
+	if (doRadiance < 0) {
+		// TODO: Check banner version index
+		doRadiance = 0;
+	}
+	if (doEpitomized < 0) {
+		// TODO: Check banner version index
+		doRadiance = banner == CHRONICLED ? 1 : 2;
+	}
+	if (doEpitomized == 0) {
+		fatePoints = 0;
+	}
 	rndF = rndFloat();
 	if (rndF <= _getWeight(pity[1], 5)) {
 		*rare = 5;
@@ -167,6 +179,16 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 				fatePoints = 0;
 				return FiveStarChrUp[bannerIndex][banner - CHAR1];
 			}
+			if (doRadiance) {
+				getrandom(&rnd, sizeof(long long), 0);
+				if (rnd % 10 == 0) {
+					*isRateUp = 2;
+					getRateUp[1] = 0;
+					// Character banners don't use Fate Points, but best to reset them anyway
+					fatePoints = 0;
+					return FiveStarChrUp[bannerIndex][banner - CHAR1];
+				}
+			}
 			*isRateUp = 0;
 			getRateUp[1] = 1;
 			// Character banners don't use Fate Points, but best to set it anyway
@@ -177,14 +199,14 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 			// Weapon banner does not use the stable function for 5-stars
 			pityS[2] = 0;
 			pityS[3] = 0;
-			if (fatePoints < 2 && !getRateUp[1]) {
+			if (fatePoints < doEpitomized && !getRateUp[1]) {
 				getrandom(&rnd, sizeof(long long), 0);
 			}
 			else rnd = 0;
 			if (rnd % 4 < 3) {
 				*isRateUp = 1;
 				getRateUp[1] = 0;
-				if (fatePoints >= 2) {
+				if (fatePoints >= doEpitomized) {
 					fatePoints = 0;
 					return epitomizedPath;
 				}
@@ -216,8 +238,8 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 			minIdx = 0;
 			maxIdx = ChroniclePool->FiveStarWeaponCount + ChroniclePool->FiveStarCharCount;
 
-			if (epitomizedPath) {
-				// If Chronicled Path is set, behave like a character event banner.
+			if (epitomizedPath && doEpitomized) {
+				// If Chronicled Path is set, behave like a weapon event banner.
 				// No point to use the stable function in this case.
 				pityS[2] = 0;
 				pityS[3] = 0;
@@ -227,7 +249,7 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 				else {
 					maxIdx = ChroniclePool->FiveStarCharCount;
 				}
-				if (!getRateUp[1]) {
+				if (fatePoints < doEpitomized && !getRateUp[1]) {
 					getrandom(&rnd, sizeof(long long), 0);
 				}
 				else rnd = 0;
@@ -237,11 +259,20 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 					fatePoints = 0;
 					return epitomizedPath;
 				}
-				*isRateUp = 0;
-				getRateUp[1] = 1;
-				fatePoints++;
-				getrandom(&rnd, sizeof(long long), 0);
-				return pool[(rnd % (maxIdx - minIdx)) + minIdx];
+				else {
+					getrandom(&rnd, sizeof(long long), 0);
+					if (pool[(rnd % (maxIdx - minIdx)) + minIdx] == epitomizedPath) {
+						*isRateUp = 1;
+						getRateUp[1] = 0;
+						fatePoints = 0;
+					}
+					else {
+						*isRateUp = 0;
+						getRateUp[1] = 1;
+						fatePoints++;
+					}
+					return pool[(rnd % (maxIdx - minIdx)) + minIdx];
+				}
 			}
 			else {
 				// Else, behave like the standard banner.

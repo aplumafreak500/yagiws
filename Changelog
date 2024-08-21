@@ -64,3 +64,14 @@
 * v1.5.1 (2024-08-02):
 	* Don't call setlocale or bindtextdomain if NLS is disabled
 	* Finalize 4.8 phase 2
+
+* v1.6 (2024-??-??):
+	* Implement Capturing Radiance
+		* The initial implementation in this program simply adds an extra 10% chance to get the rate-up item when losing the initial 50/50 for a 5-star. This is based on speculation on how the system will likely work in the official implementaion. Do note that this program's implementation is subject to change in later versions if/when more information becomes available.
+	* Add an option to control the maximum amount of Fate Points for weapon and Chronicled banners.
+	* Adjusted Chronicled Wish behavior to act more like a weapon banner instead of a character banner when Chronicled Path is set
+	* Finalize 5.0 phase 1
+	* Finalize 5.0 weapon names
+	* Fix an inverted check and a bad index offset when attempting to print Natlan character names
+	* Fix a bad index that made 4.4's Chronicled Wish appear when the version was instead set for 2.7
+	* Fix a bug that prevented Chronicled Wish from working unless Epitomized Path was set

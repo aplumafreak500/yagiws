@@ -113,7 +113,7 @@ const unsigned short FourStarChrUp[IDX_MAX*2][3] = {
 	{1061, 1081, 1092},
 	{1020, 1023, 1048},
 	// v5.0 - Natlan TODO
-	{1006, 1015, 1021},
+	{4100, 1015, 1021}, // Kachina
 	{1006, 1015, 1021},
 };
 
@@ -223,9 +223,9 @@ const unsigned short FiveStarChrUp[IDX_MAX*2][2] = {
 	// v4.8 - Summertide Scales and Tales
 	{1091, 1070},
 	{1099, 1060}, // Emile
-	// v5.0 - Natlan TODO
-	{1005, 1007},
-	{1005, 1007},
+	// v5.0 - Natlan
+	{4102, 1047}, // Mualani
+	{4101, 1052}, // Kinich
 };
 
 const unsigned short FourStarWpnUp[IDX_MAX*2][5] = {
@@ -443,9 +443,9 @@ const unsigned short FiveStarWpnUp[IDX_MAX*2][2] = {
 	// v4.8 - Summertide Scales and Tales
 	{12512, 11511},
 	{13513, 15508}, // Lumidouce Elegy
-	// v5.0 - Natlan TODO
-	{10500, 10501},
-	{10500, 10501},
+	// v5.0 - Natlan
+	{14516, 11503}, // Surf's Up
+	{12513, 13509}, // Fang of the Mountain King
 };
 
 static const unsigned short ChroniclePool5_441[17] = {
@@ -471,7 +471,7 @@ const ChroniclePool_t* getChroniclePool(unsigned short v) {
 	switch (v) {
 	default:
 		return NULL;
-	case 30: // v4.4 - Lantern Rite 4 & Chenyu Vale (phase 1)
+	case 60: // v4.4 - Lantern Rite 4 & Chenyu Vale (phase 1)
 		return &ChroniclePool_441;
 	}
 }

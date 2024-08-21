@@ -58,74 +58,82 @@ static void usage() {
 		printf("%s%s", sep, gettext(banners[i][0]));
 	}
 	printf(_("\n"
-		"\t                       \t(Required argument)\n"
-		"\t-B, --banner_version   Choose a specific banner according to the version\n"
-		"\t                       \tit appeared in. Format is as follows:\n"
-		"\t                       \t<major>.<minor>.<phase>\n"
-		"\t-d, --details          Shows the pool of avaliable items and then exits.\n"
-		"\t-p, --pulls            Specify the number of pulls to perform at once.\n"
-		"\t-4, --pity4            Specify initial 4★ pity.\n"
-		"\t-5, --pity5            Specify initial 5★ pity.\n"
-		"\t-l, --lostRateUp4      Specify that the next 4★ is guaranteed to be the\n"
-		"\t                       \trate-up item. Only relevant on the Character and\n"
-		"\t                       \tWeapon Event banners.\n"
-		"\t-L, --lostRateUp5      Specify that the next 5★ is guaranteed to be the\n"
-		"\t                       \trate-up item. Only relevant on the Character\n"
-		"\t                       \tEvent, Weapon Event, and Chronicled banners.\n"
-		"\t-f, --fate_points      Specify the accumulated Fate Points. Only\n"
-		"\t                       \trelevant on the Weapon Event banner.\n"
-		"\t                       \t(Note: Use option -L instead for the Chronicled\n"
-		"\t                       \tWish banner.)\n"
-		"\t-e, --epitomized_path  Specify the course to chart for the Epitomized\n"
-		"\t                       \tPath or Chronicled Path. Only relevant on the\n"
-		"\t                       \tWeapon Event and Chronicled banners.\n"
-		"\t-c, --noviceCnt        Specify how many pulls have been made previously.\n"
-		"\t                       \tOnly relevant on the Beginners' banner and is\n"
-		"\t                       \tcapped at 8.\n"
-		"\t-h, --help, --usage    Show this text and exit.\n"
-		"\t-v, --version          Show application version and exit.\n"
+		"\t                        \t(Required argument)\n"
+		"\t-B, --banner_version    Choose a specific banner according to the version\n"
+		"\t                        \tit appeared in. Format is as follows:\n"
+		"\t                        \t<major>.<minor>.<phase>\n"
+		"\t-d, --details           Shows the pool of avaliable items and then exits.\n"
+		"\t-p, --pulls             Specify the number of pulls to perform at once.\n"
+		"\t-4, --pity4             Specify initial 4★ pity.\n"
+		"\t-5, --pity5             Specify initial 5★ pity.\n"
+		"\t-l, --lostRateUp4       Specify that the next 4★ is guaranteed to be the\n"
+		"\t                        \trate-up item. Only relevant on the Character and\n"
+		"\t                        \tWeapon Event banners.\n"
+		"\t-L, --lostRateUp5       Specify that the next 5★ is guaranteed to be the\n"
+		"\t                        \trate-up item. Only relevant on the Character\n"
+		"\t                        \tEvent and Weapon Event banners.\n"
+		"\t-e, --epitomized_path   Specify the course to chart for the Epitomized\n"
+		"\t                        \tPath or Chronicled Path. Only relevant on the\n"
+		"\t                        \tWeapon Event and Chronicled banners.\n"
+		"\t-c, --noviceCnt         Specify how many pulls have been made previously.\n"
+		"\t                        \tOnly relevant on the Beginners' banner and is\n"
+		"\t                        \tcapped at 8.\n"
+		"\t-h, --help, --usage     Show this text and exit.\n"
+		"\t-v, --version           Show application version and exit.\n"
 		"\nAdvanced Usage:\n"
-		"\t-n, --noPity4          Disable 4★ pity.\n"
-		"\t-N, --noPity5          Disable 5★ pity.\n"
-		"\t-g, --noGuarantee      Disable the rate-up guarantee mechanism.\n"
-		"\t                       \tOnly relevant on the Character and Weapon Event\n"
-		"\t                       \tbanners.\n"
-		"\t                       \t(note that Epitomized Path will still work if it\n"
-		"\t                       \tis set.)\n"
-		"\t-r, --rateUpOnly       Display (with -d) or drop only rate-up items.\n"
-		"\t                       \tOnly relevant on the Character and Weapon Event\n"
-		"\t                       \tbanners, and on the Chronicled banner if\n"
-		"\t                       \tEpitomized Path is set.\n"
-		"\t                       \tImplies -g.\n"
-		"\t-V, --pool_version     Specify the version from which the standard pool\n"
-		"\t                       \tof items will be drawn from.\n"
-		"\t                       \tNot relevant on the Beginners' banner, which\n"
-		"\t                       \tuses a fixed pool.\n"
+		"\t-n, --noPity4           Disable 4★ pity.\n"
+		"\t-N, --noPity5           Disable 5★ pity.\n"
+		"\t-g, --noGuarantee       Disable the rate-up guarantee mechanism.\n"
+		"\t                        \tOnly relevant on the Character and Weapon Event\n"
+		"\t                        \tbanners.\n"
+		"\t                        \t(note that Epitomized Path will still work if it\n"
+		"\t                        \tis set.)\n"
+		"\t-r, --rateUpOnly        Display (with -d) or drop only rate-up items.\n"
+		"\t                        \tOnly relevant on the Character and Weapon Event\n"
+		"\t                        \tbanners, and on the Chronicled banner if\n"
+		"\t                        \tEpitomized Path is set.\n"
+		"\t                        \tImplies -g.\n"
+		"\t-V, --pool_version      Specify the version from which the standard pool\n"
+		"\t                        \tof items will be drawn from.\n"
+		"\t                        \tNot relevant on the Beginners' banner, which\n"
+		"\t                        \tuses a fixed pool.\n"
+		"\t-f, --fate_points       Specify the accumulated Fate Points. Only\n"
+		"\t                        \trelevant on Weapon Event banners from between versions 2.0 and 4.8 (inclusive) or if option -E is set to 2 or above.\n"
+		"\t-E, --epitomized_state  Adjusts the state of the Epitomized Path/Chronicled Path mechanic. Only relevant on the Weapon Event and Chronicled Wish banners. Valid values are:\n"
+		"\t                        • -1 or \"auto\": Default behavior depending on banner version.\n"
+		"\t                        • 0 or \"off\": Forces the Epitomized Path mechanic to be off. Default for Weapon Event banners from 1.6 and below.\n"
+		"\t                        • \"on\": Forces the Epitomized Path mechanic to be on, with the maximum amount of Fate Points determined by the banner type or version.\n"
+		"\t                        • (any positive integer): Forces the Epitomized Path mechanic to be on and have that amount of maximum Fate Points. Defaults to 1 for Weapon Event banners from 5.0 and above and for the Chronicled Wish banner, and 2 for Weapon Event banners from between 2.0 and 4.8 (inclusive).\n"
+		"\t-R, --radiance          Adjusts the state of the \"Capturing Radiance\" mechanic. Only relevant on the Character Event banners. Valid values are:\n"
+		"\t                        • -1 or \"auto\": Default behavior depending on banner version.\n"
+		"\t                        • 0 or \"off\": Forces the Capturing Radiance mechanic to be off. Default for banners from 4.8 and below.\n"
+		"\t                        • 1 or \"on\": Forces the Capturing Radiance mechanic to be on. Default for banners from 5.0 and above.\n"
+		"\t                        \t"
 		"\nTuning the \"Stable Pity\" Mechanism:\n"
 		"(the mechanic that prevents too many character or weapon drops in a row)\n"
-		"\t--smooth4c             Specify the number of pulls since receiving a\n"
-		"\t                       \t4★ character.\n"
-		"\t--smooth4w             Specify the number of pulls since receiving a\n"
-		"\t                       \t4★ weapon.\n"
-		"\t--smooth5c             Specify the number of pulls since receiving a\n"
-		"\t                       \t5★ character. Only relevant on the standard\n"
-		"\t                       \tbanner.\n"
-		"\t--smooth5w             Specify the number of pulls since receiving a\n"
-		"\t                       \t5★ weapon. Only relevant on the standard\n"
-		"\t                       \tbanner.\n"
-		"\t-s, --noSmooth4        Disable the \"smooth\" pity mechanism for 4★\n"
-		"\t                       \titems.\n"
-		"\t-S, --noSmooth5        Disable the \"smooth\" pity mechanism for 5★\n"
-		"\t                       \titems.\n"
-		"\t-C, --forceSmoothChar  Forces the \"smooth\" pity mechanism into dropping\n"
-		"\t                       \tonly characters.\n"
-		"\t-W, --forceSmoothWpn   Forces the \"smooth\" pity mechanism into dropping\n"
-		"\t                       \tonly weapons.\n"
-		"\t                       \t(Note: If both -C and -W are given, neither\n"
-		"\t                       \toption will take effect.)\n"
-		"\t--noSmoothOld          With -s and/or -S, specify that the >v1.4\n"
-		"\t                       \tbehavior should be used that forces \"smooth\"\n"
-		"\t                       \tpity to be 50/50 between characters and weapons.\n"
+		"\t--smooth4c              Specify the number of pulls since receiving a\n"
+		"\t                        \t4★ character.\n"
+		"\t--smooth4w              Specify the number of pulls since receiving a\n"
+		"\t                        \t4★ weapon.\n"
+		"\t--smooth5c              Specify the number of pulls since receiving a\n"
+		"\t                        \t5★ character. Only relevant on the standard\n"
+		"\t                        \tbanner.\n"
+		"\t--smooth5w              Specify the number of pulls since receiving a\n"
+		"\t                        \t5★ weapon. Only relevant on the standard\n"
+		"\t                        \tbanner.\n"
+		"\t-s, --noSmooth4         Disable the \"smooth\" pity mechanism for 4★\n"
+		"\t                        \titems.\n"
+		"\t-S, --noSmooth5         Disable the \"smooth\" pity mechanism for 5★\n"
+		"\t                        \titems.\n"
+		"\t-C, --forceSmoothChar   Forces the \"smooth\" pity mechanism into dropping\n"
+		"\t                        \tonly characters.\n"
+		"\t-W, --forceSmoothWpn    Forces the \"smooth\" pity mechanism into dropping\n"
+		"\t                        \tonly weapons.\n"
+		"\t                        \t(Note: If both -C and -W are given, neither\n"
+		"\t                        \toption will take effect.)\n"
+		"\t--noSmoothOld           With -s and/or -S, specify that the >v1.4\n"
+		"\t                        \tbehavior should be used that forces \"smooth\"\n"
+		"\t                        \tpity to be 50/50 between characters and weapons.\n"
 		"\nDisclaimer:\n"
 		"This project is not affiliated with miHoYo/Hoyoverse/Cogonosphere or any of\n"
 		"their subsidiaries. It is designed for entertainment purposes only, and gacha\n"
@@ -165,6 +173,8 @@ static const opt_t long_opts[] = {
 	{"forceSmoothChar", no_argument, 0, 'C'},
 	{"forceSmoothWpn", no_argument, 0, 'W'},
 	{"noSmoothOld", no_argument, 0, 6},
+	{"epitomized_state", required_argument, 0, 'E'},
+	{"radiance", required_argument, 0, 'R'},
 	{NULL, 0, 0, 0},
 };
 
@@ -198,7 +208,7 @@ int main(int argc, char** argv) {
 	textdomain(PACKAGE);
 #endif
 	while (1) {
-		c = getopt_long(argc, argv, "4:5:B:CLNSV:Wb:c:de:f:ghlnrsp:v", long_opts, NULL);
+		c = getopt_long(argc, argv, "4:5:B:CE:LNR:SV:Wb:c:de:f:ghlnrsp:v", long_opts, NULL);
 		if (c == -1) break;
 		switch (c) {
 		case '4':
@@ -268,11 +278,55 @@ int main(int argc, char** argv) {
 		case 'C':
 			forceSmooth |= 1;
 			break;
+		case 'E':
+			n = strtoull(optarg, &p, 0);
+			if ((unsigned long) optarg == (unsigned long) p) {
+				if (strcasecmp(optarg, "on") == 0) {
+					n = -2;
+				}
+				else if (strcasecmp(optarg, "off") == 0) {
+					n = 0;
+				}
+				else if (strcasecmp(optarg, "auto") == 0) {
+					n = -1;
+				}
+				else {
+					n = -3;
+				}
+			}
+			if (n < -2 || n > 1) {
+				fprintf(stderr, _("Invalid argument for option \"--radiance\"\n"));
+				return -1;
+			}
+			doEpitomized = n;
+			break;
 		case 'L':
 			getRateUp[1] = 1;
 			break;
 		case 'N':
 			doPity[1] = 0;
+			break;
+		case 'R':
+			n = strtoull(optarg, &p, 0);
+			if ((unsigned long) optarg == (unsigned long) p) {
+				if (strcasecmp(optarg, "on") == 0) {
+					n = 1;
+				}
+				else if (strcasecmp(optarg, "off") == 0) {
+					n = 0;
+				}
+				else if (strcasecmp(optarg, "auto") == 0) {
+					n = -1;
+				}
+				else {
+					n = -2;
+				}
+			}
+			if (n < -1 || n > 1) {
+				fprintf(stderr, _("Invalid argument for option \"--radiance\"\n"));
+				return -1;
+			}
+			doRadiance = n;
 			break;
 		case 'S':
 			doSmooth[1] = 0;
@@ -496,12 +550,31 @@ int main(int argc, char** argv) {
 		fiveMaxIdx = ChroniclePool->FiveStarWeaponCount + ChroniclePool->FiveStarCharCount;
 #endif
 	}
+	if (doEpitomized < 0) {
+		if (b[4] > 0x500 || banner == CHRONICLED) {
+			doEpitomized = 1;
+		}
+		else if ((b[4] < 0x200 && doEpitomized == -1) || banner != WPN) {
+			doEpitomized = 0;
+		}
+		else {
+			doEpitomized = 2;
+		}
+	}
+	if (doRadiance < 0) {
+		if (b[4] > 0x500) {
+			doRadiance = 1;
+		}
+		else {
+			doRadiance = 0;
+		}
+	}
 #ifndef DEBUG
 	if (
 		(
 			banner == WPN && (epitomizedPathIndex > 2)
 		) || (
-			banner == CHRONICLED && (epitomizedPathIndex - 1 > fiveMaxIdx)
+			banner == CHRONICLED && (epitomizedPathIndex > (int) fiveMaxIdx)
 		)
 	) {
 		fprintf(stderr, _("Epitomized Path index is invalid.\n"));
@@ -823,6 +896,9 @@ int main(int argc, char** argv) {
 			color = 33;
 			break;
 		}
+		if (won5050 >= 2) {
+			color = 31;
+		}
 		// Make the check simple by assuming all IDs between 1000 and 6000 are characters.
 		if (item < 6000 && item >= 1000) {
 			isChar = 1;
@@ -852,14 +928,14 @@ int main(int argc, char** argv) {
 		printf(_("\n5★ pity: %u\n"), pity[1]);
 	}
 	else printf("\n");
-	if (do5050 > 0 && (banner == CHAR1 || banner == CHAR2 || banner == WPN || (banner == CHRONICLED && epitomizedPath))) {
+	if (do5050 > 0 && (banner == CHAR1 || banner == CHAR2 || banner == WPN || (banner == CHRONICLED && epitomizedPath && doEpitomized == 1))) {
 		printf("\n");
 		if (banner != CHRONICLED) {
 			printf(_("4★ guaranteed: %u\n"), getRateUp[0] ? 1 : 0);
 		}
 		printf(_("5★ guaranteed: %u\n"), getRateUp[1] ? 1 : 0);
 	}
-	if (banner == WPN && epitomizedPath) {
+	if (doEpitomized > 1) {
 		printf(_("Fate Points: %u\n"), fatePoints);
 	}
 	if (do5050 >= 0 && doSmooth[0] && banner != NOVICE) {

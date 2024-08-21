@@ -53,6 +53,8 @@ extern unsigned short epitomizedPath;
 extern int doSmooth[2];
 extern int doPity[2];
 extern int do5050;
+extern int doEpitomized;
+extern int doRadiance;
 
 // Main gacha function
 #ifndef DEBUG

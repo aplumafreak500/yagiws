@@ -114,7 +114,7 @@ static const char* const FourStarSwords[31] = {
 	[26] = _N("The Dockhand's Assistant"),
 	[28] = _N("Sword of Narzissenkreuz"), // Final Stage
 	[29] = _N("Sword of Narzissenkreuz (2)"), // First Stage
-	[30] = _N("Flamebreath Flute"),
+	[30] = _N("Flute of Ezpitzal"),
 };
 
 static const char* const FourStarClaymores[31] = {
@@ -140,7 +140,7 @@ static const char* const FourStarClaymores[31] = {
 	[24] = _N("Tidal Shadow"),
 	[25] = _N("\"Ultimate Overlord's Mega Magic Sword\""),
 	[26] = _N("Portable Power Saw"),
-	[30] = _N("Earthshaker"),
+	[30] = _N("Earth Shaker"),
 };
 
 static const char* const FourStarPolearms[31] = {
@@ -162,7 +162,7 @@ static const char* const FourStarPolearms[31] = {
 	[24] = _N("Rightful Reward"),
 	[26] = _N("Prospector's Drill"),
 	[27] = _N("Dialogues of the Desert Sages"),
-	[30] = _N("The Rainbow's Trail"),
+	[30] = _N("Footprint of the Rainbow"),
 };
 
 static const char* const FourStarCatalysts[31] = {
@@ -187,7 +187,7 @@ static const char* const FourStarCatalysts[31] = {
 	[24] = _N("Flowing Purity"),
 	[25] = _N("Ballad of the Boundless Blue"),
 	[26] = _N("Ash-Graven Drinking Horn"),
-	[30] = _N("Ring of Ceiba"),
+	[30] = _N("Ring of Yaxche"),
 };
 
 static const char* const FourStarBows[31] = {
@@ -214,7 +214,7 @@ static const char* const FourStarBows[31] = {
 	[24] = _N("Song of Stillness"),
 	[25] = _N("Cloudweaver"),
 	[26] = _N("Range Gauge"),
-	[30] = _N("Shattered Chains"),
+	[30] = _N("Chain Breaker"),
 };
 
 static const char* const* const FourStarWeapons[6] = {
@@ -257,7 +257,7 @@ static const char* const FiveStarClaymores[13] = {
 	_N("Redhorn Stonethresher"),
 	_N("Beacon of the Reed Sea"),
 	_N("Verdict"),
-	_N("Mountain King's Fang"),
+	_N("Fang of the Mountain King"),
 };
 
 static const char* const FiveStarPolearms[13] = {
@@ -292,7 +292,7 @@ static const char* const FiveStarCatalysts[16] = {
 	_N("Cashflow Supervision"),
 	_N("Tome of the Eternal Flow"),
 	_N("Crane's Echoing Call"),
-	_N("Surfing Time"),
+	_N("Surf's Up"),
 };
 
 static const char* const FiveStarBows[13] = {
