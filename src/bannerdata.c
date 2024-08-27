@@ -112,8 +112,8 @@ const unsigned short FourStarChrUp[IDX_MAX*2][3] = {
 	// v4.8 - Summertide Scales and Tales
 	{1061, 1081, 1092},
 	{1020, 1023, 1048},
-	// v5.0 - Natlan TODO
-	{4100, 1015, 1021}, // Kachina
+	// v5.0 - Natlan (phase 2 TODO)
+	{4100, 1032, 1044}, // Kachina
 	{1006, 1015, 1021},
 	// v5.1 TODO
 	{1006, 1015, 1021},
@@ -339,8 +339,8 @@ const unsigned short FourStarWpnUp[IDX_MAX*2][5] = {
 	// v4.8 - Summertide Scales and Tales
 	{11418, 12402, 13401, 14409, 15405},
 	{11402, 12415, 13407, 14416, 15401},
-	// v5.0 - Natlan TODO
-	{11400, 12400, 13400, 14400, 15400},
+	// v5.0 - Natlan (phase 2 TODO)
+	{11401, 12401, 13401, 14403, 15402},
 	{11400, 12400, 13400, 14400, 15400},
 	// v5.1 TODO
 	{11400, 12400, 13400, 14400, 15400},

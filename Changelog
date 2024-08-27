@@ -65,7 +65,7 @@
 	* Don't call setlocale or bindtextdomain if NLS is disabled
 	* Finalize 4.8 phase 2
 
-* v1.6 (2024-??-??):
+* v1.6 (2024-08-27):
 	* Implement Capturing Radiance
 		* The initial implementation in this program simply adds an extra 10% chance to get the rate-up item when losing the initial 50/50 for a 5-star. This is based on speculation on how the system will likely work in the official implementaion. Do note that this program's implementation is subject to change in later versions if/when more information becomes available.
 	* Add an option to control the maximum amount of Fate Points for weapon and Chronicled banners.
