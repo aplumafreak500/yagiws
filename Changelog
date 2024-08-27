@@ -41,3 +41,8 @@
 	* Add new logic for when the "smooth" function is disabled. (The old behavior can still be utilized with the --noSmoothOld option.)
 	* Finalize 2.4 phase 1
 	* Initial support for 2.5
+
+* v1.2.1 (2024-08-27):
+	* Finalize 2.4 phase 2
+	* Correct 2.3 phase 2's rate up 4 star Light Cones
+	* Add new 2.3 and 2.4 Light Cones to standard pool

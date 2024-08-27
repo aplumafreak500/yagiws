@@ -41,9 +41,9 @@ const unsigned short FourStarChrUp[IDX_MAX*2][3] = {
 	// v2.3
 	{1301, 1312, 1214},
 	{1103, 1105, 1009},
-	// v2.4 (phase 2 TODO)
+	// v2.4
 	{1215, 1207, 1110},
-	{8004, 8005, 8006},
+	{1008, 1109, 1210},
 	// v2.5 TODO
 	{8001, 8002, 8003},
 	{8004, 8005, 8006},
@@ -125,10 +125,10 @@ const unsigned short FourStarWpnUp[IDX_MAX*2][3] = {
 	{21009, 21012, 21020},
 	// v2.3
 	{21004, 21002, 21008},
-	{21018, 21012, 21009},
-	// v2.4 (phase 2 TODO)
+	{21045, 21007, 21016}, // After the Charmony Fall
+	// v2.4
 	{21005, 21006, 21014},
-	{21000, 21001, 21002},
+	{21046, 21008, 21012}, // Poised to Bloom
 	// v2.5 TODO
 	{21000, 21001, 21002},
 	{21000, 21001, 21002},
@@ -185,7 +185,7 @@ const unsigned char FourStarChrMaxIndex[IDX_MAX] = {
 
 const unsigned char FourStarWpnMaxIndex[IDX_MAX] = {
 	/* v1.x */ 21, 21, 21, 21, 21, 21, 21,
-	/* v2.x */ 21, 22, 23, 24, 24, 24
+	/* v2.x */ 21, 22, 23, 24, 25, 26
 };
 
 // The list of 4-star characters in the pool, used together with the rate-up drops.
@@ -211,7 +211,7 @@ const unsigned short FourStarChr[22] = {
 };
 
 // The list of 4-star lightcones in the pool, used together with the rate-up drops.
-const unsigned short FourStarWpn[24] = {
+const unsigned short FourStarWpn[26] = {
 	// v1.x standard pool
 	21000, 21001, 21002, 21003, 21004, 21005, 21006, 21007, 21008, 21009, 21010, 21011, 21012, 21013, 21014, 21015, 21016, 21017, 21018, 21019, 21020,
 	// v2.1: Indelible Promise
@@ -220,6 +220,10 @@ const unsigned short FourStarWpn[24] = {
 	21043,
 	// v2.3: Boundless Choreo
 	21044,
+	// v2.4: After the Charmony Fall
+	21045,
+	// v2.5: Poised to Bloom
+	21046,
 };
 
 // The list of 5-star characters in the pool, used together with the rate-up drops.

@@ -29,7 +29,7 @@ extern const unsigned short FiveStarWpnUp[IDX_MAX*2][2];
 extern const unsigned char FourStarChrMaxIndex[IDX_MAX];
 extern const unsigned char FourStarWpnMaxIndex[IDX_MAX];
 extern const unsigned short FourStarChr[22];
-extern const unsigned short FourStarWpn[24];
+extern const unsigned short FourStarWpn[26];
 extern const unsigned short FiveStarChr[7];
 extern const unsigned short FiveStarWpn[7];
 

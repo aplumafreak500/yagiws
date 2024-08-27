@@ -170,7 +170,7 @@ int main(int argc, char** argv) {
 	int c = 0;
 	long long n = 0;
 	int v[4] = {-1, -1, 0, 0x24};
-	int b[5] = {-1, -1, -1, 0, 0x241};
+	int b[5] = {-1, -1, -1, 0, 0x242};
 	unsigned int forceSmooth = 0;
 	char* p = NULL;
 #ifdef ENABLE_NLS
