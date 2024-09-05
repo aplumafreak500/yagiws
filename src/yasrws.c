@@ -613,14 +613,7 @@ int main(int argc, char** argv) {
 	}
 	fprintf(stderr, "\n\n");
 	for (i = 0; i < pulls; i++) {
-		if (banner == NOVICE && i == (49 - noviceCnt)) {
-			// If 5-star pity is 50 or more...
-			if (pity[1] + 1 >= 50) {
-				// Then max it out before making a pull. This (should) force a 5-star character no matter what.
-				pity[1] = ~1;
-			}
-		}
-		else if ((banner == STD_CHR || banner == STD_ONLY_CHR) && i == noviceCnt && noviceCnt == 0) {
+		if ((banner == STD_CHR || banner == STD_ONLY_CHR) && i == noviceCnt && noviceCnt == 0) {
 			// Very first wish on standard banner is always Asta
 			rare = 4;
 			item = 1009;
@@ -631,20 +624,29 @@ int main(int argc, char** argv) {
 			pityS[0] = 0;
 			pityS[1] = 0;
 		}
-		// TODO Implement logic for character vs. item pool instead of checking the ID to determine that
-		if (forceSmooth & 1) {
-			pityS[0] = ~1;
-			pityS[2] = ~1;
-			pityS[1] = -1;
-			pityS[3] = -1;
+		else {
+			if (banner == NOVICE && i == (49 - noviceCnt)) {
+				// If 5-star pity is 50 or more...
+				if (pity[1] + 1 >= 50) {
+					// Then max it out before making a pull. This (should) force a 5-star character no matter what.
+					pity[1] = ~1;
+				}
+			}
+			// TODO Implement logic for character vs. item pool instead of checking the ID to determine that
+			if (forceSmooth & 1) {
+				pityS[0] = ~1;
+				pityS[2] = ~1;
+				pityS[1] = -1;
+				pityS[3] = -1;
+			}
+			if (forceSmooth & 2) {
+				pityS[1] = ~1;
+				pityS[3] = ~1;
+				pityS[0] = -1;
+				pityS[2] = -1;
+			}
+			item = doAPull(banner, v[0], b[0], &rare, &won5050);
 		}
-		if (forceSmooth & 2) {
-			pityS[1] = ~1;
-			pityS[3] = ~1;
-			pityS[0] = -1;
-			pityS[2] = -1;
-		}
-		item = doAPull(banner, v[0], b[0], &rare, &won5050);
 		if (item < 0) {
 			fprintf(stderr, _("Pull #%u failed (retcode = %d)\n"), i + 1, item);
 			break;
