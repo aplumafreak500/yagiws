@@ -85,7 +85,7 @@ static const char* const* const ThreeStarWeapons[6] = {
 	ThreeStarBows,
 };
 
-static const char* const FourStarSwords[31] = {
+static const char* const FourStarSwords[32] = {
 	_N("Favonius Sword"),
 	_N("The Flute"),
 	_N("Sacrificial Sword"),
@@ -114,10 +114,11 @@ static const char* const FourStarSwords[31] = {
 	[26] = _N("The Dockhand's Assistant"),
 	[28] = _N("Sword of Narzissenkreuz"), // Final Stage
 	[29] = _N("Sword of Narzissenkreuz (2)"), // First Stage
-	[30] = _N("Flute of Ezpitzal"),
+	[30] = _N("Sturdy Bone"),
+	[31] = _N("Flute of Ezpitzal"),
 };
 
-static const char* const FourStarClaymores[31] = {
+static const char* const FourStarClaymores[32] = {
 	_N("Favonius Greatsword"),
 	_N("The Bell"),
 	_N("Sacrificial Greatsword"),
@@ -140,10 +141,11 @@ static const char* const FourStarClaymores[31] = {
 	[24] = _N("Tidal Shadow"),
 	[25] = _N("\"Ultimate Overlord's Mega Magic Sword\""),
 	[26] = _N("Portable Power Saw"),
-	[30] = _N("Earth Shaker"),
+	[30] = _N("Fruitful Hook"),
+	[31] = _N("Earth Shaker"),
 };
 
-static const char* const FourStarPolearms[31] = {
+static const char* const FourStarPolearms[32] = {
 	_N("Dragon's Bane"),
 	_N("Prototype Starglitter"),
 	_N("Crescent Pike"),
@@ -162,10 +164,11 @@ static const char* const FourStarPolearms[31] = {
 	[24] = _N("Rightful Reward"),
 	[26] = _N("Prospector's Drill"),
 	[27] = _N("Dialogues of the Desert Sages"),
-	[30] = _N("Footprint of the Rainbow"),
+	[30] = _N("Mountain-Crushing Nail"),
+	[31] = _N("Footprint of the Rainbow"),
 };
 
-static const char* const FourStarCatalysts[31] = {
+static const char* const FourStarCatalysts[32] = {
 	_N("Favonius Codex"),
 	_N("The Widsith"),
 	_N("Sacrificial Fragments"),
@@ -187,10 +190,10 @@ static const char* const FourStarCatalysts[31] = {
 	[24] = _N("Flowing Purity"),
 	[25] = _N("Ballad of the Boundless Blue"),
 	[26] = _N("Ash-Graven Drinking Horn"),
-	[30] = _N("Ring of Yaxche"),
+	[31] = _N("Ring of Yaxche"),
 };
 
-static const char* const FourStarBows[31] = {
+static const char* const FourStarBows[32] = {
 	_N("Favonius Warbow"),
 	_N("The Stringless"),
 	_N("Sacrificial Bow"),
@@ -214,7 +217,7 @@ static const char* const FourStarBows[31] = {
 	[24] = _N("Song of Stillness"),
 	[25] = _N("Cloudweaver"),
 	[26] = _N("Range Gauge"),
-	[30] = _N("Chain Breaker"),
+	[31] = _N("Chain Breaker"),
 };
 
 static const char* const* const FourStarWeapons[6] = {
@@ -226,7 +229,7 @@ static const char* const* const FourStarWeapons[6] = {
 	FourStarBows,
 };
 
-static const char* const FiveStarSwords[15] = {
+static const char* const FiveStarSwords[16] = {
 	_N("Aquila Favonia"),
 	_N("Skyward Blade"),
 	_N("Freedom-Sworn"),
@@ -242,6 +245,7 @@ static const char* const FiveStarSwords[15] = {
 	_N("Splendor of Tranquil Waters"),
 	_N("Uraku Misugiri"),
 	_N("Absolution"),
+	_N("Peak Patrol Song"),
 };
 
 static const char* const FiveStarClaymores[13] = {
@@ -369,15 +373,13 @@ const char* getWeapon(unsigned int _id) {
 		maxId = 31;
 		break;
 	case 15:
+	case 45:
 		maxId = 15;
 		break;
 	case 25:
 	case 35:
 	case 55:
-		maxId = 13;
-		break;
-	case 45:
-		maxId = 16;
+		maxId = 12;
 		break;
 	}
 	if (id >= maxId) return NULL;

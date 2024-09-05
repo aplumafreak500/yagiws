@@ -75,3 +75,6 @@
 	* Fix an inverted check and a bad index offset when attempting to print Natlan character names
 	* Fix a bad index that made 4.4's Chronicled Wish appear when the version was instead set for 2.7
 	* Fix a bug that prevented Chronicled Wish from working unless Epitomized Path was set
+
+* v1.6.1 (2024-??-??):
+	* Initial support for 5.1

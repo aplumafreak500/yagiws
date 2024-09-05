@@ -8,7 +8,7 @@
 #include "item.h"
 #include "util.h"
 
-static const char* const chrList[103] = {
+static const char* const chrList[104] = {
 	[0] = _N("None"),
 	[1] = _N("Kate"),
 	[2] = _N("Kamisato Ayaka"),
@@ -100,6 +100,7 @@ static const char* const chrList[103] = {
 	[100] = _N("Kachina"),
 	[101] = _N("Kinich"),
 	[102] = _N("Mualani"),
+	[103] = _N("Xilonen"),
 };
 
 const char* getCharacter(unsigned int id) {
@@ -115,10 +116,10 @@ const char* getCharacter(unsigned int id) {
 		snprintf(stellaBuf, 1024, _("%s's Stella Fortuna"), gettext(chrList[id - 1100]));
 		return stellaBuf;
 	}
-	if (id >= 4100 && id <= 4102) {
+	if (id >= 4100 && id <= 4103) {
 		return chrList[id - 4000];
 	}
-	if (id >= 5100 && id <= 5102) {
+	if (id >= 5100 && id <= 5103) {
 		if (chrList[id - 5000] == NULL) {
 			return NULL;
 		}
