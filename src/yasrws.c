@@ -72,6 +72,7 @@ static void usage() {
 		"\t-c, --noviceCnt        Specify how many pulls have been made previously.\n"
 		"\t                       \tOnly relevant on the Departure banner and is\n"
 		"\t                       \tcapped at 50.\n"
+		"\t                       \tAlso used on the Stellar Warp; when this is zero, the very first pull is forced to be Asta.\n"
 		"\t-h, --help, --usage    Show this text and exit.\n"
 		"\t-v, --version          Show application version and exit.\n"
 		"\nAdvanced Usage:\n"
@@ -618,6 +619,17 @@ int main(int argc, char** argv) {
 				// Then max it out before making a pull. This (should) force a 5-star character no matter what.
 				pity[1] = ~1;
 			}
+		}
+		else if ((banner == STD_CHR || banner == STD_ONLY_CHR) && i == noviceCnt && noviceCnt == 0) {
+			// Very first wish on standard banner is always Asta
+			rare = 4;
+			item = 1009;
+			won5050 = 0;
+			getRateUp[0] = 0;
+			pity[0] = 0;
+			pity[1]++;
+			pityS[0] = 0;
+			pityS[1] = 0;
 		}
 		// TODO Implement logic for character vs. item pool instead of checking the ID to determine that
 		if (forceSmooth & 1) {
