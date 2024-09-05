@@ -44,11 +44,15 @@ const unsigned short FourStarChrUp[IDX_MAX*2][3] = {
 	// v2.4
 	{1215, 1207, 1110},
 	{1008, 1109, 1210},
-	// v2.5 TODO
+	// v2.5 (Indelible Coterie differing 4 stars? TODO)
+	{1223, 1009, 1111}, // Moze
+	{1005, 1210, 1312},
+	// v2.6 TODO
 	{8001, 8002, 8003},
 	{8004, 8005, 8006},
 };
 
+// 0xfffe: Other three banners are read from (TODO)
 // 0xffff: No second banner
 const unsigned short FiveStarChrUp[IDX_MAX*2][2] = {
 	// v1.0	- Launch
@@ -87,7 +91,10 @@ const unsigned short FiveStarChrUp[IDX_MAX*2][2] = {
 	// v2.4
 	{1321, 1217}, // Yunli
 	{1318, 1306}, // Jiaoqiu
-	// v2.5 TODO
+	// v2.5 (Indelible Coterie TODO)
+	{1220, 0}, // Feixiao
+	{1222, 1112}, // Lingsha
+	// v2.6 TODO
 	{8001, 8002},
 	{8003, 8004},
 };
@@ -129,7 +136,10 @@ const unsigned short FourStarWpnUp[IDX_MAX*2][3] = {
 	// v2.4
 	{21005, 21006, 21014},
 	{21046, 21008, 21012}, // Poised to Bloom
-	// v2.5 TODO
+	// v2.5 (Coalesced Truths different 4 stars? TODO)
+	{21006, 21010, 21015},
+	{21047, 21007, 21011}, // Shadowed by Night
+	// v2.6 TODO
 	{21000, 21001, 21002},
 	{21000, 21001, 21002},
 };
@@ -172,7 +182,10 @@ const unsigned short FiveStarWpnUp[IDX_MAX*2][2] = {
 	// v2.4
 	{23031, 23017}, // Dance at Sunset
 	{23030, 23021}, // Those Many Springs
-	// v2.5 TODO
+	// v2.5 (Indelible Coterie TODO)
+	{23032, 0}, // I Venture Forth to Hunt
+	{23033, 23016}, // Scent Alone Stays True
+	// v2.6 TODO
 	{23000, 23001},
 	{23000, 23001},
 };
@@ -180,12 +193,12 @@ const unsigned short FiveStarWpnUp[IDX_MAX*2][2] = {
 // Max indexes into FourStarChr per version (for old banners)
 const unsigned char FourStarChrMaxIndex[IDX_MAX] = {
 	/* v1.x */ 13, 13, 14, 15, 16, 17, 18,
-	/* v2.x */ 19, 20, 21, 21, 21, 21
+	/* v2.x */ 19, 20, 21, 21, 21, 21, 21
 };
 
 const unsigned char FourStarWpnMaxIndex[IDX_MAX] = {
 	/* v1.x */ 21, 21, 21, 21, 21, 21, 21,
-	/* v2.x */ 21, 22, 23, 24, 25, 26
+	/* v2.x */ 21, 22, 23, 24, 25, 26, 27
 };
 
 // The list of 4-star characters in the pool, used together with the rate-up drops.
@@ -211,7 +224,7 @@ const unsigned short FourStarChr[22] = {
 };
 
 // The list of 4-star lightcones in the pool, used together with the rate-up drops.
-const unsigned short FourStarWpn[26] = {
+const unsigned short FourStarWpn[27] = {
 	// v1.x standard pool
 	21000, 21001, 21002, 21003, 21004, 21005, 21006, 21007, 21008, 21009, 21010, 21011, 21012, 21013, 21014, 21015, 21016, 21017, 21018, 21019, 21020,
 	// v2.1: Indelible Promise
@@ -224,6 +237,8 @@ const unsigned short FourStarWpn[26] = {
 	21045,
 	// v2.5: Poised to Bloom
 	21046,
+	// v2.6: Shadowed by Night
+	21047,
 };
 
 // The list of 5-star characters in the pool, used together with the rate-up drops.
