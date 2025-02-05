@@ -76,5 +76,7 @@
 	* Fix a bad index that made 4.4's Chronicled Wish appear when the version was instead set for 2.7
 	* Fix a bug that prevented Chronicled Wish from working unless Epitomized Path was set
 
-* v1.6.1 (2024-??-??):
-	* Initial support for 5.1
+* v1.6.1 (2025-??-??):
+	* Update banner data up to 5.3
+	* Initial support for 5.4
+	* Disable Capturing Radiance by default based on new information suggesting that a pity curve is in use
