@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MPL-2.0 */
 /* This file is part of Yet Another Genshin Impact Wish Simulator */
-/* ©2024 Alex Pensinger (ArcticLuma113) */
+/* ©2025 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
 #include "config.h"
@@ -8,7 +8,7 @@
 #include "item.h"
 #include "util.h"
 
-static const char* const chrList[104] = {
+static const char* const chrList[110] = {
 	[0] = _N("None"),
 	[1] = _N("Kate"),
 	[2] = _N("Kamisato Ayaka"),
@@ -101,6 +101,12 @@ static const char* const chrList[104] = {
 	[101] = _N("Kinich"),
 	[102] = _N("Mualani"),
 	[103] = _N("Xilonen"),
+	[104] = _N("Chasca"),
+	[105] = _N("Ororon"),
+	[106] = _N("Mavuika"),
+	[107] = _N("Citlali"),
+	[108] = _N("Lan Yan"),
+	[109] = _N("Yumemizuki Mizuki"),
 };
 
 const char* getCharacter(unsigned int id) {
@@ -116,10 +122,10 @@ const char* getCharacter(unsigned int id) {
 		snprintf(stellaBuf, 1024, _("%s's Stella Fortuna"), gettext(chrList[id - 1100]));
 		return stellaBuf;
 	}
-	if (id >= 4100 && id <= 4103) {
+	if (id >= 4100 && id <= 4109) {
 		return chrList[id - 4000];
 	}
-	if (id >= 5100 && id <= 5103) {
+	if (id >= 5100 && id <= 5109) {
 		if (chrList[id - 5000] == NULL) {
 			return NULL;
 		}

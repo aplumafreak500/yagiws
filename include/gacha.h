@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MPL-2.0 */
 /* This file is part of Yet Another Genshin Impact Wish Simulator */
-/* ©2024 Alex Pensinger (ArcticLuma113) */
+/* ©2025 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
 #ifndef GACHA_H
@@ -31,12 +31,12 @@ typedef struct {
 const ChroniclePool_t* getChroniclePool(unsigned short);
 
 // Banner data
-#define IDX_MAX 37
+#define IDX_MAX 41
 extern const unsigned short FourStarChrUp[IDX_MAX*2][3];
 extern const unsigned short FiveStarChrUp[IDX_MAX*2][2];
 extern const unsigned short FourStarWpnUp[IDX_MAX*2][5];
 extern const unsigned short FiveStarWpnUp[IDX_MAX*2][2];
-extern const unsigned short FourStarChr[41];
+extern const unsigned short FourStarChr[43];
 extern const unsigned short FiveStarChr[7];
 extern const unsigned short ThreeStar[13];
 extern const unsigned short FourStarWpn[18];

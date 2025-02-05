@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MPL-2.0 */
 /* This file is part of Yet Another Genshin Impact Wish Simulator */
-/* ©2024 Alex Pensinger (ArcticLuma113) */
+/* ©2025 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
 #include "config.h"
@@ -228,8 +228,8 @@ int main(int argc, char** argv) {
 	const unsigned short* fourPool;
 	int c = 0;
 	long long n = 0;
-	int v[4] = {-1, -1, 0, 0x50};
-	int b[5] = {-1, -1, -1, 0, 0x501};
+	int v[4] = {-1, -1, 0, 0x53};
+	int b[5] = {-1, -1, -1, 0, 0x532};
 	char* p = NULL;
 	const ChroniclePool_t* ChroniclePool = NULL;
 #ifdef ENABLE_NLS
@@ -541,7 +541,7 @@ int main(int argc, char** argv) {
 	b[0]--;
 	b[1] = b[4] >> 4;
 #ifndef DEBUG
-	if (b[1] > 0x51) b[1] = 0x51;
+	if (b[1] > 0x54) b[1] = 0x54;
 #endif
 	if (b[1] >= 0x50) {
 		b[1] -= 0x7;
@@ -646,7 +646,7 @@ int main(int argc, char** argv) {
 	}
 	else {
 #ifndef DEBUG
-		if (v[0] > 0x51) v[0] = 0x51;
+		if (v[0] > 0x54) v[0] = 0x54;
 #endif
 		if (v[0] >= 0x50) {
 			v[0] -= 0x7;

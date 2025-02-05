@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MPL-2.0 */
 /* This file is part of Yet Another Genshin Impact Wish Simulator */
-/* ©2024 Alex Pensinger (ArcticLuma113) */
+/* ©2025 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
 #include "config.h"
@@ -112,10 +112,22 @@ const unsigned short FourStarChrUp[IDX_MAX*2][3] = {
 	// v4.8 - Summertide Scales and Tales
 	{1061, 1081, 1092},
 	{1020, 1023, 1048},
-	// v5.0 - Natlan (phase 2 TODO)
+	// v5.0 - Natlan
 	{4100, 1032, 1044}, // Kachina
+	{1050, 1056, 1090},
+	// v5.1 - Chromatic Ode of Candies and Roses
+	{1067, 1068, 1072},
+	{1025, 1065, 1097},
+	// v5.2 - Flower Feather Clan & Masters of the Nightwind
+	{4105, 1014, 1043}, // Ororon
+	{1031, 1059, 1077},
+	// v5.3 - Incandescent Ode of Resurrection & Lantern Rite 5
+	{1032, 1039, 4100},
+	{4108, 1045, 1090}, // Lan Yan
+	// v5.4 TODO
 	{1006, 1015, 1021},
-	// v5.1 TODO
+	{1006, 1015, 1021},
+	// v5.5 TODO
 	{1006, 1015, 1021},
 	{1006, 1015, 1021},
 };
@@ -229,7 +241,19 @@ const unsigned short FiveStarChrUp[IDX_MAX*2][2] = {
 	// v5.0 - Natlan
 	{4102, 1047}, // Mualani
 	{4101, 1052}, // Kinich
-	// v5.1 TODO
+	// v5.1 - Chromatic Ode of Candies and Roses
+	{4103, 1094}, // Xilonen
+	{1073, 1046},
+	// v5.2 - Flower Feather Clan & Masters of the Nightwind
+	{4104, 1084}, // Chasca
+	{1087, 1030},
+	// v5.3 - Incandescent Ode of Resurrection & Lantern Rite 5
+	{4106, 4107}, // Mavuika, Citlali
+	{1096, 1098},
+	// v5.4 TODO
+	{4109, 1095}, // Yumemizuki Mizuki
+	{1089, 1086},
+	// v5.5 TODO
 	{1005, 1007},
 	{1005, 1007},
 };
@@ -339,10 +363,22 @@ const unsigned short FourStarWpnUp[IDX_MAX*2][5] = {
 	// v4.8 - Summertide Scales and Tales
 	{11418, 12402, 13401, 14409, 15405},
 	{11402, 12415, 13407, 14416, 15401},
-	// v5.0 - Natlan (phase 2 TODO)
+	// v5.0 - Natlan
 	{11401, 12401, 13401, 14403, 15402},
+	{11403, 12405, 13407, 14402, 15403},
+	// v5.1 - Chromatic Ode of Candies and Roses
+	{11430, 13430, 12403, 14401, 15405}, // Sturdy Bone, Mountain-Bracing Bolt
+	{12430, 11405, 13401, 14409, 15401}, // Fruitful Hook
+	// v5.2 - Flower Feather Clan & Masters of the Nightwind
+	{14430, 15430, 11402, 12402, 13407}, // Waveriding Whirl, Flower-Wreathed Feathers
+	{11401, 12401, 13401, 14403, 15412},
+	// v5.3 - Incandescent Ode of Resurrection & Lantern Rite 5
+	{11403, 12410, 13407, 14401, 15402},
+	{11405, 12405, 13406, 14402, 15403},
+	// v5.4 TODO
 	{11400, 12400, 13400, 14400, 15400},
-	// v5.1 TODO
+	{11400, 12400, 13400, 14400, 15400},
+	// v5.5 TODO
 	{11400, 12400, 13400, 14400, 15400},
 	{11400, 12400, 13400, 14400, 15400},
 };
@@ -455,7 +491,19 @@ const unsigned short FiveStarWpnUp[IDX_MAX*2][2] = {
 	// v5.0 - Natlan
 	{14516, 11503}, // Surf's Up
 	{12513, 13509}, // Fang of the Mountain King
-	// v5.1 TODO
+	// v5.1 - Chromatic Ode of Candies and Roses
+	{11516, 11514}, // Peak Patrol Song
+	{14511, 13501},
+	// v5.2 - Flower Feather Clan & Masters of the Nightwind
+	{15514, 15512}, // Astral Vulture's Crimson Plumage
+	{14514, 13504},
+	// v5.3 - Incandescent Ode of Resurrection & Lantern Rite 5
+	{12514, 14517}, // A Thousand Blazing Suns, Starcaller's Watch
+	{13512, 11515},
+	// v5.4 TODO
+	{14518, 15513}, // Sunny Morning Sleep-In
+	{11513, 14513},
+	// v5.5 TODO
 	{10500, 10501},
 	{10500, 10501},
 };
@@ -476,7 +524,26 @@ static const unsigned short ChroniclePool4_441[33] = {
 
 static const ChroniclePool_t ChroniclePool_441 = {
 	ChroniclePool5_441, 6, 11,
-	ChroniclePool4_441, 12, 21,
+	ChroniclePool4_441, 12, 21
+};
+
+static const unsigned short ChroniclePool5_532[16] = {
+	// Characters
+	1026, 1033, 1035, 1037, 1042, 1063, 1082,
+	// Weapons
+	11504, 11505, 12504, 13505, 13507, 14504, 14505, 15502, 15507
+};
+
+static const unsigned short ChroniclePool4_532[29] = {
+	// Characters
+	1023, 1024, 1025, 1027, 1036, 1044, 1048, 1064, 1077, 1092,
+	// Weapons
+	11401, 11402, 11403, 11405, 12401, 12402, 12403, 12405, 13401, 13406, 13407, 14401, 14402, 14403, 14409, 15401, 15402, 15403, 15405
+};
+
+static const ChroniclePool_t ChroniclePool_532 = {
+	ChroniclePool5_532, 7, 9,
+	ChroniclePool4_532, 10, 19
 };
 
 const ChroniclePool_t* getChroniclePool(unsigned short v) {
@@ -485,11 +552,13 @@ const ChroniclePool_t* getChroniclePool(unsigned short v) {
 		return NULL;
 	case 60: // v4.4 - Lantern Rite 4 & Chenyu Vale (phase 1)
 		return &ChroniclePool_441;
+	case 77: // v5.3 - Incandescent Ode of Resurrection & Lantern Rite 5 (phase 2)
+		return &ChroniclePool_532;
 	}
 }
 
 // The list of 4-star characters in the pool, used together with the rate-up drops.
-const unsigned short FourStarChr[41] = {
+const unsigned short FourStarChr[43] = {
 	// v1.0 standard pool: Lisa, Kayea, Amber (standard banner only)
 	1006, 1015, 1021,
 	// v1.0 standard pool: Barbara, Razor, Xiangling, Beidou, Xingqiu, Ningguang, Fischl, Bennett, Noelle, Chongyun, Sucrose
@@ -544,6 +613,10 @@ const unsigned short FourStarChr[41] = {
 	1097,
 	// v5.1: Kachina
 	4100,
+	// v5.3: Ororon
+	4105,
+	// v5.4: Lan Yan
+	4108,
 };
 
 // The list of 5-star characters in the pool, used together with the rate-up drops.
@@ -563,7 +636,7 @@ const unsigned char FourStarMaxIndex[IDX_MAX] = {
 	/* v2.x */ 15, 16, 17, 18, 19, 20, 20, 20, 21,
 	/* v3.x */ 22, 24, 25, 26, 27, 28, 29, 30, 31,
 	/* v4.x */ 31, 33, 33, 34, 35, 36, 36, 36, 37,
-	/* v5.x */ 37, 38,
+	/* v5.x */ 37, 38, 38, 39, 40
 };
 
 // Max indexes into FiveStarChr per version (for old banners)
@@ -573,7 +646,7 @@ const unsigned char FiveStarMaxIndex[IDX_MAX] = {
 	/* v2.x */ 5, 5, 5, 5, 5, 5, 5, 5, 5,
 	/* v3.x */ 5, 6, 6, 6, 6, 6, 7, 7, 7,
 	/* v4.x */ 7, 7, 7, 7, 7, 7, 7, 7, 7,
-	/* v5.x */ 7, 7,
+	/* v5.x */ 7, 7, 7, 7, 7
 };
 
 // The list of 3-star weapons in the pool.

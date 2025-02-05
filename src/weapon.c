@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MPL-2.0 */
 /* This file is part of Yet Another Genshin Impact Wish Simulator */
-/* ©2024 Alex Pensinger (ArcticLuma113) */
+/* ©2025 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
 #include "config.h"
@@ -85,7 +85,7 @@ static const char* const* const ThreeStarWeapons[6] = {
 	ThreeStarBows,
 };
 
-static const char* const FourStarSwords[32] = {
+static const char* const FourStarSwords[33] = {
 	_N("Favonius Sword"),
 	_N("The Flute"),
 	_N("Sacrificial Sword"),
@@ -116,6 +116,7 @@ static const char* const FourStarSwords[32] = {
 	[29] = _N("Sword of Narzissenkreuz (2)"), // First Stage
 	[30] = _N("Sturdy Bone"),
 	[31] = _N("Flute of Ezpitzal"),
+	[32] = _N("Calamity of Eshu"),
 };
 
 static const char* const FourStarClaymores[32] = {
@@ -145,7 +146,7 @@ static const char* const FourStarClaymores[32] = {
 	[31] = _N("Earth Shaker"),
 };
 
-static const char* const FourStarPolearms[32] = {
+static const char* const FourStarPolearms[33] = {
 	_N("Dragon's Bane"),
 	_N("Prototype Starglitter"),
 	_N("Crescent Pike"),
@@ -166,6 +167,7 @@ static const char* const FourStarPolearms[32] = {
 	[27] = _N("Dialogues of the Desert Sages"),
 	[30] = _N("Mountain-Crushing Nail"),
 	[31] = _N("Footprint of the Rainbow"),
+	[32] = _N("Tamayuratei no Ohanashi"),
 };
 
 static const char* const FourStarCatalysts[32] = {
@@ -248,7 +250,7 @@ static const char* const FiveStarSwords[16] = {
 	_N("Peak Patrol Song"),
 };
 
-static const char* const FiveStarClaymores[13] = {
+static const char* const FiveStarClaymores[14] = {
 	_N("Skyward Pride"),
 	_N("Wolf's Gravestone"),
 	_N("Song of Broken Pines"),
@@ -262,6 +264,7 @@ static const char* const FiveStarClaymores[13] = {
 	_N("Beacon of the Reed Sea"),
 	_N("Verdict"),
 	_N("Fang of the Mountain King"),
+	_N("A Thousand Blazing Suns"),
 };
 
 static const char* const FiveStarPolearms[13] = {
@@ -280,7 +283,7 @@ static const char* const FiveStarPolearms[13] = {
 	_N("Lumidouce Elegy"),
 };
 
-static const char* const FiveStarCatalysts[16] = {
+static const char* const FiveStarCatalysts[18] = {
 	_N("Skyward Atlas"),
 	_N("Lost Prayer to the Sacred Winds"),
 	_N("(Test) Lost Ballade"),
@@ -297,9 +300,11 @@ static const char* const FiveStarCatalysts[16] = {
 	_N("Tome of the Eternal Flow"),
 	_N("Crane's Echoing Call"),
 	_N("Surf's Up"),
+	_N("Starcaller's Watch"),
+	_N("Sunny Morning Sleep-In"),
 };
 
-static const char* const FiveStarBows[13] = {
+static const char* const FiveStarBows[14] = {
 	_N("Skyward Harp"),
 	_N("Amos' Bow"),
 	_N("Elegy for the End"),
@@ -313,6 +318,7 @@ static const char* const FiveStarBows[13] = {
 	_N("Hunter's Path"),
 	_N("The First Great Magic"),
 	_N("Silvershower Heartstrings"),
+	_N("Astral Vulture's Crimson Plumage"),
 };
 
 static const char* const* const FiveStarWeapons[6] = {
@@ -366,20 +372,26 @@ const char* getWeapon(unsigned int _id) {
 		maxId = 4;
 		break;
 	case 14:
-	case 24:
 	case 34:
+		maxId = 32;
+		break;
+	case 24:
 	case 44:
 	case 54:
 		maxId = 31;
 		break;
 	case 15:
-	case 45:
-		maxId = 15;
+		maxId = 16;
 		break;
 	case 25:
-	case 35:
 	case 55:
-		maxId = 12;
+		maxId = 14;
+		break;
+	case 35:
+		maxId = 13;
+		break;
+	case 45:
+		maxId = 18;
 		break;
 	}
 	if (id >= maxId) return NULL;

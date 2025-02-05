@@ -15,7 +15,7 @@ unsigned char getRateUp[2];
 unsigned char fatePoints;
 unsigned short epitomizedPath;
 
-int doRadiance = -1;
+int doRadiance = 0;
 int doEpitomized = -1;
 int doSmooth[2] = {1, 1};
 int doPity[2] = {1, 1};
