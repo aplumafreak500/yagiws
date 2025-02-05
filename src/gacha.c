@@ -424,7 +424,7 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 	else {
 		*isRateUp = 0;
 		*rare = 3;
-		maxIdx = stdPoolIndex >= 16 ? 21 : 23;
+		maxIdx = stdPoolIndex >= 15 ? 23 : 21;
 		getrandom(&rnd, sizeof(long long), 0);
 		return (rnd % maxIdx) + 20000;
 	}
