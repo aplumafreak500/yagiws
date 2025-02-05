@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MPL-2.0 */
 /* This file is part of Yet Another Star Rail Warp Simulator */
-/* ©2024 Alex Pensinger (ArcticLuma113) */
+/* ©2025 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
 #include "config.h"
@@ -8,7 +8,7 @@
 #include "item.h"
 #include "util.h"
 
-static const char* const ThreeStarLightCones[21] = {
+static const char* const ThreeStarLightCones[23] = {
 	_N("Arrows"),
 	_N("Cornucopia"),
 	_N("Collapsing Sky"),
@@ -30,9 +30,11 @@ static const char* const ThreeStarLightCones[21] = {
 	_N("Hidden Shadow"),
 	_N("Mediation"),
 	_N("Sagacity"),
+	_N("Shadowburn"),
+	_N("Reminiscence"),
 };
 
-static const char* const FourStarLightCones[48] = {
+static const char* const FourStarLightCones[53] = {
 	_N("Post-Op Conversation"),
 	_N("Good Night and Sleep Well"),
 	_N("Day One of My New Life"),
@@ -81,15 +83,20 @@ static const char* const FourStarLightCones[48] = {
 	_N("After the Charmony Fall"),
 	_N("Poised to Bloom"),
 	_N("Shadowed by Night"),
+	_N("Dream's Montage"),
+	_N("Victory In a Blink"),
+	_N("Geniuses' Greetings"),
+	_N("Sweat Now, Cry Less"),
 };
 
-static const char* const FourStarLightCones_Series2[3] = {
+static const char* const FourStarLightCones_Series2[4] = {
 	_N("Before the Tutorial Mission Starts"),
 	_N("Hey, Over Here"),
 	_N("For Tomorrow's Journey"),
+	_N("Ninja Record: Sound Hunt"),
 };
 
-static const char* const FiveStarLightCones[33] = {
+static const char* const FiveStarLightCones[40] = {
 	_N("Night on the Milky Way"),
 	_N("In the Night"),
 	_N("Something Irreplaceable"),
@@ -123,22 +130,30 @@ static const char* const FiveStarLightCones[33] = {
 	_N("Dance at Sunset"),
 	_N("I Venture Forth to Hunt"),
 	_N("Scent Alone Stays True"),
+	_N("Ninjutsu Inscription: Dazzling Evilbreaker"),
+	_N("A Grounded Ascent"),
+	_N("Long Road Leads Home"),
+	_N("Time Woven Into Gold"),
+	_N("Into the Unreachable Veil"),
+	_N("If Time Were a Flower"),
+	_N("Flame of Blood, Blaze My Path"),
 };
 
-static const char* const FiveStarLightCones_Series2[5] = {
+static const char* const FiveStarLightCones_Series2[6] = {
 	_N("On the Fall of an Aeon"),
 	_N("Cruising in the Stellar Sea"),
 	_N("Texture of Memories"),
 	_N("Solitary Healing"),
 	_N("Eternal Calculus"),
+	_N("Memory's Curtain Never Falls"),
 };
 
 const char* getLightcone(unsigned int id) {
 	if (id < 20000) return NULL;
-	if (id >= 20000 && id <= 20021) return gettext(ThreeStarLightCones[id - 20000]);
-	if (id >= 21000 && id <= 21046) return gettext(FourStarLightCones[id - 21000]);
-	if (id >= 22000 && id <= 22002) return gettext(FourStarLightCones_Series2[id - 22000]);
-	if (id >= 23000 && id <= 23032) return gettext(FiveStarLightCones[id - 23000]);
-	if (id >= 24000 && id <= 24004) return gettext(FiveStarLightCones_Series2[id - 24000]);
+	if (id >= 20000 && id <= 20023) return gettext(ThreeStarLightCones[id - 20000]);
+	if (id >= 21000 && id <= 21052) return gettext(FourStarLightCones[id - 21000]);
+	if (id >= 22000 && id <= 22004) return gettext(FourStarLightCones_Series2[id - 22000]);
+	if (id >= 23000 && id <= 23039) return gettext(FiveStarLightCones[id - 23000]);
+	if (id >= 24000 && id <= 24005) return gettext(FiveStarLightCones_Series2[id - 24000]);
 	return NULL;
 }

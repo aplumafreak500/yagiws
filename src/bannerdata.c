@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MPL-2.0 */
 /* This file is part of Yet Another Star Rail Warp Simulator */
-/* ©2024 Alex Pensinger (ArcticLuma113) */
+/* ©2025 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
 #include "config.h"
@@ -44,12 +44,21 @@ const unsigned short FourStarChrUp[IDX_MAX*2][3] = {
 	// v2.4
 	{1215, 1207, 1110},
 	{1008, 1109, 1210},
-	// v2.5 (Indelible Coterie differing 4 stars? TODO)
+	// v2.5
 	{1223, 1009, 1111}, // Moze
 	{1005, 1210, 1312},
-	// v2.6 TODO
-	{8001, 8002, 8003},
-	{8004, 8005, 8006},
+	// v2.6
+	{1100, 1214, 1207},
+	{1001, 1106, 1108},
+	// v2.7
+	{1008, 1201, 1202},
+	{1207, 1301, 1312},
+	// v3.0
+	{1009, 1105, 1223},
+	{1202, 1206, 1215},
+	// v3.1 TODO
+	{8001, 8003, 8005},
+	{8006, 8007, 8008},
 };
 
 // 0xfffe: Other three banners are read from (TODO)
@@ -89,14 +98,23 @@ const unsigned short FiveStarChrUp[IDX_MAX*2][2] = {
 	{1310, 1303}, // Firefly
 	{1314, 1302}, // Jade
 	// v2.4
-	{1321, 1217}, // Yunli
-	{1318, 1306}, // Jiaoqiu
+	{1221, 1217}, // Yunli
+	{1218, 1306}, // Jiaoqiu
 	// v2.5 (Indelible Coterie TODO)
 	{1220, 0}, // Feixiao
 	{1222, 1112}, // Lingsha
-	// v2.6 TODO
-	{8001, 8002},
-	{8003, 8004},
+	// v2.6
+	{1317, 1213}, // Rappa
+	{1304, 1308},
+	// v2.7
+	{1313, 1204}, // Sunday
+	{1225, 1310}, // Fugue
+	// v3.0 (Indelible Coterie TODO)
+	{1401, 0}, // 𝕿𝖍𝖊 Herta
+	{1402, 0}, // Aglaea
+	// v3.1 TODO
+	{8001, 8003},
+	{8005, 8007},
 };
 
 const unsigned short FourStarWpnUp[IDX_MAX*2][3] = {
@@ -136,10 +154,19 @@ const unsigned short FourStarWpnUp[IDX_MAX*2][3] = {
 	// v2.4
 	{21005, 21006, 21014},
 	{21046, 21008, 21012}, // Poised to Bloom
-	// v2.5 (Coalesced Truths different 4 stars? TODO)
+	// v2.5
 	{21006, 21010, 21015},
 	{21047, 21007, 21011}, // Shadowed by Night
-	// v2.6 TODO
+	// v2.6
+	{21048, 21019, 21045}, // Dream's Montage
+	{21002, 21013, 21044},
+	// v2.7
+	{21006, 21010, 21046},
+	{21015, 21042, 21043},
+	// v3.0
+	{21003, 21009, 21020},
+	{21050, 21017, 21018}, // Geniuses' Greetings
+	// v3.1 TODO
 	{21000, 21001, 21002},
 	{21000, 21001, 21002},
 };
@@ -185,7 +212,16 @@ const unsigned short FiveStarWpnUp[IDX_MAX*2][2] = {
 	// v2.5 (Indelible Coterie TODO)
 	{23032, 0}, // I Venture Forth to Hunt
 	{23033, 23016}, // Scent Alone Stays True
-	// v2.6 TODO
+	// v2.6
+	{23034, 23015}, // Ninjutsu Inscription: Dazzling Evilbreaker
+	{23023, 23024},
+	// v2.7
+	{23035, 23010}, // A Grounded Ascent
+	{23036, 23025}, // Long Road Leads Home
+	// v3.0 (Indelible Coterie TODO)
+	{23037, 0}, // Into the Unreachable Veil
+	{23036, 0}, // Time Woven Into Gold
+	// v3.1 TODO
 	{23000, 23001},
 	{23000, 23001},
 };
@@ -193,12 +229,14 @@ const unsigned short FiveStarWpnUp[IDX_MAX*2][2] = {
 // Max indexes into FourStarChr per version (for old banners)
 const unsigned char FourStarChrMaxIndex[IDX_MAX] = {
 	/* v1.x */ 13, 13, 14, 15, 16, 17, 18,
-	/* v2.x */ 19, 20, 21, 21, 21, 21, 21
+	/* v2.x */ 19, 20, 21, 21, 21, 21, 21, 21,
+	/* v3.x */ 21, 21
 };
 
 const unsigned char FourStarWpnMaxIndex[IDX_MAX] = {
 	/* v1.x */ 21, 21, 21, 21, 21, 21, 21,
-	/* v2.x */ 21, 22, 23, 24, 25, 26, 27
+	/* v2.x */ 21, 22, 23, 24, 25, 26, 27, 28,
+	/* v3.x */ 28, 29
 };
 
 // The list of 4-star characters in the pool, used together with the rate-up drops.
@@ -224,7 +262,7 @@ const unsigned short FourStarChr[22] = {
 };
 
 // The list of 4-star lightcones in the pool, used together with the rate-up drops.
-const unsigned short FourStarWpn[27] = {
+const unsigned short FourStarWpn[29] = {
 	// v1.x standard pool
 	21000, 21001, 21002, 21003, 21004, 21005, 21006, 21007, 21008, 21009, 21010, 21011, 21012, 21013, 21014, 21015, 21016, 21017, 21018, 21019, 21020,
 	// v2.1: Indelible Promise
@@ -239,6 +277,12 @@ const unsigned short FourStarWpn[27] = {
 	21046,
 	// v2.6: Shadowed by Night
 	21047,
+	// v2.7: Dream's Montage
+	21048,
+	// v3.1: Geniuses' Greetings
+	21050,
+	// v3.2: Sweat Now, Cry Less
+	// 21051,
 };
 
 // The list of 5-star characters in the pool, used together with the rate-up drops.
@@ -246,4 +290,3 @@ const unsigned short FiveStarChr[7] = {1003, 1004, 1101, 1104, 1107, 1209, 1211}
 
 // The list of 5-star lightcones in the pool, used together with the rate-up drops (only on the lightcone and standard banners)
 const unsigned short FiveStarWpn[7] = {23000, 23002, 23003, 23004, 23005, 23012, 23013};
-

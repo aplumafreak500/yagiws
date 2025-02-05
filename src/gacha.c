@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MPL-2.0 */
 /* This file is part of Yet Another Star Rail Warp Simulator */
-/* ©2024 Alex Pensinger (ArcticLuma113) */
+/* ©2025 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
 #include "config.h"
@@ -424,7 +424,8 @@ unsigned int doAPull(unsigned int banner, int stdPoolIndex, int bannerIndex, uns
 	else {
 		*isRateUp = 0;
 		*rare = 3;
+		maxIdx = stdPoolIndex >= 16 ? 21 : 23;
 		getrandom(&rnd, sizeof(long long), 0);
-		return (rnd % 21) + 20000;
+		return (rnd % maxIdx) + 20000;
 	}
 }

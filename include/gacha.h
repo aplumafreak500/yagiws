@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MPL-2.0 */
 /* This file is part of Yet Another Star Rail Warp Simulator */
-/* ©2024 Alex Pensinger (ArcticLuma113) */
+/* ©2025 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
 #ifndef GACHA_H
@@ -21,7 +21,7 @@ enum {
 extern const char* const banners[WARP_CNT][2];
 
 // Banner data
-#define IDX_MAX 14
+#define IDX_MAX 17
 extern const unsigned short FourStarChrUp[IDX_MAX*2][3];
 extern const unsigned short FiveStarChrUp[IDX_MAX*2][2];
 extern const unsigned short FourStarWpnUp[IDX_MAX*2][3];
@@ -29,7 +29,7 @@ extern const unsigned short FiveStarWpnUp[IDX_MAX*2][2];
 extern const unsigned char FourStarChrMaxIndex[IDX_MAX];
 extern const unsigned char FourStarWpnMaxIndex[IDX_MAX];
 extern const unsigned short FourStarChr[22];
-extern const unsigned short FourStarWpn[27];
+extern const unsigned short FourStarWpn[29];
 extern const unsigned short FiveStarChr[7];
 extern const unsigned short FiveStarWpn[7];
 

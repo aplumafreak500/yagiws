@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MPL-2.0 */
 /* This file is part of Yet Another Star Rail Warp Simulator */
-/* ©2024 Alex Pensinger (ArcticLuma113) */
+/* ©2025 Alex Pensinger (ArcticLuma113) */
 /* Released under the terms of the MPLv2, which can be viewed at https://mozilla.org/MPL/2.0/ */
 
 #include "config.h"
@@ -170,8 +170,8 @@ int main(int argc, char** argv) {
 	unsigned int oldSmooth = 0;
 	int c = 0;
 	long long n = 0;
-	int v[4] = {-1, -1, 0, 0x24};
-	int b[5] = {-1, -1, -1, 0, 0x242};
+	int v[4] = {-1, -1, 0, 0x30};
+	int b[5] = {-1, -1, -1, 0, 0x302};
 	unsigned int forceSmooth = 0;
 	char* p = NULL;
 #ifdef ENABLE_NLS
@@ -407,9 +407,11 @@ int main(int argc, char** argv) {
 	b[0]--;
 	b[1] = b[4] >> 4;
 #ifndef DEBUG
-	if (b[1] > 0x26) b[1] = 0x26;
+	if (b[1] > 0x31) b[1] = 0x31;
 #endif
-
+	if (b[1] >= 0x30) {
+		b[1] -= 0x8;
+	}
 	if (b[1] >= 0x20) {
 		b[1] -= 0x9;
 	}
@@ -444,8 +446,11 @@ int main(int argc, char** argv) {
 	}
 	else {
 #ifndef DEBUG
-		if (v[0] > 0x26) v[0] = 0x26;
+		if (v[0] > 0x31) v[0] = 0x31;
 #endif
+		if (v[0] >= 0x30) {
+			v[0] -= 0x8;
+		}
 		if (v[0] >= 0x20) {
 			v[0] -= 0x9;
 		}
@@ -589,7 +594,9 @@ int main(int argc, char** argv) {
 		}
 		if (do5050 >= 0) {
 			printf(_("3★ Light Cone Pool:\n"));
-			for (n = 0; n < 21; n++) {
+			unsigned int maxIdx = 21;
+			if (v[0] >= 15) maxIdx = 23;
+			for (n = 0; n < maxIdx; n++) {
 				item = 20000 + n;
 				if (getItem(item) != NULL) {
 					snprintf(buf, 1024, _("\e[34;22m%s\e[39;0m (id %u)"), getItem(item), item);
@@ -670,7 +677,7 @@ int main(int argc, char** argv) {
 			color = 33;
 			break;
 		}
-		if (item <= 1324 && item >= 1000) {
+		if (item <= 1404 && item >= 1000) {
 			isChar = 1;
 			if (getItem(item) != NULL) {
 				snprintf(buf, 1024, _("\e[%u%sm%s\e[39;0m (id %u)"), color, shouldBold(rare, banner, won5050) ? ";1" : ";22", getItem(item), item);
